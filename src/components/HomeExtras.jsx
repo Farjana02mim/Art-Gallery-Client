@@ -1,0 +1,35 @@
+import hero1 from "../assets/hero1.avif";
+import hero2 from "../assets/hero2.avif";
+import hero3 from "../assets/hero3.avif";
+
+const artists = [
+  { id: 1, name: "Alice Smith", photo: hero1, title: "Contemporary Artist" },
+  { id: 2, name: "Bob Johnson", photo: hero2, title: "Abstract Painter" },
+  { id: 3, name: "Cathy Lee", photo: hero3, title: "Digital Illustrator" },
+];
+
+const HomeExtras = () => {
+  return (
+    <section className="text-center my-16">
+      <h2 className="text-3xl font-bold text-yellow-500 mb-6">Meet Our Artists</h2>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        {artists.map((artist) => (
+          <div
+            key={artist.id}
+            className="bg-gray-700 dark:bg-gray-800 backdrop-blur-md p-6 rounded-xl shadow hover:shadow-lg transition"
+          >
+            <img
+              src={artist.photo}
+              alt={artist.name}
+              className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
+            />
+            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{artist.name}</h3>
+            <p className="text-gray-600 dark:text-gray-300">{artist.title}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export default HomeExtras;
