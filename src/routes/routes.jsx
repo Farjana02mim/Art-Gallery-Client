@@ -11,6 +11,11 @@ import NotFound from "../pages/NotFound";
 import CategoryFilteredProducts from "../pages/CategoryFilteredProducts";
 import HomeExtras from "../components/HomeExtras";
 import ArtworksGallery from "../pages/ArtworksGallery";
+import DashboardLayout from "../layout/DashboardLayout";
+import MyArts from "../pages/Dashboard/MyArts/MyArts";
+import Payment from "../pages/Dashboard/Payment/Payment";
+import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
+import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +53,29 @@ export const router = createBrowserRouter([
         ),
       },
     ],
+  },
+
+  {
+    path: "dashboard",
+    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute> ,
+    children: [
+      {
+        path: 'my-arts',
+        Component: MyArts,
+      },
+      {
+        path: 'payment/:parcelId',
+        Component: Payment
+      },
+      {
+        path: 'payment-success',
+        Component: PaymentSuccess
+      },
+      {
+        path: 'payment-cancelled',
+        Component: PaymentCancelled
+      }
+    ]
   },
 
   // 404 Page route outside MainLayout
