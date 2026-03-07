@@ -4,6 +4,9 @@ import Banner from "../components/Banner";
 import Card from "../components/Card";
 import HomeExtras from "../components/HomeExtras";
 import ExtraSection from "./ExtraSection";
+import Reviews from "./Reviews/Reviews";
+
+const reviewsPromise = fetch('/reviews.json').then(res=>res.json());
 
 const categories = [
   { name: "Paintings", emoji: "🎨", value: "Painting" },
@@ -119,6 +122,11 @@ const HomePage = () => {
           )}
         </div>
       </section>
+
+      {/* Reviws */}
+          <div>
+            <Reviews reviewsPromise = {reviewsPromise} ></Reviews>
+          </div>
 
       {/* Extras */}
       <section className="w-11/12 mx-auto">

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useAuth } from "./useAuth"  // ✅ named import
+import  useAuth from "./useAuth"  // ✅ named import
 
 const useAxiosSecure = () => {
   const { logOut } = useAuth() || {} // optional chaining দিয়ে safe
