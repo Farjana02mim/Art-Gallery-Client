@@ -9,8 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [show, setShow] = useState(false);
-  const { signInWithEmailAndPasswordFunc, signInWithGoogleFunc, setUser, user } =
-    useContext(AuthContext);
+  const { 
+    signInWithEmailAndPasswordFunc, 
+    signInWithGoogleFunc, 
+    setUser, 
+    user,
+    sendPassResetEmailFunc
+  } = useContext(AuthContext);
 
   const emailRef = useRef(null);
   const location = useLocation();
@@ -23,6 +28,7 @@ const Login = () => {
     if (user) navigate(from, { replace: true });
   }, [user, from, navigate]);
 
+  // Email Login
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     const email = e.target.email.value;
@@ -41,6 +47,7 @@ const Login = () => {
     }
   };
 
+  // Google Login
   const handleGoogleLogin = async () => {
     setLoading(true);
     try {
@@ -52,6 +59,22 @@ const Login = () => {
       toast.error(err.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Forgot Password
+  const handleForgotPassword = async () => {
+    const email = emailRef.current.value;
+    if (!email) {
+      toast.error("Please enter your email first!");
+      return;
+    }
+
+    try {
+      await sendPassResetEmailFunc(email);
+      toast.success("Password reset email sent!");
+    } catch (err) {
+      toast.error(err.message);
     }
   };
 
@@ -71,10 +94,7 @@ const Login = () => {
 
           {/* Left Side Text */}
           <div className="max-w-lg text-center lg:text-left">
-            <h1 className="text-5xl font-bold text-gray-800">
-              Art Gallery
-            </h1>
-
+            <h1 className="text-5xl font-bold text-gray-800">Art Gallery</h1>
             <p className="mt-4 text-lg text-gray-600 leading-relaxed">
               Discover beautiful artworks from talented artists around the world.
               Login to explore the gallery and showcase your creativity 🎨
@@ -83,7 +103,6 @@ const Login = () => {
 
           {/* Login Form */}
           <div className="w-full max-w-md backdrop-blur-xl bg-white/60 border border-white/40 shadow-2xl rounded-3xl p-8">
-
             <form onSubmit={handleEmailLogin} className="space-y-5">
 
               <h2 className="text-2xl font-semibold mb-3 text-center text-gray-800">
@@ -92,10 +111,7 @@ const Login = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm mb-1 text-gray-700">
-                  Email
-                </label>
-
+                <label className="block text-sm mb-1 text-gray-700">Email</label>
                 <input
                   type="email"
                   name="email"
@@ -108,11 +124,7 @@ const Login = () => {
 
               {/* Password */}
               <div className="relative">
-
-                <label className="block text-sm mb-1 text-gray-700">
-                  Password
-                </label>
-
+                <label className="block text-sm mb-1 text-gray-700">Password</label>
                 <input
                   type={show ? "text" : "password"}
                   name="password"
@@ -120,14 +132,22 @@ const Login = () => {
                   className="input input-bordered w-full bg-white/80 text-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-400 pr-12"
                   required
                 />
-
                 <span
                   onClick={() => setShow(!show)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-600"
                 >
                   {show ? <FaEye size={20} /> : <IoEyeOff size={20} />}
                 </span>
+              </div>
 
+              {/* Forgot Password (subtle text) */}
+              <div className="text-right mt-1">
+                <span
+                  onClick={handleForgotPassword}
+                  className="text-sm text-gray-500 hover:text-gray-700 hover:underline cursor-pointer transition-colors duration-200"
+                >
+                  Forgot Password?
+                </span>
               </div>
 
               {/* Login Button */}
@@ -161,7 +181,6 @@ const Login = () => {
                   className="w-5 h-5"
                   alt="Google"
                 />
-
                 Continue with Google
               </button>
 
@@ -175,7 +194,6 @@ const Login = () => {
                   Register here
                 </Link>
               </p>
-
             </form>
           </div>
         </div>

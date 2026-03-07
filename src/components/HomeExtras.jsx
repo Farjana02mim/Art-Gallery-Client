@@ -1,6 +1,6 @@
-import hero1 from "../assets/hero1.avif";
-import hero2 from "../assets/hero2.avif";
-import hero3 from "../assets/hero3.avif";
+import hero1 from "../assets/hero1.jpg";
+import hero2 from "../assets/hero2.jpg";
+import hero3 from "../assets/hero3.jpg";
 
 const artists = [
   { id: 1, name: "Alice Smith", photo: hero1, title: "Contemporary Artist" },

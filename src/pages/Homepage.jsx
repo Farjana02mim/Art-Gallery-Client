@@ -58,7 +58,7 @@ const HomePage = () => {
   });
 
   return (
-    <div className="space-y-20 bg-gray-900 text-yellow-50 min-h-screen">
+    <div className="space-y-20 min-h-screen">
       {/* Banner */}
       <section>
         <Banner />

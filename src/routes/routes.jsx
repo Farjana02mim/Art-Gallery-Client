@@ -16,6 +16,7 @@ import MyArts from "../pages/Dashboard/MyArts/MyArts";
 import Payment from "../pages/Dashboard/Payment/Payment";
 import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
+import Coverage from "../pages/Coverage/Coverage";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,11 @@ export const router = createBrowserRouter([
           </PrivateRoute>
         ),
       },
+      {
+        path: 'coverage',
+        Component: Coverage,
+        loader: () => fetch('/serviceCenters.json').then(res=>res.json())
+      }
     ],
   },
 
