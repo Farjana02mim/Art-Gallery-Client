@@ -70,7 +70,7 @@ export const router = createBrowserRouter([
         Component: MyArts,
       },
       {
-        path: 'payment/:parcelId',
+        path: 'payment/:artId',
         Component: Payment
       },
       {

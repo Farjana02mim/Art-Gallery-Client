@@ -58,8 +58,7 @@ const Navbar = () => {
               <li>
                 <MyLink to="/add-listing">Add Artwork</MyLink>
               </li>
-              <li>
-              </li>
+              <li><MyLink to="/dashboard/my-arts">My Arts</MyLink></li>
               <li>
                 <MyLink to="/my-orders">My Orders</MyLink>
               </li>
@@ -81,7 +80,7 @@ const Navbar = () => {
               />
               <button
                 onClick={handleSignout}
-                className="px-3 py-1 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:text-white hover:bg-yellow-500 transition"
+                className="px-3 mr-6 py-1 bg-yellow-400 text-gray-900 font-bold rounded-lg hover:text-white hover:bg-yellow-500 transition"
               >
                 Logout
               </button>
@@ -96,7 +95,7 @@ const Navbar = () => {
               </Link>
               <Link
                 to="/signup"
-                className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
+                className="px-4 mr-6 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
               >
                 Register
               </Link>
@@ -163,7 +162,7 @@ const Navbar = () => {
                 </Link>
                 <Link
                   to="/signup"
-                  className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
+                  className="px-4 mr-6 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
                   onClick={() => setMenuOpen(false)}
                 >
                   Register
@@ -175,7 +174,7 @@ const Navbar = () => {
       </MyContainer>
 
       {/* Theme Toggle */}
-      <div className="absolute top-3 right-3">
+      <div className="absolute top-5 right-3">
         <input
           onChange={(e) => handleTheme(e.target.checked)}
           type="checkbox"
