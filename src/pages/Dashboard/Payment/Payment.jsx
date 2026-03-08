@@ -6,18 +6,30 @@ const Payment = () => {
   const listing = location.state?.listing;
   const axiosSecure = useAxiosSecure();
 
-  if (!listing) return <p className="text-center mt-10">Listing data not found!</p>;
+  if (!listing) {
+    return <p className="text-center mt-10">Listing data not found!</p>;
+  }
 
   const handlePayment = async () => {
-    const paymentInfo = {
-      price: listing.price,
-      artId: listing._id,
-      senderEmail: listing.email,
-      name: listing.name,
-    };
+    try {
+      const paymentInfo = {
+        price: listing.price,
+        artId: listing._id,
+        email: listing.email,
+        name: listing.name,
+      };
 
-    const res = await axiosSecure.post("/create-checkout-session", paymentInfo);
-    window.location.replace(res.data.url);
+      const res = await axiosSecure.post(
+        "/create-checkout-session",
+        paymentInfo
+      );
+
+      if (res.data?.url) {
+        window.location.replace(res.data.url);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
   };
 
   return (
@@ -25,6 +37,7 @@ const Payment = () => {
       <h2 className="text-2xl mb-4">
         Please Pay ${listing.price} for {listing.name}
       </h2>
+
       <button onClick={handlePayment} className="btn btn-primary text-black">
         Pay Now
       </button>

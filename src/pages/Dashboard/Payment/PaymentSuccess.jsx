@@ -24,8 +24,8 @@ const PaymentSuccess = () => {
   return (
     <div className="flex flex-col items-center justify-center mt-20 space-y-6">
       <h2 className="text-4xl text-green-600 font-bold">{message}</h2>
-      <Link to="/dashboard/my-arts">
-        <button className="btn btn-primary text-black">Go to My Arts</button>
+      <Link to="/dashboard/my-purchases">
+        <button className="btn btn-primary text-black">Go to My Purchases</button>
       </Link>
     </div>
   );

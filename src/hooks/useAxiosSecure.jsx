@@ -5,7 +5,7 @@ const useAxiosSecure = () => {
   const { logOut } = useAuth() || {} // optional chaining দিয়ে safe
 
   const axiosSecure = axios.create({
-    baseURL: import.meta.env.VITE_SERVER_URL || "http://localhost:5000",
+    baseURL: import.meta.env.VITE_SERVER_URL || "http://localhost:3000",
   })
 
   axiosSecure.interceptors.request.use(
