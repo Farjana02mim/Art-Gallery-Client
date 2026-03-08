@@ -1,4 +1,3 @@
-// src/pages/ListingDetails.jsx
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,42 +8,44 @@ const SERVER_URL = "http://localhost:3000";
 const ListingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Load listing
   useEffect(() => {
     if (!id) return;
     setLoading(true);
     fetch(`${SERVER_URL}/listing/${id}`)
       .then((res) => res.json())
       .then((data) => setListing(data))
-      .catch((err) => {
-        console.error("Failed to load listing:", err);
-        toast.error("Failed to load listing details");
-      })
+      .catch(() => toast.error("Failed to load listing"))
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleBuyNow = () => {
-    // Navigate to payment route with listing ID or full data
-    navigate("/payment", { state: { listing } });
+  // Increase views
+  useEffect(() => {
+    if (!id) return;
+    fetch(`${SERVER_URL}/listing/views/${id}`, { method: "PATCH" });
+  }, [id]);
+
+  // Like
+  const handleLike = async () => {
+    const res = await fetch(`${SERVER_URL}/listing/like/${id}`, { method: "PATCH" });
+    const data = await res.json();
+    if (data.modifiedCount > 0) {
+      setListing({ ...listing, likes: (listing.likes || 0) + 1 });
+      toast.success("You liked this art ❤️");
+    }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full animate-spin"></div>
-      </div>
-    );
-  }
+  // ✅ Buy Now
+  const handleBuyNow = () => {
+    navigate(`/dashboard/payment/${id}`, { state: { listing } });
+  };
 
-  if (!listing) {
-    return (
-      <p className="text-center text-gray-500 mt-10">
-        Listing not found.
-      </p>
-    );
-  }
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
+  if (!listing) return <p className="text-center mt-10">Listing not found</p>;
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-6">
@@ -61,20 +62,36 @@ const ListingDetails = () => {
         {/* Details */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">{listing.title}</h1>
-            <p className="text-gray-700 mb-1"><strong>Artist:</strong> {listing.artistName}</p>
-            <p className="text-gray-700 mb-1"><strong>Category:</strong> {listing.category}</p>
-            <p className="text-gray-700 mb-1"><strong>Year:</strong> {listing.year}</p>
-            <p className="text-gray-700 mb-4"><strong>Price:</strong> ${listing.price}</p>
-            <p className="text-gray-600">{listing.description}</p>
+            <h1 className="text-3xl font-bold mb-2">{listing.title}</h1>
+            <p><strong>Artist:</strong> {listing.artistName}</p>
+            <p><strong>Category:</strong> {listing.category}</p>
+            <p><strong>Year:</strong> {listing.year}</p>
+            <p className="text-green-600 text-lg font-semibold">${listing.price}</p>
+            <p className="text-gray-600 mb-4">{listing.description}</p>
+
+            <div className="flex gap-6 text-sm text-gray-600">
+              <span>👁 {listing.views || 0} Views</span>
+              <span>❤️ {listing.likes || 0} Likes</span>
+              <span>⭐ {listing.rating || 0}</span>
+            </div>
           </div>
 
-          <button
-            onClick={handleBuyNow}
-            className="mt-6 w-full py-3 bg-gradient-to-r from-gray-400 to-blue-100 text-black font-semibold rounded-lg hover:opacity-90 transition"
-          >
-            Buy Now
-          </button>
+          {/* Buttons */}
+          <div className="flex gap-3 mt-6">
+            <button
+              onClick={handleLike}
+              className="px-4 py-2 bg-pink-500 text-white rounded-lg"
+            >
+              ❤️ Like
+            </button>
+
+            <button
+              onClick={handleBuyNow}
+              className="flex-1 py-3 bg-gradient-to-r from-gray-400 to-blue-200 text-black font-semibold rounded-lg"
+            >
+              Buy Now
+            </button>
+          </div>
         </div>
       </div>
     </div>

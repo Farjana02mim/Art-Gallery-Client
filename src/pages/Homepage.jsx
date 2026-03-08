@@ -1,3 +1,4 @@
+// HomePage.jsx
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Banner from "../components/Banner";
@@ -5,8 +6,9 @@ import Card from "../components/Card";
 import HomeExtras from "../components/HomeExtras";
 import ExtraSection from "./ExtraSection";
 import Reviews from "./Reviews/Reviews";
+import TrendingArts from "../components/TrendingArts";
 
-const reviewsPromise = fetch('/reviews.json').then(res=>res.json());
+const reviewsPromise = fetch('/reviews.json').then(res => res.json());
 
 const categories = [
   { name: "Paintings", emoji: "🎨", value: "Painting" },
@@ -31,30 +33,21 @@ const HomePage = () => {
       .then((data) => {
         setListings(Array.isArray(data) ? data : []);
       })
-      .catch((err) =>
-        console.error("Failed to load latest listings:", err)
-      )
+      .catch((err) => console.error("Failed to load latest listings:", err))
       .finally(() => setLoading(false));
   }, []);
 
   // Handle category click
   const handleCategoryClick = (category) => {
-    setCategoryFilter(category.value);
+    setCategoryFilter(category.value);   // keep active state
+    setSearchTerm("");                    // reset search
     navigate(`/category-filtered-product/${category.value}`);
   };
 
-  // Filtered listings based on category + search
+  // Filtered listings based on search only (category navigates separately)
   const filteredListings = listings.filter((listing) => {
-    const listingCategory = listing.category || "Unknown"; // fallback if category missing
-    const listingTitle = listing.title || listing.name || ""; // fallback if title missing
-
-    const matchesCategory =
-      categoryFilter === "All" || listingCategory === categoryFilter;
-    const matchesSearch = listingTitle
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-
-    return matchesCategory && matchesSearch;
+    const listingTitle = listing.title || listing.name || "";
+    return listingTitle.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
   return (
@@ -74,12 +67,13 @@ const HomePage = () => {
             <div
               key={cat.name}
               onClick={() => handleCategoryClick(cat)}
-              className="cursor-pointer bg-gray-800/80 rounded-xl shadow-md hover:shadow-xl p-6 flex flex-col items-center justify-center transition-transform hover:scale-105 backdrop-blur-sm"
+              className={`cursor-pointer rounded-xl shadow-md p-6 flex flex-col items-center justify-center transition-transform hover:scale-105 backdrop-blur-sm
+                ${categoryFilter === cat.value
+                  ? "bg-yellow-400 text-gray-900 shadow-xl"
+                  : "bg-gray-800/80 text-yellow-200 hover:shadow-xl"}`}
             >
               <span className="text-5xl mb-4">{cat.emoji}</span>
-              <h3 className="text-xl font-semibold text-yellow-200 text-center">
-                {cat.name}
-              </h3>
+              <h3 className="text-xl font-semibold text-center">{cat.name}</h3>
             </div>
           ))}
         </div>
@@ -123,10 +117,10 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Reviws */}
-          <div>
-            <Reviews reviewsPromise = {reviewsPromise} ></Reviews>
-          </div>
+      {/* Reviews */}
+      <div>
+        <Reviews reviewsPromise={reviewsPromise} />
+      </div>
 
       {/* Extras */}
       <section className="w-11/12 mx-auto">
@@ -135,6 +129,11 @@ const HomePage = () => {
 
       <section className="w-11/12 mx-auto">
         <ExtraSection />
+      </section>
+
+      {/* Trending Arts */}
+      <section className="w-11/12 mx-auto">
+        <TrendingArts />
       </section>
     </div>
   );

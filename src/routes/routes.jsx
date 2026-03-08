@@ -5,7 +5,6 @@ import Signup from "../pages/Signup";
 import Signin from "../pages/Login";
 import AddListing from "../pages/AddListing";
 import ListingDetails from "../pages/ListingDetails";
-import MyOrders from "../pages/MyOrders";
 import PrivateRoute from "../privateRoute/PrivateRoute";
 import NotFound from "../pages/NotFound";
 import CategoryFilteredProducts from "../pages/CategoryFilteredProducts";
@@ -17,6 +16,8 @@ import Payment from "../pages/Dashboard/Payment/Payment";
 import PaymentCancelled from "../pages/Dashboard/Payment/PaymentCancelled";
 import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import Coverage from "../pages/Coverage/Coverage";
+import UpdateArt from "../pages/Dashboard/MyArts/UpdateArt";
+import MyPurchases from "../components/MyPurchases";
 
 export const router = createBrowserRouter([
   {
@@ -46,43 +47,55 @@ export const router = createBrowserRouter([
         ),
       },
       {
-        path: "/my-orders",
-        element: (
-          <PrivateRoute>
-            <MyOrders />
-          </PrivateRoute>
-        ),
-      },
-      {
         path: 'coverage',
         Component: Coverage,
         loader: () => fetch('/serviceCenters.json').then(res=>res.json())
-      }
+      },
+      //     {
+      //   path: "dashboard",
+      //   element: (
+      //     <PrivateRoute>
+      //       <DashboardLayout />
+      //     </PrivateRoute>
+      //   ),
+      // },
     ],
   },
 
-  {
-    path: "dashboard",
-    element: <PrivateRoute><DashboardLayout></DashboardLayout></PrivateRoute> ,
-    children: [
-      {
-        path: 'my-arts',
-        Component: MyArts,
-      },
-      {
-        path: 'payment/:artId',
-        Component: Payment
-      },
-      {
-        path: 'payment-success',
-        Component: PaymentSuccess
-      },
-      {
-        path: 'payment-cancelled',
-        Component: PaymentCancelled
-      }
-    ]
-  },
+{
+  path: "dashboard",
+  element: (
+    <PrivateRoute>
+      <DashboardLayout />
+    </PrivateRoute>
+  ),
+  children: [
+    {
+      path: "my-arts",
+      Component: MyArts,
+    },
+    {
+      path: "update-art/:id",   // fixed
+      element: <UpdateArt />
+    },
+    {
+      path: "my-purchases",     // fixed
+      Component: MyPurchases
+    },
+    {
+      path: "payment/:artId",
+      Component: Payment
+    },
+    {
+      path: "payment-success",
+      Component: PaymentSuccess
+    },
+    {
+      path: "payment-cancelled",
+      Component: PaymentCancelled
+    }
+  ]
+},
 
   // 404 Page route outside MainLayout
   { path: "*", element: <NotFound /> },

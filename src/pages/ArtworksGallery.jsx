@@ -27,10 +27,23 @@ const ArtworksGallery = () => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       let temp = [...artworks];
-      if (categoryFilter !== "All") temp = temp.filter(a => a.category === categoryFilter);
-      if (searchTerm) temp = temp.filter(a => a.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
+      // Filter by category (case-insensitive)
+      if (categoryFilter !== "All") {
+        temp = temp.filter(a => (a.category || "").toLowerCase() === categoryFilter.toLowerCase());
+      }
+
+      // Filter by search term (title or name)
+      if (searchTerm) {
+        temp = temp.filter(a => {
+          const t = (a.title || a.name || "").toLowerCase();
+          return t.includes(searchTerm.toLowerCase());
+        });
+      }
+
       setFiltered(temp);
     }, 300);
+
     return () => clearTimeout(timeout);
   }, [searchTerm, categoryFilter, artworks]);
 
@@ -43,7 +56,7 @@ const ArtworksGallery = () => {
       <div className="flex justify-center mb-6">
         <input
           type="text"
-          placeholder="Search by title..."
+          placeholder="Search by title or name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="border border-gray-300 p-2 text-black rounded-lg w-full max-w-md focus:outline-none focus:ring-2 focus:ring-gray-400"

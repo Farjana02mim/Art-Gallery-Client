@@ -1,54 +1,35 @@
-import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'react-router'
-import useAxiosSecure from '../../../hooks/useAxiosSecure'
+import { useLocation } from "react-router-dom";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const Payment = () => {
-  const { artId } = useParams()
-  const axiosSecure = useAxiosSecure()
+  const location = useLocation();
+  const listing = location.state?.listing;
+  const axiosSecure = useAxiosSecure();
 
-  const { data: art, isLoading } = useQuery({
-    queryKey: ['art', artId],
-    queryFn: async () => {
-      const res = await axiosSecure.get(`/listing/${artId}`)
-      return res.data
-    },
-  })
+  if (!listing) return <p className="text-center mt-10">Listing data not found!</p>;
 
   const handlePayment = async () => {
     const paymentInfo = {
-      cost: art.cost,
-      artId: art._id,
-      senderEmail: art.email,
-      artName: art.title,
-    }
+      price: listing.price,
+      artId: listing._id,
+      senderEmail: listing.email,
+      name: listing.name,
+    };
 
-    const res = await axiosSecure.post('/create-checkout-session', paymentInfo)
-
-    window.location.replace(res.data.url)
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex justify-center mt-20">
-        <span className="loading loading-infinity loading-xl"></span>
-      </div>
-    )
-  }
+    const res = await axiosSecure.post("/create-checkout-session", paymentInfo);
+    window.location.replace(res.data.url);
+  };
 
   return (
     <div className="text-center mt-10">
       <h2 className="text-2xl mb-4">
-        Please Pay ${art.cost} for {art.title}
+        Please Pay ${listing.price} for {listing.name}
       </h2>
-
-      <button
-        onClick={handlePayment}
-        className="btn btn-primary text-black"
-      >
+      <button onClick={handlePayment} className="btn btn-primary text-black">
         Pay Now
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default Payment
+export default Payment;
