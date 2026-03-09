@@ -50,7 +50,7 @@ const MyPurchases = () => {
       `$${p.amount / 100}`,
       p.transactionId,
       p.paymentStatus || "Paid",
-      p.date ? new Date(p.date).toLocaleDateString() : ""
+      p.created_at ? new Date(p.created_at).toLocaleDateString() : ""
     ]);
 
     autoTable(doc, {
@@ -121,8 +121,8 @@ const MyPurchases = () => {
                 </td>
 
                 <td>
-                  {p.date
-                    ? new Date(p.date).toLocaleDateString()
+                  {p.created_at
+                    ? new Date(p.created_at).toLocaleDateString()
                     : ""}
                 </td>
 
