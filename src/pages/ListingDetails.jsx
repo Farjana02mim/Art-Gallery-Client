@@ -12,34 +12,51 @@ const ListingDetails = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load listing
-  useEffect(() => {
-    if (!id) return;
-    setLoading(true);
-    fetch(`${SERVER_URL}/listing/${id}`)
-      .then((res) => res.json())
-      .then((data) => setListing(data))
-      .catch(() => toast.error("Failed to load listing"))
-      .finally(() => setLoading(false));
-  }, [id]);
-
-  // Increase views
-  useEffect(() => {
-    if (!id) return;
-    fetch(`${SERVER_URL}/listing/views/${id}`, { method: "PATCH" });
-  }, [id]);
-
-  // Like
-  const handleLike = async () => {
-    const res = await fetch(`${SERVER_URL}/listing/like/${id}`, { method: "PATCH" });
-    const data = await res.json();
-    if (data.modifiedCount > 0) {
-      setListing({ ...listing, likes: (listing.likes || 0) + 1 });
-      toast.success("You liked this art ❤️");
+  // Load listing data
+  const fetchListing = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${SERVER_URL}/listing/${id}`);
+      const data = await res.json();
+      setListing(data);
+    } catch (error) {
+      toast.error("Failed to load listing");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // ✅ Buy Now
+  useEffect(() => {
+    if (!id) return;
+
+    fetchListing();
+
+    // Increase views on load (only here)
+    fetch(`${SERVER_URL}/listing/views/${id}`, { method: "PATCH" })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.views !== undefined) {
+          setListing(prev => prev ? { ...prev, views: data.views } : prev);
+        }
+      })
+      .catch(() => {});
+  }, [id]);
+
+  // Handle Like
+  const handleLike = async () => {
+    try {
+      const res = await fetch(`${SERVER_URL}/listing/like/${id}`, { method: "PATCH" });
+      const data = await res.json();
+      if (data.modifiedCount > 0) {
+        setListing(prev => ({ ...prev, likes: (prev.likes || 0) + 1 }));
+        toast.success("You liked this art ❤️");
+      }
+    } catch (error) {
+      toast.error("Failed to like the art");
+    }
+  };
+
+  // Buy Now
   const handleBuyNow = () => {
     navigate(`/dashboard/payment/${id}`, { state: { listing } });
   };
