@@ -19,6 +19,8 @@ import Coverage from "../pages/Coverage/Coverage";
 import UpdateArt from "../pages/Dashboard/MyArts/UpdateArt";
 import MyPurchases from "../components/MyPurchases";
 import Artists from "../pages/Artists/Artists";
+import Artist from "../pages/Artists/Artist";
+import ArtistDetails from "../pages/Artists/ArtistDetails";
 
 export const router = createBrowserRouter([
   {
@@ -27,15 +29,23 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "/gallery", element: <ArtworksGallery /> },
-      { path: "/artists", element: <HomeExtras /> },
       { path: "/category-filtered-product/:categoryName", element: <CategoryFilteredProducts /> },
       { path: "/signup", element: <Signup /> },
       { path: "/signin", element: <Signin /> },
       { path: "/artist", 
         element: (
+          <PrivateRoute><Artist></Artist></PrivateRoute> 
+        )
+      },
+       { path: "/artists", 
+        element: (
           <PrivateRoute><Artists></Artists></PrivateRoute> 
         )
       },
+      {
+  path: "/artists/:id",
+  element: <PrivateRoute><ArtistDetails></ArtistDetails></PrivateRoute> 
+},
       {
         path: "/add-listing",
         element: (
