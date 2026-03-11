@@ -7,6 +7,7 @@ import { IoEyeOff } from "react-icons/io5";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../context/AuthContext";
+import useAxiosSecure from "../hooks/useAxiosSecure";
 
 const Signup = () => {
 
@@ -21,6 +22,7 @@ const Signup = () => {
   } = useContext(AuthContext);
 
   const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
 
   // password validation
   const validatePassword = (password) => {
@@ -54,6 +56,10 @@ const Signup = () => {
   };
 
 
+  // ============================
+  // Email Password Signup
+  // ============================
+
   const handleSignup = async (e) => {
 
     e.preventDefault();
@@ -77,19 +83,34 @@ const Signup = () => {
       const formData = new FormData();
       formData.append("image", image);
 
-      const image_API_URL = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`;
+      const image_API_URL =
+        `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`;
 
       const imgRes = await axios.post(image_API_URL, formData);
-
       const photoURL = imgRes.data.data.url;
 
-      // firebase signup
+      // create firebase user
       const res = await createUserWithEmailAndPasswordFunc(email, password);
 
       // update profile
       await updateProfileFunc(name, photoURL);
 
-      setUser(res.user);
+      const user = res.user;
+
+      // save user in database
+      const userInfo = {
+        email: user.email,
+        name: name,
+        photoURL: photoURL
+      };
+
+      const dbRes = await axiosSecure.post("/users", userInfo);
+
+      if (dbRes.data.insertedId) {
+        console.log("User saved in DB");
+      }
+
+      setUser(user);
 
       toast.success("Signup Successful 🎉");
 
@@ -108,6 +129,10 @@ const Signup = () => {
   };
 
 
+  // ============================
+  // Google Signup
+  // ============================
+
   const handleGoogleSignup = async () => {
 
     setLoadingBtn(true);
@@ -115,8 +140,22 @@ const Signup = () => {
     try {
 
       const res = await signInWithGoogleFunc();
+      const user = res.user;
 
-      setUser(res.user);
+      const userInfo = {
+        email: user.email,
+        name: user.displayName,
+        photoURL: user.photoURL
+      };
+
+      // save user to DB
+      const dbRes = await axiosSecure.post("/users", userInfo);
+
+      if (dbRes.data.insertedId) {
+        console.log("Google user saved");
+      }
+
+      setUser(user);
 
       toast.success("Signed in with Google");
 
@@ -154,9 +193,7 @@ const Signup = () => {
             {/* Name */}
 
             <div>
-
               <label className="text-sm">Name</label>
-
               <input
                 type="text"
                 name="name"
@@ -164,16 +201,13 @@ const Signup = () => {
                 className="input input-bordered w-full"
                 placeholder="Artist Name"
               />
-
             </div>
 
 
             {/* Email */}
 
             <div>
-
               <label className="text-sm">Email</label>
-
               <input
                 type="email"
                 name="email"
@@ -181,14 +215,12 @@ const Signup = () => {
                 className="input input-bordered w-full"
                 placeholder="you@example.com"
               />
-
             </div>
 
 
             {/* Password */}
 
             <div className="relative">
-
               <label className="text-sm">Password</label>
 
               <input
@@ -203,9 +235,7 @@ const Signup = () => {
                 onClick={() => setShow(!show)}
                 className="absolute right-3 top-9 cursor-pointer"
               >
-
                 {show ? <FaEye size={18} /> : <IoEyeOff size={18} />}
-
               </span>
 
             </div>
@@ -214,16 +244,13 @@ const Signup = () => {
             {/* Photo */}
 
             <div>
-
               <label className="text-sm">Photo</label>
-
               <input
                 type="file"
                 name="photo"
                 required
                 className="file-input w-full"
               />
-
             </div>
 
 
@@ -247,11 +274,9 @@ const Signup = () => {
             {/* Divider */}
 
             <div className="flex items-center justify-center gap-2">
-
               <div className="h-px w-16 bg-gray-300"></div>
               <span className="text-sm text-gray-500">or</span>
               <div className="h-px w-16 bg-gray-300"></div>
-
             </div>
 
 

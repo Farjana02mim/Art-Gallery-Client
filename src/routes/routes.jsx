@@ -18,6 +18,7 @@ import PaymentSuccess from "../pages/Dashboard/Payment/PaymentSuccess";
 import Coverage from "../pages/Coverage/Coverage";
 import UpdateArt from "../pages/Dashboard/MyArts/UpdateArt";
 import MyPurchases from "../components/MyPurchases";
+import Artists from "../pages/Artists/Artists";
 
 export const router = createBrowserRouter([
   {
@@ -30,6 +31,11 @@ export const router = createBrowserRouter([
       { path: "/category-filtered-product/:categoryName", element: <CategoryFilteredProducts /> },
       { path: "/signup", element: <Signup /> },
       { path: "/signin", element: <Signin /> },
+      { path: "/artist", 
+        element: (
+          <PrivateRoute><Artists></Artists></PrivateRoute> 
+        )
+      },
       {
         path: "/add-listing",
         element: (
@@ -51,14 +57,7 @@ export const router = createBrowserRouter([
         Component: Coverage,
         loader: () => fetch('/serviceCenters.json').then(res=>res.json())
       },
-      //     {
-      //   path: "dashboard",
-      //   element: (
-      //     <PrivateRoute>
-      //       <DashboardLayout />
-      //     </PrivateRoute>
-      //   ),
-      // },
+      
     ],
   },
 

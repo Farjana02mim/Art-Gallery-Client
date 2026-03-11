@@ -51,13 +51,13 @@ const Navbar = () => {
           <li>
             <MyLink to="/gallery">Gallery</MyLink>
           </li>
-          <li><MyLink to="/artists">Artists</MyLink></li>
           <li><MyLink to="/coverage">Coverage</MyLink></li>
           {user && (
             <>
               <li>
                 <MyLink to="/add-listing">Add Artwork</MyLink>
               </li>
+              <li><MyLink to="/artists">Artists</MyLink></li>
               <li><MyLink to="/dashboard/my-arts">My Arts</MyLink></li>
               <li>
                 <MyLink to="/dashboard/my-purchases">My Purchases</MyLink>
