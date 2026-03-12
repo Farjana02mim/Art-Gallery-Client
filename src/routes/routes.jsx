@@ -21,6 +21,7 @@ import MyPurchases from "../components/MyPurchases";
 import Artists from "../pages/Artists/Artists";
 import Artist from "../pages/Artists/Artist";
 import ArtistDetails from "../pages/Artists/ArtistDetails";
+import ApproveArtists from "../pages/Dashboard/ApproveArtists/ApproveArtists";
 
 export const router = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ export const router = createBrowserRouter([
     {
       path: "payment-cancelled",
       Component: PaymentCancelled
+    },
+    {
+      path: "approve-artists",
+      Component: ApproveArtists
     }
   ]
 },

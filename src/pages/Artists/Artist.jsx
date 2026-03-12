@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 
 const Artist = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, reset } = useForm();
   const { user } = useAuth() || {};
   const axiosSecure = useAxiosSecure();
   const navigate = useNavigate();
@@ -20,8 +20,8 @@ const Artist = () => {
     try {
       let imageURL = "";
 
-      // যদি file upload করা হয়
-      if (data.image[0]) {
+      // ফাইল আপলোড
+      if (data.image && data.image[0]) {
         const formData = new FormData();
         formData.append("image", data.image[0]);
 
@@ -33,15 +33,20 @@ const Artist = () => {
         imageURL = imgRes.data.data.url;
       }
 
+      // Artist object তৈরি
       const artistInfo = {
-        ...data,
-        name: user?.displayName,
-        email: user?.email,
-        image: imageURL, // final image URL
+        name: data.name || user?.displayName || "",
+        email: data.email || user?.email || "",
+        title: data.title || "",
+        experience: data.experience || "",
+        portfolio: data.portfolio || "",
+        bio: data.bio || "",
+        image: imageURL,
         status: "pending",
         created_at: new Date(),
       };
 
+      // Backend POST
       const res = await axiosSecure.post("/artists", artistInfo);
 
       if (res.data.insertedId) {
@@ -51,17 +56,23 @@ const Artist = () => {
           text: "Your artist request is pending approval",
         });
 
+        reset(); // ফর্ম ক্লিয়ার করা
         navigate("/");
       }
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting artist:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Submission Failed",
+        text: "Something went wrong. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto p-4">
       <h2 className="text-5xl font-bold mb-8 text-center">Be An Artist</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
@@ -69,7 +80,7 @@ const Artist = () => {
         {/* Name */}
         <input
           {...register("name")}
-          defaultValue={user?.displayName}
+          defaultValue={user?.displayName || ""}
           className="input input-bordered w-full"
           placeholder="Artist Name"
         />
@@ -77,7 +88,7 @@ const Artist = () => {
         {/* Email */}
         <input
           {...register("email")}
-          defaultValue={user?.email}
+          defaultValue={user?.email || ""}
           className="input input-bordered w-full"
           placeholder="Email"
         />

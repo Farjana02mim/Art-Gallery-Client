@@ -6,7 +6,7 @@ const Artists = () => {
 
   useEffect(() => {
     // API থেকে latest approved artists fetch
-    fetch("http://localhost:3000/artists?status=pending") // approved artist
+    fetch("http://localhost:3000/artists?status=approved") // approved artist
       .then((res) => res.json())
       .then((data) => setArtists(data))
       .catch((err) => console.error("Failed to fetch artists:", err));
