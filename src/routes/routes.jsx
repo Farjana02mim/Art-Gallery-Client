@@ -22,6 +22,7 @@ import Artists from "../pages/Artists/Artists";
 import Artist from "../pages/Artists/Artist";
 import ArtistDetails from "../pages/Artists/ArtistDetails";
 import ApproveArtists from "../pages/Dashboard/ApproveArtists/ApproveArtists";
+import UsersManagement from "../pages/Dashboard/UsersManagement/UsersManagement";
 
 export const router = createBrowserRouter([
   {
@@ -107,6 +108,10 @@ export const router = createBrowserRouter([
     {
       path: "approve-artists",
       Component: ApproveArtists
+    },
+    {
+      path: "users-management",
+      Component: UsersManagement
     }
   ]
 },

@@ -19,28 +19,31 @@ const ApproveArtists = () => {
   }, []);
 
   // Approve artist
-  const handleApproval = (artist) => {
-    axios
-      .patch(`http://localhost:3000/artists/approve/${artist._id}`)
-      .then((res) => {
-        Swal.fire({
-          position: "top-end",
-          title: "Artist approved successfully ✅",
-          icon: "success",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        fetchArtists(); // refresh list
-      })
-      .catch((err) => {
-        console.error(err);
-        Swal.fire({
-          icon: "error",
-          title: "Approval failed",
-          text: err.response?.data?.message || err.message,
-        });
+const handleApproval = (artist) => {
+  axios
+    .patch(`http://localhost:3000/artists/approve/${artist._id}`, {
+      email: artist.email,
+    })
+    .then((res) => {
+      Swal.fire({
+        position: "top-end",
+        title: "Artist approved successfully ✅",
+        icon: "success",
+        timer: 2000,
+        showConfirmButton: false,
       });
-  };
+
+      fetchArtists();
+    })
+    .catch((err) => {
+      console.error(err);
+      Swal.fire({
+        icon: "error",
+        title: "Approval failed",
+        text: err.response?.data?.message || err.message,
+      });
+    });
+};
 
   // Reject artist
   const handleRejection = (artist) => {

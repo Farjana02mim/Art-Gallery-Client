@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router';
-import { FaPaintBrush, FaUserCheck, FaHome, FaCog } from "react-icons/fa";
+import { FaPaintBrush, FaUserCheck, FaHome, FaCog, FaUsers } from "react-icons/fa";
 
 const DashboardLayout = () => {
 
@@ -13,6 +13,7 @@ const DashboardLayout = () => {
     { to: "/", label: "Homepage", icon: <FaHome />, tooltip: "Homepage" },
     { to: "/dashboard/my-arts", label: "My Arts", icon: <FaPaintBrush />, tooltip: "My Arts" },
     { to: "/dashboard/approve-artists", label: "Approve Artists", icon: <FaUserCheck />, tooltip: "Approve Artists" },
+    { to: "/dashboard/users-management", label: "Users Management", icon: <FaUsers />, tooltip: "Users Management" },
     { to: "/dashboard/settings", label: "Settings", icon: <FaCog />, tooltip: "Settings" },
   ];
 
