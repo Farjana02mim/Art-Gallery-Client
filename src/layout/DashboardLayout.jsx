@@ -5,6 +5,7 @@ import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
   const { role } = useRole(); // dynamic role from auth/backend
+  //console.log(role)
 
   const menuItems = [
     { to: "/", label: "Homepage", icon: <FaHome /> },
