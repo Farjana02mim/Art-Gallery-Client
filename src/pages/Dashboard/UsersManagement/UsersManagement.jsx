@@ -172,7 +172,7 @@ const UsersManagement = () => {
         <table className="table">
 
           <thead>
-            <tr>
+            <tr className='text-black'>
               <th>#</th>
               <th>Name</th>
               <th>Email</th>
