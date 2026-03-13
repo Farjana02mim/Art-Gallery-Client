@@ -1,34 +1,55 @@
-import axios from "axios"
-import  useAuth from "./useAuth"  // ✅ named import
+import axios from "axios";
+import useAuth from "./useAuth";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
+
+const axiosSecure = axios.create({
+  baseURL: import.meta.env.VITE_SERVER_URL || "http://localhost:3000",
+});
 
 const useAxiosSecure = () => {
-  const { logOut } = useAuth() || {} // optional chaining দিয়ে safe
+  const { signOut } = useAuth() || {};
+  const navigate = useNavigate();
 
-  const axiosSecure = axios.create({
-    baseURL: import.meta.env.VITE_SERVER_URL || "http://localhost:3000",
-  })
+  useEffect(() => {
 
-  axiosSecure.interceptors.request.use(
-    (config) => {
-      const token = localStorage.getItem("access-token")
-      if (token) config.headers.Authorization = `Bearer ${token}`
-      return config
-    },
-    (error) => Promise.reject(error)
-  )
+    // ===== Request Interceptor =====
+    const requestInterceptor = axiosSecure.interceptors.request.use(
+      (config) => {
+        const token = localStorage.getItem("access-token");
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
 
-  axiosSecure.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if ((error.response?.status === 401 || error.response?.status === 403) && logOut) {
-        await logOut()
-        localStorage.removeItem("access-token")
+    // ===== Response Interceptor =====
+    const responseInterceptor = axiosSecure.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (
+          (error.response?.status === 401 || error.response?.status === 403) &&
+          signOut
+        ) {
+          await signOut();
+          localStorage.removeItem("access-token");
+          navigate("/login");
+        }
+        return Promise.reject(error);
       }
-      return Promise.reject(error)
-    }
-  )
+    );
 
-  return axiosSecure
-}
+    // ===== Cleanup on unmount =====
+    return () => {
+      axiosSecure.interceptors.request.eject(requestInterceptor);
+      axiosSecure.interceptors.response.eject(responseInterceptor);
+    };
 
-export default useAxiosSecure
+  }, [signOut, navigate]);
+
+  return axiosSecure;
+};
+
+export default useAxiosSecure;

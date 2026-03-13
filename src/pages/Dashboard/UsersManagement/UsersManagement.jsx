@@ -26,7 +26,7 @@ const UsersManagement = () => {
 
     Swal.fire({
       title: "Make Admin?",
-      text: `${user.displayName} will become Admin`,
+      text: `${user.name} will become Admin`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, Make Admin"

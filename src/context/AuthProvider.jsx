@@ -18,7 +18,6 @@ const googleProvider = new GoogleAuthProvider();
 const githubProvider = new GithubAuthProvider();
 
 const AuthProvider = ({ children }) => {
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -57,9 +56,10 @@ const AuthProvider = ({ children }) => {
   };
 
   // Logout
-  const signoutUserFunc = () => {
+  const signoutUserFunc = async () => {
     setLoading(true);
-    return signOut(auth);
+    await signOut(auth);
+    localStorage.removeItem("access-token"); // remove token on logout
   };
 
   // 🔑 Forgot Password
@@ -82,17 +82,22 @@ const AuthProvider = ({ children }) => {
     updateProfileFunc,
   };
 
-  // User observer
+  // User observer + token save
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currUser) => {
       setUser(currUser);
+      if (currUser) {
+        const token = await currUser.getIdToken(); // 🔑 Firebase ID token
+        localStorage.setItem("access-token", token); // save token
+      } else {
+        localStorage.removeItem("access-token");
+      }
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
 
-  // loading spinner optional
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
