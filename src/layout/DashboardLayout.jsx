@@ -1,21 +1,53 @@
 import React from "react";
-import { NavLink, Outlet, Link } from "react-router-dom";
-import { FaPaintBrush, FaUserCheck, FaHome, FaCog, FaUsers } from "react-icons/fa";
+import { NavLink, Outlet } from "react-router-dom";
+import {
+  FaPaintBrush,
+  FaUserCheck,
+  FaHome,
+  FaCog,
+  FaUsers,
+  FaUser,
+  FaShoppingCart,
+  FaHeart,
+  FaPlus,
+  FaChartBar
+} from "react-icons/fa";
 import useRole from "../hooks/useRole";
 
 const DashboardLayout = () => {
-  const { role } = useRole(); // dynamic role from auth/backend
-  //console.log(role)
+  const { role } = useRole();
 
   const menuItems = [
     { to: "/", label: "Homepage", icon: <FaHome /> },
-    { to: "/dashboard/my-arts", label: "My Arts", icon: <FaPaintBrush /> },
 
-    // Admin-only links
+    // Common
+    { to: "/dashboard/profile", label: "My Profile", icon: <FaUser /> },
+
+    // User Links
+    ...(role === "user"
+      ? [
+          { to: "/dashboard/my-purchases", label: "My Purchases", icon: <FaShoppingCart /> },
+          { to: "/dashboard/favorites", label: "My Favorites", icon: <FaHeart /> },
+        ]
+      : []),
+
+    // Artist Links
+    ...(role === "artist"
+      ? [
+          { to: "/dashboard/add-listing", label: "Add Art", icon: <FaPlus /> },
+          { to: "/dashboard/my-arts", label: "My Arts", icon: <FaPaintBrush /> },
+          { to: "/dashboard/update-art/:id", label: "Update Arts", icon: <FaPaintBrush /> },
+          { to: "/dashboard/my-sales", label: "My Sales", icon: <FaChartBar /> },
+        ]
+      : []),
+
+    // Admin Links
     ...(role === "admin"
       ? [
           { to: "/dashboard/approve-artists", label: "Approve Artists", icon: <FaUserCheck /> },
           { to: "/dashboard/users-management", label: "Users Management", icon: <FaUsers /> },
+          { to: "/dashboard/manage-arts", label: "Manage Arts", icon: <FaPaintBrush /> },
+          { to: "/dashboard/statistics", label: "Statistics", icon: <FaChartBar /> },
         ]
       : []),
 
@@ -33,10 +65,8 @@ const DashboardLayout = () => {
 
       {/* Main Content */}
       <div className="drawer-content flex flex-col h-screen">
-        {/* Navbar */}
         <nav className="navbar w-full shadow px-4 flex-shrink-0 bg-white text-gray-800">
           <label htmlFor="my-drawer-4" className="btn btn-square btn-ghost lg:hidden">
-            {/* Hamburger icon */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -52,7 +82,6 @@ const DashboardLayout = () => {
           <div className="text-lg font-semibold">Art Gallery Dashboard</div>
         </nav>
 
-        {/* Page Content */}
         <div className="flex-1 overflow-y-auto p-6 text-gray-800">
           <Outlet />
         </div>

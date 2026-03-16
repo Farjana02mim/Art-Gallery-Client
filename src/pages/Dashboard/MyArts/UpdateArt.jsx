@@ -10,7 +10,7 @@ const UpdateArt = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [art, setArt] = useState({});
+  const [art, setArt] = useState(null);
   const [form, setForm] = useState({
     title: "",
     category: "Paintings",
@@ -21,13 +21,24 @@ const UpdateArt = () => {
     imageUrl: "",
   });
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch art details
+  // ================= Fetch Art Details =================
   useEffect(() => {
-    fetch(`http://localhost:3000/listing/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchArt = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/listing/${id}`);
+        if (!res.ok) throw new Error("Art not found");
+
+        const data = await res.json();
+
+        // Ownership check
+        if (data.email !== user.email) {
+          setError("You are not authorized to edit this art.");
+          return;
+        }
+
         setArt(data);
         setForm({
           title: data.title || "",
@@ -39,10 +50,18 @@ const UpdateArt = () => {
           imageUrl: data.image || "",
         });
         setImagePreview(data.image || null);
-      });
-  }, [id]);
+      } catch (err) {
+        console.error(err);
+        setError(err.message || "Failed to load art");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Handle form changes
+    fetchArt();
+  }, [id, user.email]);
+
+  // ================= Form Handlers =================
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
     if (type === "file") {
@@ -53,7 +72,6 @@ const UpdateArt = () => {
     }
   };
 
-  // Handle update
   const handleUpdate = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -61,7 +79,6 @@ const UpdateArt = () => {
     try {
       let imageUrl = form.imageUrl;
 
-      // Upload new image if file selected
       if (form.imageFile) {
         const formData = new FormData();
         formData.append("image", form.imageFile);
@@ -103,6 +120,37 @@ const UpdateArt = () => {
     }
   };
 
+  // ================= Loading Skeleton =================
+  if (loading) {
+    return (
+      <div className="w-10/12 md:w-8/12 mx-auto py-10 space-y-4">
+        <div className="animate-pulse bg-gray-300 dark:bg-gray-700 h-10 w-1/2 rounded mx-auto mb-6"></div>
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-8 rounded"></div>
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-8 rounded"></div>
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-8 rounded"></div>
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-40 rounded"></div>
+        <div className="animate-pulse bg-gray-200 dark:bg-gray-800 h-10 w-full rounded mt-4"></div>
+      </div>
+    );
+  }
+
+  // ================= Error State =================
+  if (error) {
+    return (
+      <div className="text-center mt-20 text-red-600 text-xl">
+        {error}
+        <br />
+        <button
+          onClick={() => navigate("/dashboard/my-arts")}
+          className="btn btn-primary mt-4"
+        >
+          Back to My Arts
+        </button>
+      </div>
+    );
+  }
+
+  // ================= Form Render =================
   return (
     <div className="w-10/12 md:w-8/12 mx-auto py-10 bg-gray-100 dark:bg-gray-900 rounded-xl shadow-lg p-6">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -111,7 +159,6 @@ const UpdateArt = () => {
       </h2>
 
       <form onSubmit={handleUpdate} className="space-y-4">
-        {/* Title */}
         <input
           name="title"
           value={form.title}
@@ -120,8 +167,6 @@ const UpdateArt = () => {
           placeholder="Title"
           required
         />
-
-        {/* Category */}
         <select
           name="category"
           value={form.category}
@@ -133,8 +178,6 @@ const UpdateArt = () => {
           <option value="Photography">Photography</option>
           <option value="Digital Art">Digital Art</option>
         </select>
-
-        {/* Price */}
         <input
           name="price"
           value={form.price}
@@ -144,8 +187,6 @@ const UpdateArt = () => {
           placeholder="Price"
           required
         />
-
-        {/* Location */}
         <input
           name="location"
           value={form.location}
@@ -153,8 +194,6 @@ const UpdateArt = () => {
           className="input input-bordered w-full bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-yellow-50"
           placeholder="Location"
         />
-
-        {/* Description */}
         <textarea
           name="description"
           value={form.description}
@@ -163,8 +202,6 @@ const UpdateArt = () => {
           className="textarea textarea-bordered w-full bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-yellow-50"
           placeholder="Description"
         />
-
-        {/* Image Upload + Preview */}
         <div className="flex flex-col md:flex-row items-start gap-4">
           <input
             type="file"
@@ -181,8 +218,6 @@ const UpdateArt = () => {
             />
           )}
         </div>
-
-        {/* Submit */}
         <button
           type="submit"
           disabled={loading}
