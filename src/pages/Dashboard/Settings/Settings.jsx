@@ -1,46 +1,101 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
+import axios from "axios";
+import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import { auth } from "../../../firebase/firebase.init"; // make sure your firebase is initialized
 
 const Settings = () => {
-  const { user, token } = useContext(AuthContext); // assume token is stored here for FB auth
-  const [profile, setProfile] = useState({
-    name: "",
-    email: "",
-    bio: "",
-  });
+  const { user } = useContext(AuthContext);
+
+  const [tab, setTab] = useState("profile");
+  const [role, setRole] = useState("");
+
+  const [profile, setProfile] = useState({ name: "", email: "", bio: "" });
   const [artist, setArtist] = useState({
     title: "",
     experience: "",
-    portfolio: "",
-    bio: "",
     image: "",
+    imageFile: null,
   });
-  const [loading, setLoading] = useState(true);
+
+  const [preview, setPreview] = useState("");
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
 
-  // Fetch profile from backend
+  // For security tab
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+
+  // Helper to get fresh token
+  const getToken = async () => {
+    if (!user) return null;
+    return await user.getIdToken();
+  };
+
+  // =========================
+  // Fetch Profile
+  // =========================
   useEffect(() => {
-    if (!user?.email) return;
+    if (!user) return;
 
-    fetch(`http://localhost:3000/profile`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setProfile({ ...profile, ...data.user });
-        if (data.artist) setArtist(data.artist);
-        setLoading(false);
-      })
-      .catch((err) => {
+    const fetchProfile = async () => {
+      setLoading(true);
+      try {
+        const token = await getToken();
+        const res = await fetch(`http://localhost:3000/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        if (res.status === 401) {
+          setMessage("Unauthorized! Please login again.");
+          return;
+        }
+
+        const data = await res.json();
+        setProfile(data.user || {});
+        setArtist(data.artist || {});
+        setRole(data.user?.role || "");
+      } catch (err) {
         console.error(err);
+        setMessage("Failed to load profile");
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProfile();
   }, [user]);
 
-  const handleUserUpdate = async () => {
+  // =========================
+  // Auto clear message
+  // =========================
+  useEffect(() => {
+    if (message) {
+      const t = setTimeout(() => setMessage(""), 4000);
+      return () => clearTimeout(t);
+    }
+  }, [message]);
+
+  // =========================
+  // Image preview cleanup
+  // =========================
+  useEffect(() => {
+    if (!artist.imageFile) return setPreview("");
+    const objectUrl = URL.createObjectURL(artist.imageFile);
+    setPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [artist.imageFile]);
+
+  // =========================
+  // Update Profile
+  // =========================
+  const updateProfile = async () => {
+    setUpdating(true);
     try {
+      const token = await getToken();
       const res = await fetch(
-        `http://localhost:3000/users/update/${profile._id}`,
+        `http://localhost:3000/users/update/${profile?._id}`,
         {
           method: "PATCH",
           headers: {
@@ -50,127 +105,262 @@ const Settings = () => {
           body: JSON.stringify(profile),
         }
       );
-      const data = await res.json();
-      setMessage("Profile updated successfully!");
+
+      if (!res.ok) {
+        const errMsg = await res.text();
+        setMessage(`Error: ${errMsg}`);
+        return;
+      }
+
+      setMessage("Profile updated!");
     } catch (err) {
       console.error(err);
-      setMessage("Failed to update profile.");
+      setMessage("Update failed");
+    } finally {
+      setUpdating(false);
     }
   };
 
-  const handleArtistUpdate = async () => {
+  // =========================
+  // Update Artist
+  // =========================
+  const updateArtist = async () => {
+    setUpdating(true);
     try {
+      const token = await getToken();
+      let imageURL = artist.image;
+
+      if (artist.imageFile) {
+        const formData = new FormData();
+        formData.append("image", artist.imageFile);
+
+        const res = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
+          formData
+        );
+
+        imageURL = res.data.data.url;
+      }
+
+      const updatedData = { ...artist, image: imageURL };
+      delete updatedData.imageFile;
+
       const res = await fetch(
-        `http://localhost:3000/artists/update/${artist._id}`,
+        `http://localhost:3000/artists/update/${artist?._id}`,
         {
           method: "PATCH",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(artist),
+          body: JSON.stringify(updatedData),
         }
       );
-      const data = await res.json();
-      setMessage("Artist profile updated successfully!");
+
+      if (!res.ok) {
+        const errMsg = await res.text();
+        setMessage(`Error: ${errMsg}`);
+        return;
+      }
+
+      setMessage("Artist updated!");
     } catch (err) {
       console.error(err);
-      setMessage("Failed to update artist profile.");
+      setMessage("Artist update failed");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  // =========================
+  // Update Security (Password)
+  // =========================
+  const updatePasswordHandler = async () => {
+    if (!user) return;
+    if (!currentPassword || !newPassword) {
+      setMessage("Please fill both fields");
+      return;
+    }
+
+    setUpdating(true);
+    try {
+      // Reauthenticate user
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, newPassword);
+      setMessage("Password updated successfully!");
+      setCurrentPassword("");
+      setNewPassword("");
+    } catch (err) {
+      console.error(err);
+      setMessage(err.message || "Password update failed");
+    } finally {
+      setUpdating(false);
     }
   };
 
   if (loading) return <p className="text-center mt-10 text-xl">Loading...</p>;
 
   return (
-    <div className="w-11/12 mx-auto py-10">
-      <h2 className="text-3xl font-bold mb-6 text-center">Settings</h2>
-
-      {message && <p className="text-green-600 mb-4">{message}</p>}
-
-      {/* User Profile */}
-      <div className="mb-8 p-6 border rounded-lg bg-white shadow-sm">
-        <h3 className="text-xl font-semibold mb-4">Profile Settings</h3>
-        <div className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Name"
-            value={profile.name}
-            onChange={(e) => setProfile({ ...profile, name: e.target.value })}
-            className="border p-2 rounded"
-          />
-          <input
-            type="email"
-            value={profile.email}
-            disabled
-            className="border p-2 rounded bg-gray-100 cursor-not-allowed"
-          />
-          <textarea
-            placeholder="Bio"
-            value={profile.bio || ""}
-            onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
-            className="border p-2 rounded"
-          />
-          <button
-            onClick={handleUserUpdate}
-            className="bg-blue-500 text-white px-4 py-2 rounded"
-          >
-            Update Profile
-          </button>
-        </div>
+    <div className="flex w-full min-h-screen">
+      {/* Sidebar */}
+      <div className="w-64 bg-gray-100 text-black p-5 space-y-4">
+        <h2 className="text-xl font-bold">Settings</h2>
+        <br />
+        <button onClick={() => setTab("profile")}>Profile</button>
+        <br />
+        <button onClick={() => setTab("security")}>Security</button>
+        <br />
+        <button onClick={() => setTab("billing")}>Billing</button>
+        <br />
+        {(role === "artist" || role === "admin") && (
+          <button onClick={() => setTab("artist")}>Artist</button>
+        )}
+        {role === "admin" && <button onClick={() => setTab("admin")}>Admin</button>}
       </div>
 
-      {/* Artist Profile */}
-      {user?.role === "artist" && (
-        <div className="mb-8 p-6 border rounded-lg bg-white shadow-sm">
-          <h3 className="text-xl font-semibold mb-4">Artist Profile</h3>
-          <div className="flex flex-col gap-4">
+      {/* Content */}
+      <div className="flex-1 p-10 bg-gray-100">
+        {message && <p className="text-green-600 mb-4">{message}</p>}
+
+        {/* PROFILE */}
+        {tab === "profile" && (
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl mb-4">Profile</h3>
+            <input
+              className="border p-2 w-full mb-3"
+              value={profile.name || ""}
+              onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+              placeholder="Name"
+            />
+            <input
+              className="border p-2 w-full mb-3 bg-gray-100"
+              value={profile.email || ""}
+              disabled
+            />
+            <textarea
+              className="border p-2 w-full mb-3"
+              value={profile.bio || ""}
+              onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+              placeholder="Bio"
+            />
+            <button
+              onClick={updateProfile}
+              className={`px-4 py-2 rounded text-white ${
+                updating ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500"
+              }`}
+              disabled={updating}
+            >
+              {updating ? "Updating..." : "Update"}
+            </button>
+          </div>
+        )}
+
+        {/* SECURITY */}
+        {tab === "security" && (
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl mb-4">Security Settings</h3>
+            <input
+              type="password"
+              placeholder="Current Password"
+              className="border p-2 w-full mb-3"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="New Password"
+              className="border p-2 w-full mb-3"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <button
+              onClick={updatePasswordHandler}
+              className={`px-4 py-2 rounded text-white ${
+                updating ? "bg-gray-500 cursor-not-allowed" : "bg-red-500"
+              }`}
+              disabled={updating}
+            >
+              {updating ? "Updating..." : "Update Password"}
+            </button>
+          </div>
+        )}
+
+        {/* BILLING */}
+        {tab === "billing" && (
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl mb-4">Billing Information</h3>
+            <p>Manage your payment methods and subscriptions here.</p>
             <input
               type="text"
-              placeholder="Title"
-              value={artist.title || ""}
-              onChange={(e) => setArtist({ ...artist, title: e.target.value })}
-              className="border p-2 rounded"
+              placeholder="Card Number"
+              className="border p-2 w-full mb-3"
             />
             <input
               type="text"
+              placeholder="Expiry Date"
+              className="border p-2 w-full mb-3"
+            />
+            <input
+              type="text"
+              placeholder="CVV"
+              className="border p-2 w-full mb-3"
+            />
+            <button className="px-4 py-2 bg-green-500 text-white rounded">
+              Update Billing
+            </button>
+          </div>
+        )}
+
+        {/* ARTIST */}
+        {tab === "artist" && (
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl mb-4">Artist Profile</h3>
+            <input
+              className="border p-2 w-full mb-3"
+              placeholder="Title"
+              value={artist.title || ""}
+              onChange={(e) => setArtist({ ...artist, title: e.target.value })}
+            />
+            <input
+              className="border p-2 w-full mb-3"
               placeholder="Experience"
               value={artist.experience || ""}
               onChange={(e) =>
                 setArtist({ ...artist, experience: e.target.value })
               }
-              className="border p-2 rounded"
             />
             <input
-              type="text"
-              placeholder="Portfolio Link"
-              value={artist.portfolio || ""}
+              type="file"
               onChange={(e) =>
-                setArtist({ ...artist, portfolio: e.target.value })
+                setArtist({ ...artist, imageFile: e.target.files[0] })
               }
-              className="border p-2 rounded"
+              className="mb-3"
             />
-            <textarea
-              placeholder="Bio"
-              value={artist.bio || ""}
-              onChange={(e) => setArtist({ ...artist, bio: e.target.value })}
-              className="border p-2 rounded"
-            />
-            <input
-              type="text"
-              placeholder="Image URL"
-              value={artist.image || ""}
-              onChange={(e) => setArtist({ ...artist, image: e.target.value })}
-              className="border p-2 rounded"
-            />
+            {preview ? (
+              <img src={preview} className="w-24 mb-3" />
+            ) : (
+              artist.image && <img src={artist.image} className="w-24 mb-3" />
+            )}
             <button
-              onClick={handleArtistUpdate}
-              className="bg-green-500 text-white px-4 py-2 rounded"
+              onClick={updateArtist}
+              className={`px-4 py-2 rounded text-white ${
+                updating ? "bg-gray-500 cursor-not-allowed" : "bg-green-500"
+              }`}
+              disabled={updating}
             >
-              Update Artist Profile
+              {updating ? "Updating..." : "Update Artist"}
             </button>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Admin tab can go here if needed */}
+      </div>
     </div>
   );
 };
