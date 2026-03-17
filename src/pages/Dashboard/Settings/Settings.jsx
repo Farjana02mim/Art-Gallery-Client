@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
-import { auth } from "../../../firebase/firebase.init"; // make sure your firebase is initialized
+import { auth } from "../../../firebase/firebase.init";
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
@@ -23,11 +23,14 @@ const Settings = () => {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
 
-  // For security tab
+  // Security
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
 
-  // Helper to get fresh token
+  // Admin Users
+  const [users, setUsers] = useState([]);
+  const [userLoading, setUserLoading] = useState(false);
+
   const getToken = async () => {
     if (!user) return null;
     return await user.getIdToken();
@@ -86,6 +89,33 @@ const Settings = () => {
     setPreview(objectUrl);
     return () => URL.revokeObjectURL(objectUrl);
   }, [artist.imageFile]);
+
+  // =========================
+  // Fetch Users for Admin
+  // =========================
+  useEffect(() => {
+    if (tab !== "admin") return;
+    if (role !== "admin") return;
+
+    const fetchUsers = async () => {
+      setUserLoading(true);
+      try {
+        const token = await getToken();
+        const res = await fetch("http://localhost:3000/users", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        setUsers(data);
+      } catch (err) {
+        console.error(err);
+        setMessage("Failed to load users");
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [tab, role]);
 
   // =========================
   // Update Profile
@@ -184,14 +214,11 @@ const Settings = () => {
 
     setUpdating(true);
     try {
-      // Reauthenticate user
       const credential = EmailAuthProvider.credential(
         user.email,
         currentPassword
       );
       await reauthenticateWithCredential(user, credential);
-
-      // Update password
       await updatePassword(user, newPassword);
       setMessage("Password updated successfully!");
       setCurrentPassword("");
@@ -201,6 +228,26 @@ const Settings = () => {
       setMessage(err.message || "Password update failed");
     } finally {
       setUpdating(false);
+    }
+  };
+
+  // =========================
+  // Admin: Delete User
+  // =========================
+  const deleteUser = async (userId) => {
+    if (!confirm("Are you sure you want to delete this user?")) return;
+    try {
+      const token = await getToken();
+      const res = await fetch(`http://localhost:3000/users/delete/${userId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error("Failed to delete user");
+      setUsers(users.filter((u) => u._id !== userId));
+      setMessage("User deleted!");
+    } catch (err) {
+      console.error(err);
+      setMessage("Delete failed");
     }
   };
 
@@ -218,7 +265,7 @@ const Settings = () => {
         <br />
         <button onClick={() => setTab("billing")}>Billing</button>
         <br />
-        {(role === "artist" || role === "admin") && (
+        {role === "artist" && (
           <button onClick={() => setTab("artist")}>Artist</button>
         )}
         {role === "admin" && <button onClick={() => setTab("admin")}>Admin</button>}
@@ -359,7 +406,51 @@ const Settings = () => {
           </div>
         )}
 
-        {/* Admin tab can go here if needed */}
+        {/* ADMIN */}
+        {tab === "admin" && role === "admin" && (
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl mb-4">Users Management</h3>
+            {userLoading ? (
+              <p>Loading users...</p>
+            ) : users.length === 0 ? (
+              <p>No users found</p>
+            ) : (
+              <table className="w-full border-collapse border">
+                <thead>
+                  <tr className="bg-gray-200">
+                    <th className="border px-2 py-1">Name</th>
+                    <th className="border px-2 py-1">Email</th>
+                    <th className="border px-2 py-1">Role</th>
+                    <th className="border px-2 py-1">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {users.map((u) => (
+                    <tr key={u._id}>
+                      <td className="border px-2 py-1">{u.name}</td>
+                      <td className="border px-2 py-1">{u.email}</td>
+                      <td className="border px-2 py-1">{u.role}</td>
+                      <td className="border px-2 py-1 space-x-2">
+                        <button
+                          onClick={() => alert("Edit functionality can be added")}
+                          className="px-2 py-1 bg-blue-500 text-white rounded"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteUser(u._id)}
+                          className="px-2 py-1 bg-red-500 text-white rounded"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -8,37 +8,29 @@ const MyProfile = () => {
 
   const [profile, setProfile] = useState(null);
   const [editing, setEditing] = useState(false);
-
-  const [formData, setFormData] = useState({
-    name: "",
-    title: "",
-    bio: "",
-    portfolio: "",
-    experience: "",
-  });
+  const [formData, setFormData] = useState({});
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
 
   // fetch profile
   const fetchProfile = async () => {
     try {
       const res = await axiosSecure.get("/profile");
+      const user = res.data.user || {};
+      const artist = res.data.artist || {};
 
-      const user = res.data.user;
-      const artist = res.data.artist;
-
-      const mergedProfile = {
-        ...user,
-        ...artist,
-      };
-
+      const mergedProfile = { ...user, ...artist };
       setProfile(mergedProfile);
 
       setFormData({
-        name: user?.name || "",
-        title: artist?.title || "",
-        bio: artist?.bio || "",
-        portfolio: artist?.portfolio || "",
-        experience: artist?.experience || "",
+        name: mergedProfile.name || "",
+        bio: mergedProfile.bio || "",
+        title: mergedProfile.title || "",
+        portfolio: mergedProfile.portfolio || "",
+        experience: mergedProfile.experience || "",
       });
+
+      setPreview(mergedProfile.photoURL || "");
     } catch (err) {
       console.error(err);
     }
@@ -48,29 +40,48 @@ const MyProfile = () => {
     fetchProfile();
   }, []);
 
-  // handle input
+  // Image preview
+  useEffect(() => {
+    if (!imageFile) return;
+    const objectUrl = URL.createObjectURL(imageFile);
+    setPreview(objectUrl);
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [imageFile]);
+
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // update profile
   const handleUpdate = async () => {
     try {
-      await axiosSecure.patch(`/users/update/${profile._id}`, {
-        name: formData.name,
-        bio: formData.bio,
-      });
+      let updatedPhotoURL = profile.photoURL;
 
+      if (imageFile) {
+        const formDataImg = new FormData();
+        formDataImg.append("image", imageFile);
+
+        const res = await axiosSecure.post(
+          `/upload/profile-image`,
+          formDataImg,
+          { headers: { "Content-Type": "multipart/form-data" } }
+        );
+        updatedPhotoURL = res.data.url;
+      }
+
+      // update user
+      const userUpdate = { name: formData.name, photoURL: updatedPhotoURL };
+      if (formData.bio) userUpdate.bio = formData.bio;
+      await axiosSecure.patch(`/users/update/${profile._id}`, userUpdate);
+
+      // update artist if role=artist
       if (profile.role === "artist") {
-        await axiosSecure.patch(`/artists/update/${profile._id}`, {
-          title: formData.title,
-          bio: formData.bio,
-          portfolio: formData.portfolio,
-          experience: formData.experience,
-        });
+        const artistUpdate = {};
+        if (formData.title) artistUpdate.title = formData.title;
+        if (formData.bio) artistUpdate.bio = formData.bio;
+        if (formData.portfolio) artistUpdate.portfolio = formData.portfolio;
+        if (formData.experience) artistUpdate.experience = formData.experience;
+
+        await axiosSecure.patch(`/artists/update/${profile._id}`, artistUpdate);
       }
 
       Swal.fire({
@@ -81,68 +92,74 @@ const MyProfile = () => {
       });
 
       setEditing(false);
+      setImageFile(null);
       fetchProfile();
     } catch (err) {
       console.error(err);
-      Swal.fire({
-        icon: "error",
-        title: "Update failed",
-      });
+      Swal.fire({ icon: "error", title: "Update failed" });
     }
   };
 
-  if (!profile) return <div className="text-center mt-10">Loading...</div>;
+  if (!profile)
+    return <div className="text-center mt-10">Loading profile...</div>;
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow">
       <h2 className="text-3xl font-bold mb-6">My Profile</h2>
 
       <div className="flex flex-col md:flex-row gap-8">
-
         {/* Avatar */}
         <div className="flex flex-col items-center">
           <img
-            src={profile?.photoURL || "/default-avatar.png"}
-            alt={profile?.name}
+            src={preview || "/default-avatar.png"}
+            alt={profile.name}
             className="w-40 h-40 rounded-full object-cover shadow"
           />
 
+          {editing && (
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setImageFile(e.target.files[0])}
+              className="mt-3"
+            />
+          )}
+
           <span className="mt-3 text-sm text-gray-500 font-semibold">
-            {profile?.role?.toUpperCase()}
+            {profile.role?.toUpperCase()}
           </span>
         </div>
 
         {/* Profile info */}
         <div className="flex-1 space-y-4">
+          {profile.name && (
+            <div>
+              <span className="font-semibold">Name: </span>
+              {editing ? (
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  className="input input-bordered w-full mt-1"
+                />
+              ) : (
+                <span>{profile.name}</span>
+              )}
+            </div>
+          )}
 
-          {/* Name */}
-          <div>
-            <span className="font-semibold">Name: </span>
+          {profile.email && (
+            <div>
+              <span className="font-semibold">Email: </span>
+              <span>{profile.email}</span>
+            </div>
+          )}
 
-            {editing ? (
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="input input-bordered w-full mt-1"
-              />
-            ) : (
-              <span>{profile?.name}</span>
-            )}
-          </div>
-
-          {/* Email */}
-          <div>
-            <span className="font-semibold">Email: </span>
-            <span>{profile?.email}</span>
-          </div>
-
-          {/* Title (artist only) */}
-          {profile?.role === "artist" && (
+          {/* Artist-only fields */}
+          {profile.role === "artist" && profile.title && (
             <div>
               <span className="font-semibold">Title: </span>
-
               {editing ? (
                 <input
                   type="text"
@@ -152,16 +169,14 @@ const MyProfile = () => {
                   className="input input-bordered w-full mt-1"
                 />
               ) : (
-                <span>{profile?.title || "-"}</span>
+                <span>{profile.title}</span>
               )}
             </div>
           )}
 
-          {/* Experience */}
-          {profile?.role === "artist" && (
+          {profile.role === "artist" && profile.experience && (
             <div>
               <span className="font-semibold">Experience: </span>
-
               {editing ? (
                 <input
                   type="number"
@@ -171,16 +186,14 @@ const MyProfile = () => {
                   className="input input-bordered w-full mt-1"
                 />
               ) : (
-                <span>{profile?.experience || "0"} years</span>
+                <span>{profile.experience} years</span>
               )}
             </div>
           )}
 
-          {/* Portfolio */}
-          {profile?.role === "artist" && (
+          {profile.role === "artist" && profile.portfolio && (
             <div>
               <span className="font-semibold">Portfolio: </span>
-
               {editing ? (
                 <input
                   type="text"
@@ -191,55 +204,49 @@ const MyProfile = () => {
                 />
               ) : (
                 <a
-                  href={profile?.portfolio}
+                  href={profile.portfolio}
                   target="_blank"
                   rel="noreferrer"
                   className="text-blue-500 underline"
                 >
-                  {profile?.portfolio || "-"}
+                  {profile.portfolio}
                 </a>
               )}
             </div>
           )}
 
-          {/* Bio */}
-          <div>
-            <span className="font-semibold">Bio: </span>
+          {profile.bio && (
+            <div>
+              <span className="font-semibold">Bio: </span>
+              {editing ? (
+                <textarea
+                  name="bio"
+                  value={formData.bio}
+                  onChange={handleChange}
+                  className="textarea textarea-bordered w-full mt-1"
+                />
+              ) : (
+                <p className="text-gray-600">{profile.bio}</p>
+              )}
+            </div>
+          )}
 
-            {editing ? (
-              <textarea
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                className="textarea textarea-bordered w-full mt-1"
-              />
-            ) : (
-              <p className="text-gray-600">{profile?.bio || "-"}</p>
-            )}
-          </div>
-
-          {/* Joined */}
-          <div>
-            <span className="font-semibold">Joined: </span>
-            <span>
-              {profile?.created_at
-                ? new Date(profile.created_at).toLocaleDateString()
-                : "-"}
-            </span>
-          </div>
+          {profile.created_at && (
+            <div>
+              <span className="font-semibold">Joined: </span>
+              <span>
+                {new Date(profile.created_at).toLocaleDateString()}
+              </span>
+            </div>
+          )}
 
           {/* Buttons */}
           <div className="flex gap-3 pt-4">
-
             {editing ? (
               <>
-                <button
-                  onClick={handleUpdate}
-                  className="btn btn-success"
-                >
+                <button onClick={handleUpdate} className="btn btn-success">
                   Save
                 </button>
-
                 <button
                   onClick={() => setEditing(false)}
                   className="btn btn-warning"
@@ -252,11 +259,9 @@ const MyProfile = () => {
                 onClick={() => setEditing(true)}
                 className="btn btn-primary flex items-center gap-2"
               >
-                <FaEdit />
-                Edit Profile
+                <FaEdit /> Edit Profile
               </button>
             )}
-
           </div>
         </div>
       </div>
