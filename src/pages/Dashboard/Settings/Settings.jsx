@@ -263,12 +263,22 @@ const Settings = () => {
         <br />
         <button onClick={() => setTab("security")}>Security</button>
         <br />
-        <button onClick={() => setTab("billing")}>Billing</button>
-        <br />
+
         {role === "artist" && (
-          <button onClick={() => setTab("artist")}>Artist</button>
+          <>
+            <button onClick={() => setTab("billing")}>Billing</button>
+            <br />
+            <button onClick={() => setTab("artist")}>Artist</button>
+          </>
         )}
-        {role === "admin" && <button onClick={() => setTab("admin")}>Admin</button>}
+
+        {role === "admin" && (
+          <>
+            <button onClick={() => setTab("billing")}>Billing</button>
+            <br />
+            <button onClick={() => setTab("admin")}>Admin</button>
+          </>
+        )}
       </div>
 
       {/* Content */}
@@ -339,7 +349,7 @@ const Settings = () => {
         )}
 
         {/* BILLING */}
-        {tab === "billing" && (
+        {tab === "billing" && (role === "admin" || role === "artist") && (
           <div className="bg-white p-6 rounded shadow">
             <h3 className="text-xl mb-4">Billing Information</h3>
             <p>Manage your payment methods and subscriptions here.</p>

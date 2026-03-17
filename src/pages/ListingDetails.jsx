@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import useAuth from "../hooks/useAuth";
 
 const SERVER_URL = "http://localhost:3000";
 
 const ListingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { token } = useAuth();
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -26,35 +28,85 @@ const ListingDetails = () => {
     }
   };
 
-  useEffect(() => {
-    if (!id) return;
+useEffect(() => {
+  if (!id) return;
 
-    fetchListing();
-
-    // Increase views on load (only here)
-    fetch(`${SERVER_URL}/listing/views/${id}`, { method: "PATCH" })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success && data.views !== undefined) {
-          setListing(prev => prev ? { ...prev, views: data.views } : prev);
-        }
-      })
-      .catch(() => {});
-  }, [id]);
-
-  // Handle Like
-  const handleLike = async () => {
+  const fetchListingAndIncrementViews = async () => {
     try {
-      const res = await fetch(`${SERVER_URL}/listing/like/${id}`, { method: "PATCH" });
+      setLoading(true);
+
+      // 1️⃣ Fetch listing
+      const res = await fetch(`${SERVER_URL}/listing/${id}`);
+      if (!res.ok) throw new Error("Listing not found");
       const data = await res.json();
-      if (data.modifiedCount > 0) {
-        setListing(prev => ({ ...prev, likes: (prev.likes || 0) + 1 }));
-        toast.success("You liked this art ❤️");
+      setListing(data);
+
+      // 2️⃣ Increment views using the exact _id from MongoDB
+      if (data._id) {
+        const viewRes = await fetch(`${SERVER_URL}/listing/views/${data._id}`, {
+          method: "PATCH",
+        });
+        if (viewRes.ok) {
+          const viewData = await viewRes.json();
+          if (viewData.success && viewData.views !== undefined) {
+            setListing(prev => ({ ...prev, views: viewData.views }));
+          }
+        }
       }
     } catch (error) {
-      toast.error("Failed to like the art");
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
+
+  fetchListingAndIncrementViews();
+}, [id]);
+
+  // Handle Like
+const handleLike = async () => {
+  try {
+    // 1️⃣ Like increment
+    const likeRes = await fetch(`${SERVER_URL}/listing/like/${id}`, {
+      method: "PATCH",
+    });
+
+    const likeData = await likeRes.json();
+
+    if (likeData.modifiedCount > 0) {
+      setListing(prev => ({
+        ...prev,
+        likes: (prev.likes || 0) + 1,
+      }));
+    }
+
+    // 🔥 DEBUG (VERY IMPORTANT)
+    //console.log("Token:", token);
+
+    // 2️⃣ Favorite add (FIXED)
+    const favRes = await fetch(`${SERVER_URL}/users/favorite/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // ✅ FIX
+      },
+    });
+
+    // 🔥 DEBUG
+    //console.log("Status:", favRes.status);
+
+    const favData = await favRes.json();
+   // console.log("Fav Data:", favData);
+
+    if (favData.success) {
+      toast.success("Added to favorites 💖");
+    }
+
+  } catch (error) {
+    console.error(error);
+    toast.error("Failed to like or favorite");
+  }
+};
 
   // Buy Now
   const handleBuyNow = () => {

@@ -20,6 +20,7 @@ const githubProvider = new GithubAuthProvider();
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(null);
 
   // Register
   const createUserWithEmailAndPasswordFunc = (email, password) => {
@@ -69,6 +70,7 @@ const AuthProvider = ({ children }) => {
 
   const authInfo = {
     user,
+    token,
     setUser,
     loading,
     setLoading,
@@ -87,11 +89,13 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currUser) => {
       setUser(currUser);
       if (currUser) {
-        const token = await currUser.getIdToken(); // 🔑 Firebase ID token
-        localStorage.setItem("access-token", token); // save token
-      } else {
-        localStorage.removeItem("access-token");
-      }
+  const token = await currUser.getIdToken();
+  setToken(token); // ✅ ADD THIS
+  localStorage.setItem("access-token", token);
+} else {
+  setToken(null); // ✅ ADD THIS
+  localStorage.removeItem("access-token");
+}
       setLoading(false);
     });
 

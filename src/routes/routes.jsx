@@ -47,6 +47,13 @@ export const router = createBrowserRouter([
           <PrivateRoute><Artist></Artist></PrivateRoute> 
         )
       },
+
+      {
+        path: "/listing-details/:id",
+        element: (
+            <PrivateRoute><ListingDetails></ListingDetails></PrivateRoute> 
+        ),
+      },
        { path: "/artists", 
         element: (
           <PrivateRoute><Artists></Artists></PrivateRoute> 
@@ -125,14 +132,6 @@ export const router = createBrowserRouter([
         element: (
           <ArtistRoute>
             <AddListing />
-          </ArtistRoute>
-        ),
-      },
-      {
-        path: "listing-details/:id",
-        element: (
-          <ArtistRoute>
-            <ListingDetails />
           </ArtistRoute>
         ),
       },
