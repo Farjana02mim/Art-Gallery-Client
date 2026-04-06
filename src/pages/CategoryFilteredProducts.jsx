@@ -9,16 +9,24 @@ const CategoryFilteredProducts = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const decodedCategory = decodeURIComponent(categoryName || "");
+
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3000/category/${categoryName}`) // use http, not https
+
+    // ✅ FIX: use /listing API
+    const url =
+      decodedCategory === "All"
+        ? "http://localhost:3000/listing"
+        : `http://localhost:3000/listing?category=${decodedCategory}`;
+
+    fetch(url)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch category items");
         return res.json();
       })
       .then((data) => {
-        if (!Array.isArray(data)) data = []; // ensure it's an array
-        setItems(data);
+        setItems(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
         console.error(err);
@@ -26,14 +34,17 @@ const CategoryFilteredProducts = () => {
         setItems([]);
       })
       .finally(() => setLoading(false));
-  }, [categoryName]);
+  }, [decodedCategory]);
 
   return (
     <div className="w-11/12 mx-auto my-16">
       <ToastContainer position="top-right" autoClose={3000} />
+
       <h1 className="text-3xl font-bold text-center mb-10 text-yellow-400">
         Showing Results for:{" "}
-        <span className="text-yellow-200">{categoryName}</span>
+        <span className="text-yellow-200 capitalize">
+          {decodedCategory}
+        </span>
       </h1>
 
       {loading ? (
@@ -41,11 +52,18 @@ const CategoryFilteredProducts = () => {
           <div className="w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full animate-spin"></div>
         </div>
       ) : items.length === 0 ? (
-        <p className="text-center text-gray-400">No products found.</p>
+        <p className="text-center text-gray-400">
+          No products found.
+        </p>
       ) : (
         <div className="grid md:grid-cols-3 gap-8">
           {items.map((item) =>
-            item ? <Card key={item._id} listing={item} /> : null
+            item ? (
+              <Card
+                key={item._id?.toString() || item.id || Math.random()}
+                listing={item}
+              />
+            ) : null
           )}
         </div>
       )}

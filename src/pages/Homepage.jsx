@@ -11,10 +11,15 @@ import TrendingArts from "../components/TrendingArts";
 const reviewsPromise = fetch('/reviews.json').then(res => res.json());
 
 const categories = [
-  { name: "Paintings", emoji: "🎨", value: "Painting" },
-  { name: "Sculptures", emoji: "🗿", value: "Sculpture" },
+  { name: "All", emoji: "🎨", value: "All" },
+  { name: "Folk", emoji: "🖌️", value: "Folk" },
+  { name: "Liberation War", emoji: "⚔️", value: "Liberation War" },
+  { name: "River", emoji: "🌊", value: "River" },
+  { name: "Flowers", emoji: "🌸", value: "Flowers" },
+  { name: "Sculptures", emoji: "🗿", value: "Sculptures" },
   { name: "Photography", emoji: "📸", value: "Photography" },
-  { name: "Digital Art", emoji: "💻", value: "Digital Art" },
+  { name: "Russian Art", emoji: "🎭", value: "Russian Art" },
+  { name: "African Art", emoji: "🪘", value: "African Art" },
   { name: "Illustration", emoji: "✏️", value: "Illustration" },
 ];
 
@@ -23,39 +28,38 @@ const HomePage = () => {
   const [loading, setLoading] = useState(true);
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [searchTerm, setSearchTerm] = useState("");
+  const [showAllCategories, setShowAllCategories] = useState(false);
   const navigate = useNavigate();
 
-  // Fetch latest 6 artworks
-  useEffect(() => {
-    setLoading(true);
-    fetch("http://localhost:3000/latest-list")
-      .then((res) => res.json())
-      .then((data) => {
-        setListings(Array.isArray(data) ? data : []);
-      })
-      .catch((err) => console.error("Failed to load latest listings:", err))
-      .finally(() => setLoading(false));
-  }, []);
+  // Fetch latest artworks
+useEffect(() => {
+  setLoading(true);
+  fetch("http://localhost:3000/latest-list")  
+    .then((res) => res.json())
+    .then((data) => {
+      setListings(Array.isArray(data) ? data : []);
+    })
+    .catch((err) => console.error("Failed to load latest listings:", err))
+    .finally(() => setLoading(false));
+}, []);
 
-  // Handle category click
   const handleCategoryClick = (category) => {
-    setCategoryFilter(category.value);   // keep active state
-    setSearchTerm("");                    // reset search
+    setCategoryFilter(category.value);
+    setSearchTerm("");
     navigate(`/category-filtered-product/${category.value}`);
   };
 
-  // Filtered listings based on search only (category navigates separately)
   const filteredListings = listings.filter((listing) => {
-    const listingTitle = listing.title || listing.name || "";
-    return listingTitle.toLowerCase().includes(searchTerm.toLowerCase());
+    const title = listing.title || listing.name || "";
+    return title.toLowerCase().includes(searchTerm.toLowerCase());
   });
+
+  const displayedCategories = showAllCategories ? categories : categories.slice(0, 4);
 
   return (
     <div className="space-y-20 min-h-screen">
       {/* Banner */}
-      <section>
-        <Banner />
-      </section>
+      <section><Banner /></section>
 
       {/* Categories */}
       <section className="w-11/12 mx-auto my-12">
@@ -63,7 +67,7 @@ const HomePage = () => {
           Browse by Category
         </h2>
         <div className="grid md:grid-cols-4 gap-6">
-          {categories.map((cat) => (
+          {displayedCategories.map((cat) => (
             <div
               key={cat.name}
               onClick={() => handleCategoryClick(cat)}
@@ -77,6 +81,17 @@ const HomePage = () => {
             </div>
           ))}
         </div>
+
+        {!showAllCategories && categories.length > 4 && (
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowAllCategories(true)}
+              className="px-6 py-2 rounded-lg bg-yellow-400 text-gray-900 font-semibold hover:bg-yellow-500 transition"
+            >
+              See more
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Latest Artworks */}
@@ -118,9 +133,9 @@ const HomePage = () => {
       </section>
 
       {/* Reviews */}
-      <div>
+      <section className="w-11/12 mx-auto">
         <Reviews reviewsPromise={reviewsPromise} />
-      </div>
+      </section>
 
       {/* Extras */}
       <section className="w-11/12 mx-auto">

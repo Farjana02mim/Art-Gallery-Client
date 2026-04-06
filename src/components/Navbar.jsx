@@ -61,7 +61,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="bg-gray-400 dark:bg-gray-800 shadow-lg relative">
+    <div className="bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg relative">
       <MyContainer className="flex items-center justify-between py-3 relative">
 
         {/* Logo */}
