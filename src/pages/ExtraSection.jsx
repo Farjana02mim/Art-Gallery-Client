@@ -19,20 +19,20 @@ const ExtraSection = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
             <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/7tkH8MZc/patrick-tomasso-QMDap1-TAu0g-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Abstract Painting" />
-              <h3 className="text-lg font-semibold mb-1">Abstract Painting</h3>
+              <img src="https://i.ibb.co.com/7tkH8MZc/patrick-tomasso-QMDap1-TAu0g-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Folk Art" />
+              <h3 className="text-lg font-semibold mb-1">Folk Art</h3>
               <p className="text-yellow-300 font-medium">Price: $500</p>
             </div>
 
             <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/G4LnQk8b/frankie-cordoba-f-PYJe-Mm-YWM4-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Modern Sculpture" />
-              <h3 className="text-lg font-semibold mb-1">Modern Sculpture</h3>
+              <img src="https://i.ibb.co.com/G4LnQk8b/frankie-cordoba-f-PYJe-Mm-YWM4-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Sculptures" />
+              <h3 className="text-lg font-semibold mb-1">Sculptures</h3>
               <p className="text-yellow-300 font-medium">Price: $750</p>
             </div>
 
             <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/zHPXMGTx/chris-czermak-Pam-FFHL6f-VY-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Digital Artwork" />
-              <h3 className="text-lg font-semibold mb-1">Digital Artwork</h3>
+              <img src="https://i.ibb.co.com/zHPXMGTx/chris-czermak-Pam-FFHL6f-VY-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Photography" />
+              <h3 className="text-lg font-semibold mb-1">Photography</h3>
               <p className="text-yellow-300 font-medium">Price: $300</p>
             </div>
 

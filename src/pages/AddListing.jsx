@@ -12,7 +12,7 @@ const AddListing = () => {
   const initialForm = {
     title: "",
     name: user?.displayName || "",
-    category: "Paintings",
+    category: "All",
     medium: "",
     dimensions: "",
     year: new Date().getFullYear(),
@@ -104,7 +104,6 @@ const AddListing = () => {
 
       toast.success("Artwork added successfully!");
 
-      // Reset form but keep user info
       setForm({ ...initialForm, name: user.displayName, email: user.email });
       setImagePreview(null);
     } catch (err) {
@@ -125,6 +124,7 @@ const AddListing = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
           <input
             type="text"
             name="title"
@@ -145,22 +145,29 @@ const AddListing = () => {
             required
           />
 
+          {/* ✅ Updated Category */}
           <select
             name="category"
             value={form.category}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
           >
-            <option value="Paintings">Paintings</option>
+            <option value="All">All</option>
+            <option value="Folk">Folk</option>
+            <option value="Liberation War">Liberation War</option>
+            <option value="River">River</option>
+            <option value="Flowers">Flowers</option>
             <option value="Sculptures">Sculptures</option>
             <option value="Photography">Photography</option>
-            <option value="Digital Art">Digital Art</option>
+            <option value="Russian Art">Russian Art</option>
+            <option value="African Art">African Art</option>
+            <option value="Illustration">Illustration</option>
           </select>
 
           <input
             type="text"
             name="medium"
-            placeholder="Medium (e.g., Oil on Canvas)"
+            placeholder="Medium"
             value={form.medium}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
@@ -169,7 +176,7 @@ const AddListing = () => {
           <input
             type="text"
             name="dimensions"
-            placeholder="Dimensions (e.g., 30 x 40 inches)"
+            placeholder="Dimensions"
             value={form.dimensions}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
@@ -178,18 +185,15 @@ const AddListing = () => {
           <input
             type="number"
             name="year"
-            placeholder="Year"
             value={form.year}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-            min="1900"
-            max={new Date().getFullYear()}
           />
 
           <input
             type="number"
             name="price"
-            placeholder="Price (USD)"
+            placeholder="Price"
             value={form.price}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
@@ -198,7 +202,7 @@ const AddListing = () => {
           <input
             type="text"
             name="location"
-            placeholder="Gallery / Location"
+            placeholder="Location"
             value={form.location}
             onChange={handleChange}
             className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
@@ -223,57 +227,19 @@ const AddListing = () => {
             required
           />
 
-          {/* Custom File Upload */}
-          <div className="col-span-full flex flex-col md:flex-row items-start gap-4">
-            <label className="w-full md:w-1/2 cursor-pointer bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50 border border-gray-300 dark:border-gray-600 rounded-lg py-3 px-4 flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-600 transition">
-              <span>{form.imageFile ? form.imageFile.name : "Choose Image"}</span>
-              <input
-                type="file"
-                name="imageFile"
-                accept="image/*"
-                onChange={handleChange}
-                className="hidden"
-                required
-              />
-            </label>
-
-            {imagePreview && (
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="w-full md:w-1/2 h-40 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
-              />
-            )}
-          </div>
-
-          <label className="flex items-center gap-2 col-span-full">
-            <input
-              type="checkbox"
-              name="featured"
-              checked={form.featured}
-              onChange={handleChange}
-            />
-            <span className="text-gray-800 dark:text-yellow-50 font-medium">
-              Featured Artwork
-            </span>
-          </label>
-
           <input
-            type="email"
-            name="email"
-            value={form.email}
-            readOnly
-            className="input input-bordered w-full rounded bg-gray-200 dark:bg-gray-600 text-gray-900 dark:text-yellow-50 col-span-full"
+            type="file"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleChange}
+            className="col-span-full"
+            required
           />
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full py-3 rounded-lg font-semibold text-gray-900 dark:text-gray-800 col-span-full ${
-              loading
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-yellow-400 hover:bg-yellow-500 dark:bg-yellow-500 dark:hover:bg-yellow-600 transition"
-            }`}
+            className="col-span-full btn btn-primary"
           >
             {loading ? "Adding..." : "Add Artwork"}
           </button>

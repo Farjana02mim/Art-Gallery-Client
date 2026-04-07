@@ -13,7 +13,7 @@ const UpdateArt = () => {
   const [art, setArt] = useState(null);
   const [form, setForm] = useState({
     title: "",
-    category: "Paintings",
+    category: "All",
     price: "",
     location: "",
     description: "",
@@ -42,7 +42,7 @@ const UpdateArt = () => {
         setArt(data);
         setForm({
           title: data.title || "",
-          category: data.category || "Paintings",
+          category: data.category || "All",
           price: data.price || "",
           location: data.location || "",
           description: data.description || "",
@@ -167,17 +167,25 @@ const UpdateArt = () => {
           placeholder="Title"
           required
         />
+
         <select
           name="category"
           value={form.category}
           onChange={handleChange}
           className="input input-bordered w-full bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-yellow-50"
         >
-          <option value="Paintings">Paintings</option>
+          <option value="All">All</option>
+          <option value="Folk">Folk</option>
+          <option value="Liberation War">Liberation War</option>
+          <option value="River">River</option>
+          <option value="Flowers">Flowers</option>
           <option value="Sculptures">Sculptures</option>
           <option value="Photography">Photography</option>
-          <option value="Digital Art">Digital Art</option>
+          <option value="Russian Art">Russian Art</option>
+          <option value="African Art">African Art</option>
+          <option value="Illustration">Illustration</option>
         </select>
+
         <input
           name="price"
           value={form.price}
@@ -187,6 +195,7 @@ const UpdateArt = () => {
           placeholder="Price"
           required
         />
+
         <input
           name="location"
           value={form.location}
@@ -194,6 +203,7 @@ const UpdateArt = () => {
           className="input input-bordered w-full bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-yellow-50"
           placeholder="Location"
         />
+
         <textarea
           name="description"
           value={form.description}
@@ -202,6 +212,7 @@ const UpdateArt = () => {
           className="textarea textarea-bordered w-full bg-gray-50 text-gray-900 dark:bg-gray-700 dark:text-yellow-50"
           placeholder="Description"
         />
+
         <div className="flex flex-col md:flex-row items-start gap-4">
           <input
             type="file"
@@ -218,6 +229,7 @@ const UpdateArt = () => {
             />
           )}
         </div>
+
         <button
           type="submit"
           disabled={loading}

@@ -10,7 +10,7 @@ const ArtworksGallery = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const categories = ["All", "Painting", "Sculpture", "Digital Art", "Photography", "Illustration"];
+  const categories = ["All", "Folk", "Sculptures", "Liberation War", "Photography", "Illustration","River", "Flowers", "Russian Art", "African Art"];
 
   useEffect(() => {
     setLoading(true);
