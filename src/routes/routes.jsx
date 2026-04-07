@@ -28,7 +28,7 @@ import ArtistRoute from "./ArtistRoute";
 import MySales from "../pages/Dashboard/MyArts/MySales";
 import Statistics from "../pages/Dashboard/ApproveArtists/Statistics";
 import MyProfile from "../pages/Dashboard/MyProfile/MyProfile";
-import ManageArts from "../pages/Dashboard/ApproveArtists/ManageArts";
+import ManageArtists from "../pages/Dashboard/ApproveArtists/ManageArtists";
 import Settings from "../pages/Dashboard/Settings/Settings"
 import Favorites from "../pages/Favorites/Favorites";
 
@@ -147,8 +147,8 @@ export const router = createBrowserRouter([
       element: <AdminRoute><UsersManagement></UsersManagement></AdminRoute>
     },
     {
-      path: "manage-arts",
-      element: <AdminRoute><ManageArts></ManageArts></AdminRoute>
+      path: "manage-artists",
+      element: <AdminRoute><ManageArtists></ManageArtists></AdminRoute>
     },
     {
       path: "statistics",

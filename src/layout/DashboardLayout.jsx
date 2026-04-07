@@ -46,7 +46,7 @@ const DashboardLayout = () => {
       ? [
           { to: "/dashboard/approve-artists", label: "Approve Artists", icon: <FaUserCheck /> },
           { to: "/dashboard/users-management", label: "Users Management", icon: <FaUsers /> },
-          { to: "/dashboard/manage-arts", label: "Manage Arts", icon: <FaPaintBrush /> },
+          { to: "/dashboard/manage-artists", label: "Manage Artists", icon: <FaPaintBrush /> },
           { to: "/dashboard/statistics", label: "Statistics", icon: <FaChartBar /> },
         ]
       : []),
