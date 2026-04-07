@@ -8,107 +8,103 @@ const ApproveArtists = () => {
   const [artists, setArtists] = useState([]);
   const [selectedArtist, setSelectedArtist] = useState(null);
 
-  // Fetch pending artists
   const fetchArtists = () => {
     axiosSecure
       .get("/artists?status=pending")
       .then((res) => setArtists(res.data))
-      .catch((err) => console.error("Fetch error:", err.response?.data || err));
+      .catch((err) => console.error(err));
   };
 
   useEffect(() => {
     fetchArtists();
   }, []);
 
-  // Approve artist
   const handleApproval = (artist) => {
-    axiosSecure
-      .patch(`/artists/approve/${artist._id}`, { email: artist.email })
+    axiosSecure.patch(`/artists/approve/${artist._id}`, { email: artist.email })
       .then(() => {
-        Swal.fire({
-          icon: "success",
-          title: "Artist Approved",
-          timer: 2000,
-          showConfirmButton: false,
-        });
+        Swal.fire({ icon: "success", title: "Approved", timer: 1500, showConfirmButton: false });
         fetchArtists();
       })
-      .catch((err) => {
-        console.error("Approval error:", err.response?.data || err);
-        Swal.fire({
-          icon: "error",
-          title: "Approval Failed",
-          text: err.response?.data?.message || "Unauthorized",
-        });
+      .catch(() => Swal.fire("Error", "Approval failed", "error"));
+  };
+
+  const handleRejection = (artist) => {
+    axiosSecure.patch(`/artists/reject/${artist._id}`)
+      .then(() => {
+        Swal.fire({ icon: "warning", title: "Rejected", timer: 1500, showConfirmButton: false });
+        fetchArtists();
       });
   };
 
-  // Reject artist
-  const handleRejection = (artist) => {
-    axiosSecure
-      .patch(`/artists/reject/${artist._id}`)
-      .then(() => {
-        Swal.fire({
-          icon: "warning",
-          title: "Artist Rejected",
-          timer: 2000,
-          showConfirmButton: false,
-        });
-        fetchArtists();
-      })
-      .catch((err) => console.error("Rejection error:", err.response?.data || err));
-  };
-
-  // Delete artist
   const handleDeletion = (artist) => {
     Swal.fire({
       title: "Delete Artist?",
+      text: "This action cannot be undone",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#ef4444",
       confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure
-          .delete(`/artists/${artist._id}`)
+        axiosSecure.delete(`/artists/${artist._id}`)
           .then(() => {
             Swal.fire("Deleted!", "", "success");
             fetchArtists();
-          })
-          .catch((err) => console.error("Deletion error:", err.response?.data || err));
+          });
       }
     });
   };
 
   return (
     <div>
-      <h2 className="text-4xl font-bold mb-6">
-        Artists Pending Approval: {artists.length}
-      </h2>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-100">
+          Pending Artists ({artists.length})
+        </h2>
+      </div>
 
-      <div className="overflow-x-auto">
-        <table className="table">
-          <thead>
-            <tr className="text-black">
+      {/* Table */}
+      <div className="overflow-x-auto bg-white dark:bg-gray-800 rounded-xl shadow-md">
+        <table className="table w-full">
+          <thead className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200">
+            <tr>
               <th>#</th>
-              <th>Name</th>
+              <th>Artist</th>
               <th>Email</th>
-              <th>Actions</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
-          <tbody>
+
+          <tbody className="text-gray-700 dark:text-gray-300">
             {artists.map((artist, index) => (
-              <tr key={artist._id}>
+              <tr key={artist._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
+                
+                {/* Index */}
                 <td>{index + 1}</td>
-                <td>{artist.name}</td>
+
+                {/* Artist Info */}
+                <td className="flex items-center gap-3">
+                  <img
+                    src={artist.image || "/default-avatar.png"}
+                    alt={artist.name}
+                    className="w-10 h-10 rounded-full object-cover border"
+                  />
+                  <span className="font-medium">{artist.name}</span>
+                </td>
+
                 <td>{artist.email}</td>
-                <td className="flex gap-2">
-                  {/* View Details */}
+
+                {/* Actions */}
+                <td className="flex justify-center gap-2">
+                  
+                  {/* View */}
                   <button
                     onClick={() => {
                       setSelectedArtist(artist);
                       document.getElementById("artist_modal").showModal();
                     }}
-                    className="btn btn-info btn-sm"
+                    className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
                   >
                     <FaSearch />
                   </button>
@@ -116,7 +112,7 @@ const ApproveArtists = () => {
                   {/* Approve */}
                   <button
                     onClick={() => handleApproval(artist)}
-                    className="btn btn-success btn-sm"
+                    className="btn btn-sm bg-green-500 hover:bg-green-600 text-white"
                   >
                     <FaCheckCircle />
                   </button>
@@ -124,7 +120,7 @@ const ApproveArtists = () => {
                   {/* Reject */}
                   <button
                     onClick={() => handleRejection(artist)}
-                    className="btn btn-warning btn-sm"
+                    className="btn btn-sm bg-yellow-500 hover:bg-yellow-600 text-white"
                   >
                     <FaTimesCircle />
                   </button>
@@ -132,79 +128,95 @@ const ApproveArtists = () => {
                   {/* Delete */}
                   <button
                     onClick={() => handleDeletion(artist)}
-                    className="btn btn-error btn-sm"
+                    className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
                   >
                     <FaTrash />
                   </button>
+
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+
+        {artists.length === 0 && (
+          <div className="text-center py-10 text-gray-500 dark:text-gray-400">
+            No pending artists
+          </div>
+        )}
       </div>
 
-      {/* Artist Details Modal */}
+      {/* MODAL */}
       <dialog id="artist_modal" className="modal">
-        <div className="modal-box max-w-3xl">
-          <h3 className="font-bold text-2xl text-center mb-6">Artist Profile</h3>
+        <div className="modal-box max-w-4xl bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+          
+          <h3 className="text-2xl font-bold text-center mb-6">
+            Artist Profile
+          </h3>
 
           {selectedArtist && (
-            <div className="grid md:grid-cols-2 gap-6 items-center">
-              {/* Left: Artist Image */}
+            <div className="grid md:grid-cols-2 gap-8">
+
+              {/* Image */}
               <div className="flex justify-center">
                 <img
                   src={selectedArtist.image}
                   alt={selectedArtist.name}
-                  className="w-60 h-60 object-cover rounded-xl shadow-lg border"
+                  className="w-64 h-64 object-cover rounded-xl shadow-lg"
                 />
               </div>
 
-              {/* Right: Artist Info */}
+              {/* Info */}
               <div className="space-y-3 text-sm">
-                <div>
-                  <span className="font-semibold">Name:</span> {selectedArtist.name}
-                </div>
-                <div>
-                  <span className="font-semibold">Email:</span> {selectedArtist.email}
-                </div>
-                <div>
-                  <span className="font-semibold">Title:</span> {selectedArtist.title}
-                </div>
-                <div>
-                  <span className="font-semibold">Experience:</span>{" "}
-                  {selectedArtist.experience} Years
-                </div>
-                <div>
+
+                <p><span className="font-semibold">Name:</span> {selectedArtist.name}</p>
+                <p><span className="font-semibold">Email:</span> {selectedArtist.email}</p>
+                <p><span className="font-semibold">Title:</span> {selectedArtist.title}</p>
+                <p><span className="font-semibold">Experience:</span> {selectedArtist.experience} years</p>
+
+                <p>
                   <span className="font-semibold">Portfolio:</span>{" "}
                   <a
                     href={`https://${selectedArtist.portfolio}`}
                     target="_blank"
-                    className="text-blue-500 underline"
+                    rel="noreferrer"
+                    className="text-blue-500 hover:underline"
                   >
                     Visit Website
                   </a>
-                </div>
+                </p>
+
                 <div>
                   <span className="font-semibold">Bio:</span>
-                  <p className="text-gray-600 mt-1">{selectedArtist.bio}</p>
+                  <p className="text-gray-600 dark:text-gray-400 mt-1">
+                    {selectedArtist.bio}
+                  </p>
                 </div>
-                <div>
+
+                <p>
                   <span className="font-semibold">Status:</span>{" "}
-                  <span className="badge badge-warning">{selectedArtist.status}</span>
-                </div>
-                <div>
+                  <span className="px-2 py-1 rounded bg-yellow-200 text-yellow-800 dark:bg-yellow-700 dark:text-white text-xs">
+                    {selectedArtist.status}
+                  </span>
+                </p>
+
+                <p>
                   <span className="font-semibold">Joined:</span>{" "}
                   {new Date(selectedArtist.created_at).toLocaleDateString()}
-                </div>
+                </p>
+
               </div>
             </div>
           )}
 
           <div className="modal-action">
             <form method="dialog">
-              <button className="btn btn-primary">Close</button>
+              <button className="btn bg-gray-800 text-white hover:bg-gray-900">
+                Close
+              </button>
             </form>
           </div>
+
         </div>
       </dialog>
     </div>

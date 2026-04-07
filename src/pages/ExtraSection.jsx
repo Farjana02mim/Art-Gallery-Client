@@ -2,7 +2,7 @@ import React from "react";
 
 const ExtraSection = () => {
   return (
-    <section className="py-12 bg-gray-100 text-yellow-50">
+    <section className="py-12 text-yellow-50">
       <div className="container mx-auto px-4 space-y-12">
 
         {/* Why choose this gallery */}

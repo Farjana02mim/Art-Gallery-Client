@@ -6,55 +6,33 @@ import { auth } from "../../../firebase/firebase.init";
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
-
   const [tab, setTab] = useState("profile");
   const [role, setRole] = useState("");
-
   const [profile, setProfile] = useState({ name: "", email: "", bio: "" });
-  const [artist, setArtist] = useState({
-    title: "",
-    experience: "",
-    image: "",
-    imageFile: null,
-  });
-
+  const [artist, setArtist] = useState({ title: "", experience: "", image: "", imageFile: null });
   const [preview, setPreview] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-
-  // Security
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-
-  // Admin Users
   const [users, setUsers] = useState([]);
   const [userLoading, setUserLoading] = useState(false);
 
-  const getToken = async () => {
-    if (!user) return null;
-    return await user.getIdToken();
-  };
+  const getToken = async () => user ? await user.getIdToken() : null;
 
-  // =========================
   // Fetch Profile
-  // =========================
   useEffect(() => {
     if (!user) return;
-
     const fetchProfile = async () => {
       setLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch(`http://localhost:3000/profile`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
+        const res = await fetch(`http://localhost:3000/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (res.status === 401) {
           setMessage("Unauthorized! Please login again.");
           return;
         }
-
         const data = await res.json();
         setProfile(data.user || {});
         setArtist(data.artist || {});
@@ -66,13 +44,10 @@ const Settings = () => {
         setLoading(false);
       }
     };
-
     fetchProfile();
   }, [user]);
 
-  // =========================
   // Auto clear message
-  // =========================
   useEffect(() => {
     if (message) {
       const t = setTimeout(() => setMessage(""), 4000);
@@ -80,9 +55,7 @@ const Settings = () => {
     }
   }, [message]);
 
-  // =========================
-  // Image preview cleanup
-  // =========================
+  // Image preview
   useEffect(() => {
     if (!artist.imageFile) return setPreview("");
     const objectUrl = URL.createObjectURL(artist.imageFile);
@@ -90,20 +63,14 @@ const Settings = () => {
     return () => URL.revokeObjectURL(objectUrl);
   }, [artist.imageFile]);
 
-  // =========================
   // Fetch Users for Admin
-  // =========================
   useEffect(() => {
-    if (tab !== "admin") return;
-    if (role !== "admin") return;
-
+    if (tab !== "admin" || role !== "admin") return;
     const fetchUsers = async () => {
       setUserLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:3000/users", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await fetch("http://localhost:3000/users", { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
         setUsers(data);
       } catch (err) {
@@ -113,35 +80,24 @@ const Settings = () => {
         setUserLoading(false);
       }
     };
-
     fetchUsers();
   }, [tab, role]);
 
-  // =========================
   // Update Profile
-  // =========================
   const updateProfile = async () => {
     setUpdating(true);
     try {
       const token = await getToken();
-      const res = await fetch(
-        `http://localhost:3000/users/update/${profile?._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(profile),
-        }
-      );
-
+      const res = await fetch(`http://localhost:3000/users/update/${profile?._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(profile),
+      });
       if (!res.ok) {
         const errMsg = await res.text();
         setMessage(`Error: ${errMsg}`);
         return;
       }
-
       setMessage("Profile updated!");
     } catch (err) {
       console.error(err);
@@ -151,48 +107,30 @@ const Settings = () => {
     }
   };
 
-  // =========================
   // Update Artist
-  // =========================
   const updateArtist = async () => {
     setUpdating(true);
     try {
       const token = await getToken();
       let imageURL = artist.image;
-
       if (artist.imageFile) {
         const formData = new FormData();
         formData.append("image", artist.imageFile);
-
-        const res = await axios.post(
-          `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
-          formData
-        );
-
+        const res = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`, formData);
         imageURL = res.data.data.url;
       }
-
       const updatedData = { ...artist, image: imageURL };
       delete updatedData.imageFile;
-
-      const res = await fetch(
-        `http://localhost:3000/artists/update/${artist?._id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(updatedData),
-        }
-      );
-
+      const res = await fetch(`http://localhost:3000/artists/update/${artist?._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify(updatedData),
+      });
       if (!res.ok) {
         const errMsg = await res.text();
         setMessage(`Error: ${errMsg}`);
         return;
       }
-
       setMessage("Artist updated!");
     } catch (err) {
       console.error(err);
@@ -202,22 +140,15 @@ const Settings = () => {
     }
   };
 
-  // =========================
-  // Update Security (Password)
-  // =========================
+  // Update Security
   const updatePasswordHandler = async () => {
-    if (!user) return;
-    if (!currentPassword || !newPassword) {
+    if (!user || !currentPassword || !newPassword) {
       setMessage("Please fill both fields");
       return;
     }
-
     setUpdating(true);
     try {
-      const credential = EmailAuthProvider.credential(
-        user.email,
-        currentPassword
-      );
+      const credential = EmailAuthProvider.credential(user.email, currentPassword);
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPassword);
       setMessage("Password updated successfully!");
@@ -231,9 +162,7 @@ const Settings = () => {
     }
   };
 
-  // =========================
-  // Admin: Delete User
-  // =========================
+  // Admin Delete User
   const deleteUser = async (userId) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
@@ -251,97 +180,124 @@ const Settings = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-10 text-xl">Loading...</p>;
+  if (loading) return <p className="text-center mt-20 text-xl text-gray-500 dark:text-gray-300">Loading...</p>;
 
   return (
-    <div className="flex w-full min-h-screen">
+    <div className="flex w-full min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       {/* Sidebar */}
-      <div className="w-64 bg-gray-100 text-black p-5 space-y-4">
-        <h2 className="text-xl font-bold">Settings</h2>
-        <br />
-        <button onClick={() => setTab("profile")}>Profile</button>
-        <br />
-        <button onClick={() => setTab("security")}>Security</button>
-        <br />
-
-        {role === "artist" && (
-          <>
-            <button onClick={() => setTab("billing")}>Billing</button>
-            <br />
-            <button onClick={() => setTab("artist")}>Artist</button>
-          </>
-        )}
-
-        {role === "admin" && (
-          <>
-            <button onClick={() => setTab("billing")}>Billing</button>
-            <br />
-            <button onClick={() => setTab("admin")}>Admin</button>
-          </>
-        )}
-      </div>
+      <aside className="w-64 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 p-6 space-y-6 shadow-lg">
+        <h2 className="text-2xl font-bold mb-6">Settings</h2>
+        <nav className="flex flex-col space-y-3">
+          <button
+            onClick={() => setTab("profile")}
+            className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+              tab === "profile" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+            }`}
+          >
+            Profile
+          </button>
+          <button
+            onClick={() => setTab("security")}
+            className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+              tab === "security" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+            }`}
+          >
+            Security
+          </button>
+          {(role === "artist" || role === "admin") && (
+            <button
+              onClick={() => setTab("billing")}
+              className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+                tab === "billing" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+              }`}
+            >
+              Billing
+            </button>
+          )}
+          {role === "artist" && (
+            <button
+              onClick={() => setTab("artist")}
+              className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+                tab === "artist" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+              }`}
+            >
+              Artist
+            </button>
+          )}
+          {role === "admin" && (
+            <button
+              onClick={() => setTab("admin")}
+              className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
+                tab === "admin" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+              }`}
+            >
+              Admin
+            </button>
+          )}
+        </nav>
+      </aside>
 
       {/* Content */}
-      <div className="flex-1 p-10 bg-gray-100">
-        {message && <p className="text-green-600 mb-4">{message}</p>}
+      <main className="flex-1 p-10 space-y-6">
+        {message && <p className="text-green-600 dark:text-green-400 font-medium">{message}</p>}
 
         {/* PROFILE */}
         {tab === "profile" && (
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-xl mb-4">Profile</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
+            <h3 className="text-2xl font-semibold">Profile</h3>
             <input
-              className="border p-2 w-full mb-3"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={profile.name || ""}
               onChange={(e) => setProfile({ ...profile, name: e.target.value })}
               placeholder="Name"
             />
             <input
-              className="border p-2 w-full mb-3 bg-gray-100"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-100 dark:bg-gray-700 text-gray-500"
               value={profile.email || ""}
               disabled
             />
             <textarea
-              className="border p-2 w-full mb-3"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={profile.bio || ""}
               onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
               placeholder="Bio"
             />
             <button
               onClick={updateProfile}
-              className={`px-4 py-2 rounded text-white ${
-                updating ? "bg-gray-500 cursor-not-allowed" : "bg-blue-500"
-              }`}
               disabled={updating}
+              className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
+                updating ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500"
+              }`}
             >
-              {updating ? "Updating..." : "Update"}
+              {updating ? "Updating..." : "Update Profile"}
             </button>
           </div>
         )}
 
         {/* SECURITY */}
         {tab === "security" && (
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-xl mb-4">Security Settings</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
+            <h3 className="text-2xl font-semibold">Security Settings</h3>
             <input
               type="password"
               placeholder="Current Password"
-              className="border p-2 w-full mb-3"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
             <input
               type="password"
               placeholder="New Password"
-              className="border p-2 w-full mb-3"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
             <button
               onClick={updatePasswordHandler}
-              className={`px-4 py-2 rounded text-white ${
-                updating ? "bg-gray-500 cursor-not-allowed" : "bg-red-500"
-              }`}
               disabled={updating}
+              className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
+                updating ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-500"
+              }`}
             >
               {updating ? "Updating..." : "Update Password"}
             </button>
@@ -350,66 +306,48 @@ const Settings = () => {
 
         {/* BILLING */}
         {tab === "billing" && (role === "admin" || role === "artist") && (
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-xl mb-4">Billing Information</h3>
-            <p>Manage your payment methods and subscriptions here.</p>
-            <input
-              type="text"
-              placeholder="Card Number"
-              className="border p-2 w-full mb-3"
-            />
-            <input
-              type="text"
-              placeholder="Expiry Date"
-              className="border p-2 w-full mb-3"
-            />
-            <input
-              type="text"
-              placeholder="CVV"
-              className="border p-2 w-full mb-3"
-            />
-            <button className="px-4 py-2 bg-green-500 text-white rounded">
-              Update Billing
-            </button>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
+            <h3 className="text-2xl font-semibold">Billing Information</h3>
+            <p className="text-gray-600 dark:text-gray-300">Manage your payment methods and subscriptions here.</p>
+            <input type="text" placeholder="Card Number" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+            <input type="text" placeholder="Expiry Date" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+            <input type="text" placeholder="CVV" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
+            <button className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition">Update Billing</button>
           </div>
         )}
 
         {/* ARTIST */}
         {tab === "artist" && (
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-xl mb-4">Artist Profile</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
+            <h3 className="text-2xl font-semibold">Artist Profile</h3>
             <input
-              className="border p-2 w-full mb-3"
               placeholder="Title"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={artist.title || ""}
               onChange={(e) => setArtist({ ...artist, title: e.target.value })}
             />
             <input
-              className="border p-2 w-full mb-3"
               placeholder="Experience"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={artist.experience || ""}
-              onChange={(e) =>
-                setArtist({ ...artist, experience: e.target.value })
-              }
+              onChange={(e) => setArtist({ ...artist, experience: e.target.value })}
             />
             <input
               type="file"
-              onChange={(e) =>
-                setArtist({ ...artist, imageFile: e.target.files[0] })
-              }
+              onChange={(e) => setArtist({ ...artist, imageFile: e.target.files[0] })}
               className="mb-3"
             />
             {preview ? (
-              <img src={preview} className="w-24 mb-3" />
+              <img src={preview} className="w-32 h-32 object-cover rounded-lg mb-3" />
             ) : (
-              artist.image && <img src={artist.image} className="w-24 mb-3" />
+              artist.image && <img src={artist.image} className="w-32 h-32 object-cover rounded-lg mb-3" />
             )}
             <button
               onClick={updateArtist}
-              className={`px-4 py-2 rounded text-white ${
-                updating ? "bg-gray-500 cursor-not-allowed" : "bg-green-500"
-              }`}
               disabled={updating}
+              className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
+                updating ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"
+              }`}
             >
               {updating ? "Updating..." : "Update Artist"}
             </button>
@@ -418,50 +356,42 @@ const Settings = () => {
 
         {/* ADMIN */}
         {tab === "admin" && role === "admin" && (
-          <div className="bg-white p-6 rounded shadow">
-            <h3 className="text-xl mb-4">Users Management</h3>
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
+            <h3 className="text-2xl font-semibold">Users Management</h3>
             {userLoading ? (
-              <p>Loading users...</p>
+              <p className="text-gray-500 dark:text-gray-300">Loading users...</p>
             ) : users.length === 0 ? (
-              <p>No users found</p>
+              <p className="text-gray-500 dark:text-gray-300">No users found</p>
             ) : (
-              <table className="w-full border-collapse border">
-                <thead>
-                  <tr className="bg-gray-200">
-                    <th className="border px-2 py-1">Name</th>
-                    <th className="border px-2 py-1">Email</th>
-                    <th className="border px-2 py-1">Role</th>
-                    <th className="border px-2 py-1">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((u) => (
-                    <tr key={u._id}>
-                      <td className="border px-2 py-1">{u.name}</td>
-                      <td className="border px-2 py-1">{u.email}</td>
-                      <td className="border px-2 py-1">{u.role}</td>
-                      <td className="border px-2 py-1 space-x-2">
-                        <button
-                          onClick={() => alert("Edit functionality can be added")}
-                          className="px-2 py-1 bg-blue-500 text-white rounded"
-                        >
-                          Edit
-                        </button>
-                        <button
-                          onClick={() => deleteUser(u._id)}
-                          className="px-2 py-1 bg-red-500 text-white rounded"
-                        >
-                          Delete
-                        </button>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300 dark:border-gray-600 rounded-lg overflow-hidden">
+                  <thead className="bg-gray-200 dark:bg-gray-700">
+                    <tr>
+                      <th className="border px-3 py-2 text-left">Name</th>
+                      <th className="border px-3 py-2 text-left">Email</th>
+                      <th className="border px-3 py-2 text-left">Role</th>
+                      <th className="border px-3 py-2 text-left">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {users.map((u) => (
+                      <tr key={u._id} className="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                        <td className="border px-3 py-2">{u.name}</td>
+                        <td className="border px-3 py-2">{u.email}</td>
+                        <td className="border px-3 py-2">{u.role}</td>
+                        <td className="border px-3 py-2 space-x-2">
+                          <button className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition" onClick={() => alert("Edit functionality can be added")}>Edit</button>
+                          <button className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg transition" onClick={() => deleteUser(u._id)}>Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

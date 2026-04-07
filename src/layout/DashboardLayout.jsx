@@ -10,7 +10,7 @@ import {
   FaShoppingCart,
   FaHeart,
   FaPlus,
-  FaChartBar
+  FaChartBar,
 } from "react-icons/fa";
 import useRole from "../hooks/useRole";
 
@@ -20,10 +20,8 @@ const DashboardLayout = () => {
   const menuItems = [
     { to: "/", label: "Homepage", icon: <FaHome /> },
 
-    // Common
     { to: "/dashboard/profile", label: "My Profile", icon: <FaUser /> },
 
-    // User Links
     ...(role === "user"
       ? [
           { to: "/dashboard/my-purchases", label: "My Purchases", icon: <FaShoppingCart /> },
@@ -31,17 +29,14 @@ const DashboardLayout = () => {
         ]
       : []),
 
-    // Artist Links
     ...(role === "artist"
       ? [
           { to: "/dashboard/add-listing", label: "Add Art", icon: <FaPlus /> },
           { to: "/dashboard/my-arts", label: "My Arts", icon: <FaPaintBrush /> },
-          { to: "/dashboard/update-art/:id", label: "Update Arts", icon: <FaPaintBrush /> },
           { to: "/dashboard/my-sales", label: "My Sales", icon: <FaChartBar /> },
         ]
       : []),
 
-    // Admin Links
     ...(role === "admin"
       ? [
           { to: "/dashboard/approve-artists", label: "Approve Artists", icon: <FaUserCheck /> },
@@ -60,51 +55,79 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="drawer lg:drawer-open h-screen bg-gray-50">
+    <div className="drawer lg:drawer-open min-h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
       <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
 
-      {/* Main Content */}
-      <div className="drawer-content flex flex-col h-screen">
-        <nav className="navbar w-full shadow px-4 flex-shrink-0 bg-white text-gray-800">
-          <label htmlFor="my-drawer-4" className="btn btn-square btn-ghost lg:hidden">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2}
-              stroke="currentColor"
-              className="w-6 h-6"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </label>
+      {/* MAIN CONTENT */}
+      <div className="drawer-content flex flex-col">
 
-          <div className="text-lg font-semibold">Art Gallery Dashboard</div>
+        {/* TOP NAVBAR */}
+        <nav className="sticky top-0 z-40 flex items-center justify-between px-4 py-3 
+          bg-white/70 dark:bg-gray-800/70 backdrop-blur-md 
+          border-b border-gray-200 dark:border-gray-700 shadow-sm">
+
+          <div className="flex items-center gap-3">
+            <label htmlFor="my-drawer-4" className="btn btn-ghost lg:hidden">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2}
+                stroke="currentColor"
+                className="w-6 h-6"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </label>
+
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+              Dashboard
+            </h2>
+          </div>
+
+          {/* Right Side (optional future: profile, notifications) */}
+          <div className="text-sm text-gray-500 dark:text-gray-300">
+            Welcome 👋
+          </div>
         </nav>
 
-        <div className="flex-1 overflow-y-auto p-6 text-gray-800">
+        {/* PAGE CONTENT */}
+        <div className="flex-1 overflow-y-auto p-6 text-gray-800 dark:text-gray-200">
           <Outlet />
         </div>
       </div>
 
-      {/* Sidebar */}
-      <div className="drawer-side h-screen">
+      {/* SIDEBAR */}
+      <div className="drawer-side z-50">
         <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
 
-        <div className="flex flex-col h-full w-64 p-4 space-y-2 bg-gray-50 text-gray-800">
-          <ul className="menu w-full">
+        <div className="w-64 min-h-full p-4 
+          bg-white dark:bg-gray-900 
+          border-r border-gray-200 dark:border-gray-700 
+          shadow-lg">
+
+          {/* Logo / Title */}
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
+            ArtSphere
+          </h2>
+
+          {/* MENU */}
+          <ul className="space-y-1">
             {menuItems.map(({ to, label, icon }) => (
               <li key={to}>
                 <NavLink
                   to={to}
                   onClick={closeDrawer}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 p-2 rounded hover:bg-gray-100 ${
-                      isActive ? "bg-gray-200 font-semibold" : ""
+                    `flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 
+                    ${
+                      isActive
+                        ? "bg-yellow-400 text-gray-900 font-semibold shadow"
+                        : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
                     }`
                   }
                 >
-                  {icon}
+                  <span className="text-lg">{icon}</span>
                   <span>{label}</span>
                 </NavLink>
               </li>

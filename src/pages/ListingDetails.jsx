@@ -120,7 +120,7 @@ const handleLike = async () => {
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-6">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="flex flex-col md:flex-row gap-6 bg-white rounded-xl shadow-md p-6">
+      <div className="flex flex-col md:flex-row gap-6 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
         {/* Image */}
         <img
           src={listing.image}
@@ -131,8 +131,8 @@ const handleLike = async () => {
         {/* Details */}
         <div className="flex-1 flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-bold mb-2">{listing.title}</h1>
-            <p><strong>Artist:</strong> {listing.artistName}</p>
+            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">{listing.title}</h1>
+            <p><strong>Artist:</strong> {listing.name}</p>
             <p><strong>Category:</strong> {listing.category}</p>
             <p><strong>Year:</strong> {listing.year}</p>
             <p className="text-green-600 text-lg font-semibold">${listing.price}</p>
