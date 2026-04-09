@@ -135,7 +135,7 @@ const Login = () => {
                 />
                 <span
                   onClick={() => setShow(!show)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-300"
+                  className="absolute right-3 pt-6 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-300"
                 >
                   {show ? <FaEye size={20} /> : <IoEyeOff size={20} />}
                 </span>

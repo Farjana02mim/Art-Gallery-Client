@@ -162,7 +162,7 @@ const Signup = () => {
               />
               <span
                 onClick={() => setShow(!show)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 transition"
+                className="absolute right-3 pt-6 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 dark:text-gray-300 hover:text-gray-700 dark:hover:text-gray-100 transition"
               >
                 {show ? <FaEye size={20} /> : <IoEyeOff size={20} />}
               </span>

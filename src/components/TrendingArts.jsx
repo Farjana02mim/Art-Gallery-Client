@@ -39,7 +39,7 @@ const TrendingArts = () => {
   const uniqueArtsById = (arr) => Array.from(new Map(arr.map(a => [a._id, a])).values());
 
   return (
-    <div className="space-y-14">
+    <div className="space-y-14 pb-7">
       {[
         { title: "🔥 Top Trending Arts", data: trending },
         { title: "👁 Most Viewed Arts", data: sortedByViews },

@@ -10,7 +10,11 @@ const ArtworksGallery = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const categories = ["All", "Folk", "Sculptures", "Liberation War", "Photography", "Illustration","River", "Flowers", "Russian Art", "African Art"];
+  const categories = [
+    "All", "Folk", "Sculptures", "Liberation War",
+    "Photography", "Illustration", "River",
+    "Flowers", "Russian Art", "African Art"
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -28,14 +32,16 @@ const ArtworksGallery = () => {
     const timeout = setTimeout(() => {
       let temp = [...artworks];
 
-      // Filter by category (case-insensitive)
       if (categoryFilter !== "All") {
-        temp = temp.filter(a => (a.category || "").toLowerCase() === categoryFilter.toLowerCase());
+        temp = temp.filter(
+          (a) =>
+            (a.category || "").toLowerCase() ===
+            categoryFilter.toLowerCase()
+        );
       }
 
-      // Filter by search term (title or name)
       if (searchTerm) {
-        temp = temp.filter(a => {
+        temp = temp.filter((a) => {
           const t = (a.title || a.name || "").toLowerCase();
           return t.includes(searchTerm.toLowerCase());
         });
@@ -48,42 +54,70 @@ const ArtworksGallery = () => {
   }, [searchTerm, categoryFilter, artworks]);
 
   return (
-    <div className="min-h-screen py-10 px-4 md:px-10 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300">
+    <div className="min-h-screen py-12 px-4 md:px-10 
+      bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 
+      dark:from-gray-800 dark:via-gray-850 dark:to-gray-900">
+
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Artworks Gallery</h2>
+      {/* Title */}
+      <h2 className="text-3xl md:text-4xl font-bold 
+        text-gray-800 dark:text-white mb-8 text-center">
+        🎨 Artworks Gallery
+      </h2>
 
-      <div className="flex justify-center mb-6">
+      {/* Search */}
+      <div className="flex justify-center mb-8">
         <input
           type="text"
-          placeholder="Search by title or name..."
+          placeholder="Search artworks..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="border border-gray-300 p-2 text-black rounded-lg w-full max-w-md focus:outline-none focus:ring-2 focus:ring-gray-400"
+          className="w-full max-w-md px-4 py-2 rounded-xl 
+            border border-gray-300 
+            bg-white text-gray-800 
+            dark:bg-gray-800 dark:text-white dark:border-gray-700
+            focus:outline-none focus:ring-2 focus:ring-indigo-500"
         />
       </div>
 
-      <div className="flex justify-center text-black gap-4 mb-6 flex-wrap">
-        {categories.map(cat => (
+      {/* Category Filter */}
+      <div className="flex justify-center gap-3 mb-10 flex-wrap">
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat)}
-            className={`px-4 py-2 rounded-lg font-semibold ${categoryFilter === cat ? "bg-gray-800 text-white" : "bg-white border border-gray-300 hover:bg-gray-100"}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+              ${
+                categoryFilter === cat
+                  ? "bg-indigo-600 text-white shadow-md"
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700"
+              }`}
           >
             {cat}
           </button>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+
+        {/* Loader */}
         {loading ? (
           <div className="col-span-full flex justify-center items-center min-h-[200px]">
-            <div className="w-16 h-16 border-4 border-gray-800 border-dashed rounded-full animate-spin"></div>
+            <div className="w-14 h-14 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="col-span-full text-center text-gray-500">No artworks found.</div>
+
+          /* Empty State */
+          <div className="col-span-full text-center text-gray-500 dark:text-gray-400 text-lg">
+            No artworks found 😔
+          </div>
+
         ) : (
-          filtered.map(item => <Card key={item._id} listing={item} />)
+          filtered.map((item) => (
+            <Card key={item._id} listing={item} />
+          ))
         )}
       </div>
     </div>
