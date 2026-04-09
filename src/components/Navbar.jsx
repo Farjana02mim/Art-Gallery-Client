@@ -128,7 +128,7 @@ const Navbar = () => {
           )}
 
           {/* Mobile Menu Button */}
-          <div className="lg:hidden">
+          <div className="lg:hidden pr-10">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               className="text-yellow-400 focus:outline-none"

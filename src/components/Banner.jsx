@@ -29,20 +29,20 @@ import slide16 from "../assets/Banner/slide12.jfif";
 
 const slides = [
   { id: 1, image: slide1, title: "Discover Stunning Artworks", subtitle: "Explore masterpieces from talented artists around the world.", path: "/gallery" },
-  { id: 2, image: slide2, title: "Bring Art Home", subtitle: "Find the perfect piece to enhance your living space.", path: "/shop" },
-  { id: 3, image: slide3, title: "Support Creative Minds", subtitle: "Connect directly with artists and their unique creations.", path: "/artists" },
+  { id: 2, image: slide2, title: "Bring Art Home", subtitle: "Find the perfect piece to enhance your living space.", path: "/gallery" },
+  { id: 3, image: slide3, title: "Support Creative Minds", subtitle: "Connect directly with artists and their unique creations.", path: "/gallery" },
   { id: 4, image: slide4, title: "Art for Every Taste", subtitle: "From classic to contemporary, discover artworks that inspire.", path: "/gallery" },
-  { id: 5, image: slide5, title: "Unique Collections", subtitle: "Browse curated collections from emerging artists.", path: "/collections" },
+  { id: 5, image: slide5, title: "Unique Collections", subtitle: "Browse curated collections from emerging artists.", path: "/gallery" },
   { id: 6, image: slide6, title: "Modern Aesthetics", subtitle: "Add a modern touch to your interior.", path: "/gallery" },
   { id: 7, image: slide7, title: "Classic Beauty", subtitle: "Timeless art that never fades.", path: "/gallery" },
-  { id: 8, image: slide8, title: "Creative Expression", subtitle: "Every piece tells a unique story.", path: "/artists" },
-  { id: 9, image: slide9, title: "Bold & Vibrant", subtitle: "Colorful artworks to energize your space.", path: "/shop" },
+  { id: 8, image: slide8, title: "Creative Expression", subtitle: "Every piece tells a unique story.", path: "/gallery" },
+  { id: 9, image: slide9, title: "Bold & Vibrant", subtitle: "Colorful artworks to energize your space.", path: "/gallery" },
   { id: 10, image: slide10, title: "Minimal & Elegant", subtitle: "Less is more with minimalist art.", path: "/gallery" },
   { id: 11, image: slide11, title: "Digital Masterpieces", subtitle: "Explore the future of digital art.", path: "/gallery" },
-  { id: 12, image: slide12, title: "Handcrafted Art", subtitle: "Authentic handmade creations.", path: "/shop" },
+  { id: 12, image: slide12, title: "Handcrafted Art", subtitle: "Authentic handmade creations.", path: "/gallery" },
   { id: 13, image: slide13, title: "Wall Perfection", subtitle: "Turn your walls into a gallery.", path: "/gallery" },
   { id: 14, image: slide14, title: "Art That Inspires", subtitle: "Feel inspired every day.", path: "/gallery" },
-  { id: 15, image: slide15, title: "Exclusive Pieces", subtitle: "Own limited edition artworks.", path: "/shop" },
+  { id: 15, image: slide15, title: "Exclusive Pieces", subtitle: "Own limited edition artworks.", path: "/gallery" },
   { id: 16, image: slide16, title: "Gallery Experience", subtitle: "Experience art like never before.", path: "/gallery" },
 ];
 
