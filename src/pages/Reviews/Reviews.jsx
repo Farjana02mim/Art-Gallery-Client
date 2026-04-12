@@ -1,49 +1,67 @@
-import React, { use } from 'react'
-import { Autoplay, EffectCoverflow, Pagination } from 'swiper/modules';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import ReviewCard from './ReviewCard';
+import React, { use } from "react";
+import { Autoplay, EffectCoverflow, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import ReviewCard from "./ReviewCard";
 
-const Reviews = ({reviewsPromise}) => {
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/pagination";
 
-    const reviews = use(reviewsPromise);
-    console.log(reviews);
+const Reviews = ({ reviewsPromise }) => {
+  const reviews = use(reviewsPromise);
 
   return (
-     <div className='my-7'>
-      <div>
-        <h3 className="text-3xl text-center text-bold">Reviews</h3>
-        <p className='p-12 text-center'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Ex eveniet natus aut omnis distinctio quisquam deleniti commodi, sunt aperiam reprehenderit. Saepe assumenda harum ipsum obcaecati eveniet eaque illo veritatis voluptate?</p>
+    <section className="w-11/12 mx-auto py-16">
+
+      {/* 🔥 Header */}
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold">
+          What Our <span className="text-yellow-400">Customers Say</span>
+        </h2>
+        <p className="text-gray-400 mt-4 text-sm md:text-base">
+          Real experiences from art lovers who discovered unique pieces through our gallery.
+        </p>
       </div>
-       <Swiper
-        effect={'coverflow'}
+
+      {/* 🔥 Slider */}
+      <Swiper
+        effect={"coverflow"}
         grabCursor={true}
         centeredSlides={true}
-        slidesPerView={3}
-        coverflowEffect={{
-          rotate: 30,
-          stretch: '50%',
-          depth: 200,
-          modifier: 1,
-          scale: 0.75,
-          slideShadows: true,
-        }}
-        loop={true} 
-         autoplay={{
-          delay: 2000,
+        loop={true}
+        autoplay={{
+          delay: 2500,
           disableOnInteraction: false,
         }}
-        pagination={true}
+        slidesPerView={1}
+        spaceBetween={20}
+        breakpoints={{
+          640: { slidesPerView: 1 },
+          768: { slidesPerView: 2 },
+          1024: { slidesPerView: 3 },
+        }}
+        coverflowEffect={{
+          rotate: 20,
+          stretch: 0,
+          depth: 150,
+          modifier: 1,
+          scale: 0.9,
+          slideShadows: false,
+        }}
+        pagination={{ clickable: true }}
         modules={[EffectCoverflow, Pagination, Autoplay]}
-        className="mySwiper"
+        className="pb-10"
       >
-        {
-          reviews.map(review => <SwiperSlide key={review.id}>
-          <ReviewCard review={review}></ReviewCard>
-        </SwiperSlide>)
-        }
+        {reviews.map((review) => (
+          <SwiperSlide key={review.id}>
+            <div className="h-full flex justify-center">
+              <ReviewCard review={review} />
+            </div>
+          </SwiperSlide>
+        ))}
       </Swiper>
-     </div>
-  )
-}
+    </section>
+  );
+};
 
-export default Reviews
+export default Reviews;

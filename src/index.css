@@ -33,3 +33,17 @@ body:where([data-theme=dark], [data-theme=dark] *) .navbar {
   background-color: #111827; /* dark navbar */
   color: #f9fafb;
 }
+
+.swiper-pagination-bullet {
+  background: white;
+  opacity: 0.5;
+  width: 8px;
+  height: 8px;
+  transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+  width: 20px;
+  border-radius: 10px;
+  opacity: 1;
+}

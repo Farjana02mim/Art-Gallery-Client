@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination, Navigation, EffectFade } from "swiper/modules";
 import { Typewriter } from "react-simple-typewriter";
 import { motion } from "framer-motion";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import "swiper/css";
 import "swiper/css/pagination";
@@ -50,15 +51,29 @@ const Banner = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="w-full h-[500px] md:h-[600px] relative">
+    <div className="w-full h-[500px] md:h-[600px] relative group">
+
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectFade]}
         slidesPerView={1}
         loop
         effect="fade"
-        autoplay={{ delay: 3500, disableOnInteraction: false }}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }}
         pagination={{ clickable: true }}
-        navigation
+        navigation={{
+          nextEl: ".custom-next",
+          prevEl: ".custom-prev",
+        }}
+        onAutoplayTimeLeft={(swiper, time, progress) => {
+          const bar = document.querySelector(".progress-bar");
+          if (bar) {
+            bar.style.width = `${(1 - progress) * 100}%`;
+          }
+        }}
         className="w-full h-full"
       >
         {slides.map((slide) => (
@@ -79,7 +94,7 @@ const Banner = () => {
               <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-20 text-white max-w-3xl">
 
                 <motion.h2
-                  className="text-3xl md:text-5xl font-bold mb-4"
+                  className="text-2xl md:text-5xl font-bold mb-4"
                   initial={{ opacity: 0, y: -30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8 }}
@@ -94,7 +109,7 @@ const Banner = () => {
                 </motion.h2>
 
                 <motion.p
-                  className="text-lg md:text-xl mb-6"
+                  className="text-sm md:text-xl mb-6"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 1, delay: 0.5 }}
@@ -104,7 +119,7 @@ const Banner = () => {
 
                 <motion.button
                   onClick={() => navigate(slide.path)}
-                  className="bg-white text-black px-6 py-3 rounded-2xl font-semibold w-fit hover:bg-gray-200"
+                  className="bg-white text-black px-5 py-2 md:px-6 md:py-3 rounded-2xl font-semibold w-fit hover:bg-gray-200 hover:scale-105 transition-all duration-300"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 }}
@@ -117,6 +132,25 @@ const Banner = () => {
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* 🔥 Progress Bar */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
+        <div className="progress-bar h-full bg-white transition-all duration-200"></div>
+      </div>
+
+      {/* 🔥 Desktop Arrows */}
+      <div className="hidden md:block custom-prev absolute left-5 top-1/2 -translate-y-1/2 z-10 cursor-pointer">
+        <div className="bg-white/20 backdrop-blur-md p-3 rounded-full hover:bg-white/40 hover:scale-110 transition-all duration-300 shadow-lg">
+          <FiChevronLeft size={26} className="text-white" />
+        </div>
+      </div>
+
+      <div className="hidden md:block custom-next absolute right-5 top-1/2 -translate-y-1/2 z-10 cursor-pointer">
+        <div className="bg-white/20 backdrop-blur-md p-3 rounded-full hover:bg-white/40 hover:scale-110 transition-all duration-300 shadow-lg">
+          <FiChevronRight size={26} className="text-white" />
+        </div>
+      </div>
+
     </div>
   );
 };

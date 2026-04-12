@@ -2,38 +2,94 @@ import React from "react";
 
 const ExtraSection = () => {
   return (
-    <section className="py-12 text-yellow-50">
-      <div className="container mx-auto px-4 space-y-12">
+    <section className="py-16">
 
-        {/* Why choose this gallery */}
-        <div className="bg-gray-800/80 p-8 rounded-xl shadow-md text-center backdrop-blur-sm">
-          <h2 className="text-3xl text-yellow-400 font-bold mb-4">Why Choose Our Gallery?</h2>
-          <p className="text-gray-300">
-            Discover unique artworks and support talented artists! Each piece tells a story and enriches your space.
+      <div className="w-11/12 mx-auto space-y-16">
+
+        {/* 🔥 Why Choose Section */}
+        <div className="text-center max-w-3xl mx-auto p-8 rounded-2xl backdrop-blur-md
+          bg-white/80 border border-gray-200 shadow-lg
+          dark:bg-gray-900 dark:border-gray-600">
+
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            Why Choose Our <span className="text-yellow-500">Gallery?</span>
+          </h2>
+
+          <p className="text-gray-600 dark:text-white text-sm md:text-base">
+            Discover curated artworks from talented creators and bring meaningful art into your space.
           </p>
         </div>
 
-        {/* Featured Artworks */}
+        {/* 🔥 Featured Section */}
         <div>
-          <h2 className="text-3xl font-bold text-yellow-400 text-center mb-8">Featured Artworks 🎨</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
 
-            <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/7tkH8MZc/patrick-tomasso-QMDap1-TAu0g-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Folk Art" />
-              <h3 className="text-lg font-semibold mb-1">Folk Art</h3>
-              <p className="text-yellow-300 font-medium">Price: $500</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-900 dark:text-white">
+            Featured <span className="text-yellow-500">Artworks</span>
+          </h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+
+            {/* Card 1 */}
+            <div className="group rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:scale-105
+              bg-white/80 border border-gray-200
+              dark:bg-gray-900 dark:border-white/1">
+
+              <img
+                src="https://i.ibb.co.com/7tkH8MZc/patrick-tomasso-QMDap1-TAu0g-unsplash.jpg"
+                alt="Folk Art"
+                className="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+              />
+
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Folk Art
+                </h3>
+                <p className="text-yellow-500 font-semibold mt-2">
+                  Price: $500
+                </p>
+              </div>
             </div>
 
-            <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/G4LnQk8b/frankie-cordoba-f-PYJe-Mm-YWM4-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Sculptures" />
-              <h3 className="text-lg font-semibold mb-1">Sculptures</h3>
-              <p className="text-yellow-300 font-medium">Price: $750</p>
+            {/* Card 2 */}
+            <div className="group rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:scale-105
+              bg-white/80 border border-gray-200
+              dark:bg-gray-900 dark:border-white/1">
+
+              <img
+                src="https://i.ibb.co.com/G4LnQk8b/frankie-cordoba-f-PYJe-Mm-YWM4-unsplash.jpg"
+                alt="Sculptures"
+                className="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+              />
+
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Sculptures
+                </h3>
+                <p className="text-yellow-500 font-semibold mt-2">
+                  Price: $750
+                </p>
+              </div>
             </div>
 
-            <div className="bg-gray-800/80 rounded-xl shadow-md p-4 hover:shadow-xl hover:scale-105 transition-transform backdrop-blur-sm">
-              <img src="https://i.ibb.co.com/zHPXMGTx/chris-czermak-Pam-FFHL6f-VY-unsplash.jpg" className="w-full h-48 object-cover rounded-lg mb-3" alt="Photography" />
-              <h3 className="text-lg font-semibold mb-1">Photography</h3>
-              <p className="text-yellow-300 font-medium">Price: $300</p>
+            {/* Card 3 */}
+            <div className="group rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:scale-105
+              bg-white/80 border border-gray-200
+              dark:bg-gray-900 dark:border-white/1">
+
+              <img
+                src="https://i.ibb.co.com/zHPXMGTx/chris-czermak-Pam-FFHL6f-VY-unsplash.jpg"
+                alt="Photography"
+                className="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+              />
+
+              <div className="p-5">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Photography
+                </h3>
+                <p className="text-yellow-500 font-semibold mt-2">
+                  Price: $300
+                </p>
+              </div>
             </div>
 
           </div>

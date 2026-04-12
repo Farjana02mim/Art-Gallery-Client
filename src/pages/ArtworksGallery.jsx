@@ -54,40 +54,43 @@ const ArtworksGallery = () => {
   }, [searchTerm, categoryFilter, artworks]);
 
   return (
-    <div className="min-h-screen py-12 px-4 md:px-10 
+    <div className="min-h-screen py-10 px-3 sm:px-6 md:px-10 
       bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 
-      dark:from-gray-800 dark:via-gray-850 dark:to-gray-900">
+      dark:from-gray-800 dark:via-gray-900 dark:to-gray-950">
 
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Title */}
-      <h2 className="text-3xl md:text-4xl font-bold 
-        text-gray-800 dark:text-white mb-8 text-center">
+      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold 
+        text-gray-800 dark:text-white mb-6 text-center">
         🎨 Artworks Gallery
       </h2>
 
-      {/* Search */}
-      <div className="flex justify-center mb-8">
-        <input
-          type="text"
-          placeholder="Search artworks..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full max-w-md px-4 py-2 rounded-xl 
-            border border-gray-300 
-            bg-white text-gray-800 
-            dark:bg-gray-800 dark:text-white dark:border-gray-700
-            focus:outline-none focus:ring-2 focus:ring-indigo-500"
-        />
+      {/* 🔍 Search Box */}
+      <div className="flex justify-center mb-6">
+        <div className="relative w-full max-w-md">
+          <input
+            type="text"
+            placeholder="Search artworks..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 rounded-full 
+              border border-gray-300 
+              bg-white text-gray-800 
+              dark:bg-gray-800 dark:text-white dark:border-gray-700
+              focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          />
+          <span className="absolute left-3 top-2.5 text-gray-400">🔍</span>
+        </div>
       </div>
 
-      {/* Category Filter */}
-      <div className="flex justify-center gap-3 mb-10 flex-wrap">
+      {/* 📱 Category Filter (scrollable on mobile) */}
+      <div className="flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setCategoryFilter(cat)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
+            className={`whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition-all duration-300
               ${
                 categoryFilter === cat
                   ? "bg-indigo-600 text-white shadow-md"
@@ -99,24 +102,30 @@ const ArtworksGallery = () => {
         ))}
       </div>
 
-      {/* Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* 🎯 Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 
-        {/* Loader */}
+        {/* 🔄 Loading Skeleton */}
         {loading ? (
-          <div className="col-span-full flex justify-center items-center min-h-[200px]">
-            <div className="w-14 h-14 border-4 border-indigo-500 border-dashed rounded-full animate-spin"></div>
-          </div>
+          [...Array(6)].map((_, i) => (
+            <div key={i} className="animate-pulse bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+              <div className="h-40 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
+              <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
+            </div>
+          ))
         ) : filtered.length === 0 ? (
 
-          /* Empty State */
+          /* ❌ Empty State */
           <div className="col-span-full text-center text-gray-500 dark:text-gray-400 text-lg">
             No artworks found 😔
           </div>
 
         ) : (
           filtered.map((item) => (
-            <Card key={item._id} listing={item} />
+            <div key={item._id} className="transform hover:scale-[1.03] transition duration-300">
+              <Card listing={item} />
+            </div>
           ))
         )}
       </div>

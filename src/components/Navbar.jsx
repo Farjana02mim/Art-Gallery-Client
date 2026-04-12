@@ -14,10 +14,11 @@ const Navbar = () => {
   const avatarRef = useRef();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef();
 
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
-  // Sync theme with HTML and localStorage
+  // Theme sync
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
@@ -34,7 +35,7 @@ const Navbar = () => {
       .catch((e) => toast.error(e.message));
   };
 
-  // Close avatar menu on outside click
+  // Avatar menu close (outside click)
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (avatarRef.current && !avatarRef.current.contains(e.target)) {
@@ -45,53 +46,83 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Common links for both menus
+  // 🔥 Mobile menu close (outside click + touch)
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  // Common Links (with auto close)
   const commonLinks = (
     <>
-      <li><MyLink to="/">Home</MyLink></li>
-      <li><MyLink to="/gallery">Gallery</MyLink></li>
-      <li><MyLink to="/coverage">Coverage</MyLink></li>
+      <li onClick={() => setMenuOpen(false)}>
+        <MyLink to="/">Home</MyLink>
+      </li>
+      <li onClick={() => setMenuOpen(false)}>
+        <MyLink to="/gallery">Gallery</MyLink>
+      </li>
+      <li onClick={() => setMenuOpen(false)}>
+        <MyLink to="/coverage">Coverage</MyLink>
+      </li>
+
       {user && (
         <>
-          <li><MyLink to="/artists">Artists</MyLink></li>
-          <li><MyLink to="/dashboard/my-purchases">My Purchases</MyLink></li>
+          <li onClick={() => setMenuOpen(false)}>
+            <MyLink to="/artists">Artists</MyLink>
+          </li>
+          <li onClick={() => setMenuOpen(false)}>
+            <MyLink to="/dashboard/my-purchases">
+              My Purchases
+            </MyLink>
+          </li>
         </>
       )}
     </>
   );
 
   return (
-    <div className="sticky top-0 z-50 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg">
+    <div className="sticky top-0 z-50 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg pr-7">
       <MyContainer className="flex items-center justify-between py-3 relative">
 
         {/* Logo */}
         <div className="flex items-center gap-2">
-          <img src={logo} alt="Logo" className="w-[45px]" />
-          <h1 className="text-yellow-400 text-2xl font-semibold tracking-wide">
+          <img src={logo} alt="Logo" className="w-[40px] md:w-[45px]" />
+          <h1 className="text-yellow-400 text-xl md:text-2xl font-semibold">
             ArtSphere
           </h1>
         </div>
 
         {/* Desktop Menu */}
-        <ul className="hidden lg:flex items-center gap-4 text-yellow-400 font-medium">
+        <ul className="hidden lg:flex items-center gap-6 text-yellow-400 font-medium">
           {commonLinks}
         </ul>
 
-        {/* Right Side: User Info / Login / Mobile Menu */}
+        {/* Right Side */}
         <div className="flex items-center gap-3">
 
           {/* Loader */}
           {loading ? (
             <ClockLoader color="#FBBF24" size={25} />
           ) : user ? (
-            <div className="relative flex items-center gap-2 pr-7" ref={avatarRef}>
+            <div className="relative flex items-center gap-2" ref={avatarRef}>
               <img
                 onClick={() => setAvatarMenu(!avatarMenu)}
                 src={user.photoURL || "https://via.placeholder.com/100"}
-                alt={user.displayName || "User Avatar"}
-                title={user.displayName || "User"}
-                className="h-[45px] w-[45px] rounded-full ring-2 ring-yellow-400 cursor-pointer"
+                alt="User"
+                className="h-[40px] w-[40px] md:h-[45px] md:w-[45px] rounded-full ring-2 ring-yellow-400 cursor-pointer"
               />
+
               {avatarMenu && (
                 <div className="absolute right-0 mt-3 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50">
                   <Link
@@ -111,74 +142,52 @@ const Navbar = () => {
               )}
             </div>
           ) : (
-            <div className="hidden lg:flex gap-2 pr-6">
-              <Link
-                to="/signin"
-                className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
-              >
-                Login
-              </Link>
-              <Link
-                to="/signup"
-                className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
-              >
-                Register
-              </Link>
+            <div className="hidden lg:flex gap-2">
+              <Link to="/signin" className="btn-yellow">Login</Link>
+              <Link to="/signup" className="btn-yellow">Register</Link>
             </div>
           )}
 
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden pr-10">
+          {/* Mobile Button */}
+          <div className="lg:hidden pr-9">
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="text-yellow-400 focus:outline-none"
+              className="text-yellow-400"
             >
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
+              ☰
             </button>
           </div>
         </div>
 
+        {/* 🔥 Overlay */}
+        {menuOpen && (
+          <div className="fixed inset-0 bg-black/40 z-10"></div>
+        )}
+
         {/* Mobile Menu */}
         {menuOpen && (
-          <ul className="absolute top-full left-0 w-full bg-gray-900 text-yellow-400 flex flex-col gap-2 p-4 lg:hidden z-20">
+          <ul
+            ref={menuRef}
+            className="absolute top-full left-0 w-full bg-gray-900 text-yellow-400 flex flex-col gap-3 p-4 lg:hidden z-20 transition-all duration-300"
+          >
             {commonLinks}
+
             {!user && (
               <div className="flex flex-col gap-2 mt-2">
-                <Link
-                  to="/signin"
-                  className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
-                  onClick={() => setMenuOpen(false)}
-                >
+                <Link to="/signin" onClick={() => setMenuOpen(false)} className="btn-yellow">
                   Login
                 </Link>
-                <Link
-                  to="/signup"
-                  className="px-4 py-2 bg-yellow-400 text-gray-900 font-semibold rounded-lg hover:bg-yellow-500 transition"
-                  onClick={() => setMenuOpen(false)}
-                >
+                <Link to="/signup" onClick={() => setMenuOpen(false)} className="btn-yellow">
                   Register
                 </Link>
               </div>
             )}
           </ul>
         )}
-
       </MyContainer>
 
       {/* Theme Toggle */}
-      <div className="absolute top-5 right-3">
+      <div className="absolute top-4 right-3">
         <input
           type="checkbox"
           checked={theme === "dark"}

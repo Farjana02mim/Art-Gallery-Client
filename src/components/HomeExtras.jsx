@@ -1,46 +1,63 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { FaUserFriends } from "react-icons/fa"; // React Icon
+import { FaUserFriends } from "react-icons/fa";
 
 const HomeExtras = () => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:3000/latest-artists")
-      .then(res => res.json())
-      .then(data => setArtists(data));
+      .then((res) => res.json())
+      .then((data) => setArtists(data));
   }, []);
 
   return (
-    <section className="relative text-center my-16">
+    <section className="w-11/12 mx-auto py-16 relative">
 
-      {/* Top Right Button */}
+      {/* 🔥 Header */}
+      <div className="text-center max-w-2xl mx-auto mb-12">
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
+          Meet Our <span className="text-yellow-500">Artists</span>
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm md:text-base">
+          Discover talented artists behind the artworks and explore their creative journeys.
+        </p>
+      </div>
+
+      {/* 🔥 View All Button */}
       <Link to="/artists">
-        <button className="absolute top-0 right-10 bg-yellow-500 text-black px-4 py-2 rounded-lg hover:bg-yellow-600 transition flex items-center gap-2">
-          <FaUserFriends /> ALL
+        <button className="absolute top-6 right-0 md:right-2 bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-600 transition-all duration-300 flex items-center gap-2 shadow-lg">
+          <FaUserFriends />
+          <span className="hidden sm:inline">View All</span>
         </button>
       </Link>
 
-      <h2 className="text-3xl font-bold text-yellow-500 mb-6">
-        Meet Our Artists
-      </h2>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      {/* 🔥 Artist Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
 
         {artists.map((artist) => (
           <div
             key={artist._id}
-            className="bg-gray-700 dark:bg-gray-800 p-6 rounded-xl shadow hover:shadow-lg transition"
+            className="group backdrop-blur-lg border rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 shadow-lg
+            bg-white border-gray-200 hover:bg-white
+            dark:bg-black dark:border-white/10 dark:hover:bg-white/8"
           >
-            <img
-              src={artist.image}
-              alt={artist.name}
-              className="w-32 h-32 rounded-full mx-auto mb-4 object-cover"
-            />
-            <h3 className="text-xl font-semibold text-white">
+            {/* Image */}
+            <div className="overflow-hidden rounded-full w-32 h-32 mx-auto mb-4">
+              <img
+                src={artist.image}
+                alt={artist.name}
+                className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+              />
+            </div>
+
+            {/* Name */}
+            <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
               {artist.name}
             </h3>
-            <p className="text-gray-300">
+
+            {/* Title */}
+            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
               {artist.title}
             </p>
           </div>
