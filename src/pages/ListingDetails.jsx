@@ -9,7 +9,7 @@ const SERVER_URL = "http://localhost:3000";
 const ListingDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { token } = useAuth();
+  const { user, token } = useAuth();
 
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -17,7 +17,7 @@ const ListingDetails = () => {
   const [checkingPurchase, setCheckingPurchase] = useState(true);
 
   // =========================
-  // Load listing + views
+  // LOAD LISTING + VIEW COUNT
   // =========================
   useEffect(() => {
     if (!id) return;
@@ -32,8 +32,8 @@ const ListingDetails = () => {
         const data = await res.json();
         setListing(data);
 
-        // increment views
-        await fetch(`${SERVER_URL}/listing/views/${data._id}`, {
+        // increment views (no need auth)
+        await fetch(`${SERVER_URL}/listing/views/${id}`, {
           method: "PATCH",
         });
 
@@ -48,11 +48,11 @@ const ListingDetails = () => {
   }, [id]);
 
   // =========================
-  // Check Purchase
+  // CHECK PURCHASE (IMPORTANT FIX)
   // =========================
   useEffect(() => {
     const checkPurchase = async () => {
-      if (!token || !id) return;
+      if (!token || !user?.email) return;
 
       try {
         setCheckingPurchase(true);
@@ -77,10 +77,10 @@ const ListingDetails = () => {
     };
 
     checkPurchase();
-  }, [id, token]);
+  }, [id, token, user]);
 
   // =========================
-  // Like + Favorite
+  // LIKE + FAVORITE
   // =========================
   const handleLike = async () => {
     try {
@@ -112,7 +112,7 @@ const ListingDetails = () => {
   };
 
   // =========================
-  // Buy Now
+  // BUY NOW
   // =========================
   const handleBuyNow = () => {
     navigate(`/dashboard/payment/${id}`, {
@@ -121,34 +121,40 @@ const ListingDetails = () => {
   };
 
   // =========================
-  // Download (secured)
+  // DOWNLOAD FIXED
   // =========================
-const handleDownload = async () => {
-  try {
-    const token = await user.getIdToken(); // IMPORTANT FIX
+  const handleDownload = async () => {
+    try {
+      const res = await fetch(`${SERVER_URL}/download/${id}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    const res = await fetch(`${SERVER_URL}/download/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      const data = await res.json();
 
-    const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Download failed");
+      }
 
-    if (!res.ok) throw new Error(data.message);
+      // direct open image
+      window.open(data.downloadUrl, "_blank");
 
-    window.open(data.downloadUrl, "_blank");
-
-  } catch (err) {
-    toast.error(err.message);
-  }
-};
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
 
   // =========================
-  // Loading UI
+  // LOADING UI
   // =========================
   if (loading || !listing) {
-    return <p className="text-center mt-10">Loading...</p>;
+    return (
+      <p className="text-center mt-10 text-gray-600">
+        Loading...
+      </p>
+    );
   }
 
   return (
@@ -158,24 +164,24 @@ const handleDownload = async () => {
 
       <div className="flex flex-col md:flex-row gap-6 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
 
-        {/* Image */}
+        {/* IMAGE */}
         <img
           src={listing.image}
           alt={listing.title}
           className="w-full md:w-1/2 h-96 object-cover rounded-xl"
         />
 
-        {/* Details */}
+        {/* DETAILS */}
         <div className="flex-1 flex flex-col justify-between">
 
           <div>
-            <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">
+            <h1 className="text-3xl font-bold mb-2">
               {listing.title}
             </h1>
 
-            <p><strong>Artist:</strong> {listing.name}</p>
-            <p><strong>Category:</strong> {listing.category}</p>
-            <p><strong>Year:</strong> {listing.year}</p>
+            <p><b>Artist:</b> {listing.name}</p>
+            <p><b>Category:</b> {listing.category}</p>
+            <p><b>Year:</b> {listing.year}</p>
 
             <p className="text-green-600 text-lg font-semibold">
               ${listing.price}
@@ -192,12 +198,9 @@ const handleDownload = async () => {
             </div>
           </div>
 
-          {/* =========================
-              ACTION BUTTONS
-          ========================= */}
+          {/* BUTTONS */}
           <div className="flex gap-3 mt-6">
 
-            {/* LIKE */}
             <button
               onClick={handleLike}
               className="px-4 py-2 bg-pink-500 text-white rounded-lg"
@@ -205,7 +208,6 @@ const handleDownload = async () => {
               ❤️ Like
             </button>
 
-            {/* PURCHASE LOGIC */}
             {checkingPurchase ? (
               <button className="px-4 py-2 bg-gray-300 rounded-lg">
                 Checking...
@@ -220,7 +222,7 @@ const handleDownload = async () => {
             ) : (
               <button
                 onClick={handleBuyNow}
-                className="flex-1 py-3 bg-gradient-to-r from-gray-400 to-blue-200 text-black font-semibold rounded-lg"
+                className="flex-1 py-3 bg-blue-500 text-white font-semibold rounded-lg"
               >
                 Buy Now
               </button>

@@ -49,18 +49,18 @@ const ArtistDetails = () => {
             <p className="mb-2">Experience: {artist.experience} years</p>
           )}
           {artist.portfolio && (
-            <p className="mb-2">
-              Portfolio:{" "}
-              <a
-                href={artist.portfolio}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-yellow-400 underline"
-              >
-                Visit
-              </a>
-            </p>
-          )}
+  <p className="mb-2">
+    Portfolio:{" "}
+    <a
+      href={artist.portfolio}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-yellow-400 underline break-all"
+    >
+      {artist.portfolio}
+    </a>
+  </p>
+)}
           {artist.bio && <p className="mt-4">{artist.bio}</p>}
         </div>
       </div>

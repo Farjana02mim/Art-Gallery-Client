@@ -1,45 +1,42 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import confetti from "canvas-confetti"; // ✅ import
+import confetti from "canvas-confetti";
 
 const PaymentSuccess = () => {
   const [searchParams] = useSearchParams();
-  const [paymentInfo, setPaymentInfo] = useState(null);
   const sessionId = searchParams.get("session_id");
+
   const axiosSecure = useAxiosSecure();
 
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("Verifying payment...");
+  const [paymentInfo, setPaymentInfo] = useState(null);
+
+  const hasRun = useRef(false); // ✅ prevent double call
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId || hasRun.current) return;
 
-    let mounted = true;
+    hasRun.current = true;
 
-    // 🎉 Confetti function
     const fireConfetti = () => {
-      const duration = 2 * 1000;
-      const end = Date.now() + duration;
+      const end = Date.now() + 2000;
 
       const run = () => {
         confetti({
           particleCount: 5,
-          angle: 60,
-          spread: 55,
+          spread: 60,
           origin: { x: 0 },
         });
 
         confetti({
           particleCount: 5,
-          angle: 120,
-          spread: 55,
+          spread: 60,
           origin: { x: 1 },
         });
 
-        if (Date.now() < end) {
-          requestAnimationFrame(run);
-        }
+        if (Date.now() < end) requestAnimationFrame(run);
       };
 
       run();
@@ -47,57 +44,46 @@ const PaymentSuccess = () => {
 
     const verifyPayment = async () => {
       try {
-        const res = await axiosSecure.patch(
+        setLoading(true);
+
+        // ✅ FIXED: GET instead of PATCH
+        const res = await axiosSecure.get(
           `/payment-success?session_id=${sessionId}`
         );
 
-        if (!mounted) return;
-
-        if (res.data.success) {
+        if (res.data?.success) {
           setMessage("Payment Successful 🎉");
 
           setPaymentInfo({
             transactionId: res.data.transactionId,
           });
 
-          // 🎉 trigger confetti
-          setTimeout(() => {
-            fireConfetti();
-          }, 300);
-
+          setTimeout(fireConfetti, 300);
         } else {
-          setMessage(res.data.message || "Payment verification failed");
+          setMessage(res.data?.message || "Payment verification failed ❌");
         }
 
         // clean URL
-        const cleanUrl = window.location.pathname;
-        window.history.replaceState({}, document.title, cleanUrl);
-
-      } catch (err) {
-        if (!mounted) return;
-        setMessage("Something went wrong");
+        window.history.replaceState({}, document.title, "/dashboard/payment-success");
+      } catch (error) {
+        console.error(error);
+        setMessage("Server error while verifying payment ❌");
       } finally {
         setLoading(false);
       }
     };
 
     verifyPayment();
-
-    return () => {
-      mounted = false;
-    };
   }, [sessionId, axiosSecure]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center 
-      bg-gradient-to-br from-green-50 to-gray-100 
-      dark:from-gray-900 dark:to-black px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-gray-100 dark:from-gray-900 dark:to-black px-4">
 
       <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-8 max-w-md w-full text-center space-y-6">
 
-        {/* Icon */}
+        {/* Status Icon */}
         <div className="text-6xl">
-          {loading ? "⏳" : "🎉"}
+          {loading ? "⏳" : paymentInfo ? "🎉" : "❌"}
         </div>
 
         {/* Message */}
@@ -105,11 +91,15 @@ const PaymentSuccess = () => {
           {message}
         </h2>
 
-        {/* Transaction Info */}
+        {/* Transaction ID */}
         {paymentInfo?.transactionId && (
-          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm text-gray-700 dark:text-gray-300">
-            <p className="font-semibold">Transaction ID:</p>
-            <p className="break-all">{paymentInfo.transactionId}</p>
+          <div className="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg text-sm">
+            <p className="font-semibold text-gray-700 dark:text-gray-300">
+              Transaction ID:
+            </p>
+            <p className="break-all text-gray-600 dark:text-gray-400">
+              {paymentInfo.transactionId}
+            </p>
           </div>
         )}
 

@@ -14,6 +14,7 @@ const MyPurchases = () => {
   } = useQuery({
     queryKey: ["purchases", user?.email],
     enabled: !!user?.email,
+
     queryFn: async () => {
       const token = await user.getIdToken();
 
@@ -27,12 +28,18 @@ const MyPurchases = () => {
       );
 
       const data = await res.json();
-      return Array.isArray(data) ? data : [];
+
+      // ✅ FIX: backend may send {success, data}
+      return Array.isArray(data)
+        ? data
+        : Array.isArray(data.data)
+        ? data.data
+        : [];
     },
   });
 
   // ======================
-  // TOTAL SPENT (SAFE)
+  // TOTAL SPENT
   // ======================
   const totalSpent = useMemo(() => {
     return purchases.reduce(
@@ -139,7 +146,6 @@ const MyPurchases = () => {
             <p className="text-sm">Buy something to see here</p>
           </div>
         ) : (
-          // TABLE
           <div className="overflow-x-auto rounded-2xl shadow-lg bg-white dark:bg-gray-900">
 
             <table className="table w-full">
