@@ -47,3 +47,15 @@ body:where([data-theme=dark], [data-theme=dark] *) .navbar {
   border-radius: 10px;
   opacity: 1;
 }
+
+.btn-yellow {
+  background-color: #facc15;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.btn-yellow:hover {
+  background-color: #eab308;
+}

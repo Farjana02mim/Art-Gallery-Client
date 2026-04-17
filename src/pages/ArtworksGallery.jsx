@@ -85,7 +85,7 @@ const ArtworksGallery = () => {
       </div>
 
       {/* 📱 Category Filter (scrollable on mobile) */}
-      <div className="flex gap-3 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-3 mb-8 overflow-x-auto pb-2 justify-center scrollbar-hide">
         {categories.map((cat) => (
           <button
             key={cat}

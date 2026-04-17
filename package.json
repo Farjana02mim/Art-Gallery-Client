@@ -13,6 +13,7 @@
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-query": "^5.90.21",
     "axios": "^1.13.4",
+    "canvas-confetti": "^1.9.4",
     "firebase": "^12.8.0",
     "framer-motion": "^12.35.0",
     "jspdf": "^4.2.0",

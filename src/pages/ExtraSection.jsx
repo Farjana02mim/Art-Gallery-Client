@@ -2,7 +2,7 @@ import React from "react";
 
 const ExtraSection = () => {
   return (
-    <section className="py-16">
+    <section className="">
 
       <div className="w-11/12 mx-auto space-y-16">
 
