@@ -19,61 +19,96 @@ const githubProvider = new GithubAuthProvider();
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Register
+  // =========================
+  // AUTH FUNCTIONS
+  // =========================
+
   const createUserWithEmailAndPasswordFunc = (email, password) => {
     setLoading(true);
     return createUserWithEmailAndPassword(auth, email, password);
   };
 
-  // Update profile
   const updateProfileFunc = (displayName, photoURL) => {
     return updateProfile(auth.currentUser, { displayName, photoURL });
   };
 
-  // Email verification
   const sendEmailVerificationFunc = () => {
     return sendEmailVerification(auth.currentUser);
   };
 
-  // Email Login
   const signInWithEmailAndPasswordFunc = (email, password) => {
     setLoading(true);
     return signInWithEmailAndPassword(auth, email, password);
   };
 
-  // Google Login
   const signInWithGoogleFunc = () => {
     setLoading(true);
     return signInWithPopup(auth, googleProvider);
   };
 
-  // Github Login
   const signInWithGithubFunc = () => {
     setLoading(true);
     return signInWithPopup(auth, githubProvider);
   };
 
-  // Logout
   const signoutUserFunc = async () => {
     setLoading(true);
     await signOut(auth);
-    localStorage.removeItem("access-token"); // remove token on logout
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("access-token");
+    setLoading(false);
   };
 
-  // 🔑 Forgot Password
   const sendPassResetEmailFunc = (email) => {
     return sendPasswordResetEmail(auth, email);
   };
 
+  // =========================
+  // AUTH STATE OBSERVER
+  // =========================
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      try {
+        if (currentUser) {
+          const idToken = await currentUser.getIdToken(true);
+
+          setUser(currentUser);
+          setToken(idToken);
+          localStorage.setItem("access-token", idToken);
+        } else {
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem("access-token");
+        }
+      } catch (error) {
+        console.error("Auth state error:", error);
+        setUser(null);
+        setToken(null);
+        localStorage.removeItem("access-token");
+      } finally {
+        setLoading(false);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // =========================
+  // CONTEXT VALUE
+  // =========================
+
   const authInfo = {
     user,
     token,
-    setUser,
     loading,
+    setUser,
     setLoading,
+
     createUserWithEmailAndPasswordFunc,
     signInWithEmailAndPasswordFunc,
     signInWithGoogleFunc,
@@ -84,23 +119,9 @@ const AuthProvider = ({ children }) => {
     updateProfileFunc,
   };
 
-  // User observer + token save
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currUser) => {
-      setUser(currUser);
-      if (currUser) {
-  const token = await currUser.getIdToken();
-  setToken(token); // ✅ ADD THIS
-  localStorage.setItem("access-token", token);
-} else {
-  setToken(null); // ✅ ADD THIS
-  localStorage.removeItem("access-token");
-}
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
+  // =========================
+  // LOADING UI
+  // =========================
 
   if (loading) {
     return (

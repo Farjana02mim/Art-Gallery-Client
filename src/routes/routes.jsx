@@ -31,6 +31,7 @@ import MyProfile from "../pages/Dashboard/MyProfile/MyProfile";
 import ManageArtists from "../pages/Dashboard/ApproveArtists/ManageArtists";
 import Settings from "../pages/Dashboard/Settings/Settings"
 import Favorites from "../pages/Favorites/Favorites";
+import ForgotPassword from "../pages/ForgotPassword";
 
 export const router = createBrowserRouter([
   {
@@ -62,6 +63,10 @@ export const router = createBrowserRouter([
       {
   path: "/artists/:id",
   element: <PrivateRoute><ArtistDetails></ArtistDetails></PrivateRoute> 
+},
+{
+  path: "/forgot-password",
+  element: <ForgotPassword />
 },
       {
         path: 'coverage',
