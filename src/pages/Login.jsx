@@ -200,8 +200,13 @@ const Login = () => {
               <button
                 type="button"
                 onClick={handleGoogleLogin}
-                className="w-full py-3 border rounded-xl"
+                className="w-full py-3 rounded-xl border border-gray-300 dark:border-gray-600 flex items-center justify-center gap-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 transition"
               >
+                <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                className="w-5"
+                alt="Google"
+              />
                 Continue with Google
               </button>
 

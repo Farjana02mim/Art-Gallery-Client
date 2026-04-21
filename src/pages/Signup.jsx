@@ -4,7 +4,7 @@ import axios from "axios";
 import MyContainer from "../components/MyContainer";
 import { FaEye } from "react-icons/fa";
 import { IoEyeOff } from "react-icons/io5";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from "../context/AuthContext";
 import useAxiosSecure from "../hooks/useAxiosSecure";
@@ -71,7 +71,11 @@ const Signup = () => {
     }
 
     try {
-      // upload image
+      // ✅ 1. Firebase signup FIRST
+      const res = await createUserWithEmailAndPasswordFunc(email, password);
+      const user = res.user;
+
+      // ✅ 2. Upload image AFTER success
       const formData = new FormData();
       formData.append("image", image);
 
@@ -79,13 +83,11 @@ const Signup = () => {
       const imgRes = await axios.post(image_API_URL, formData);
       const photoURL = imgRes.data.data.url;
 
-      // Firebase signup
-      const res = await createUserWithEmailAndPasswordFunc(email, password);
-      const user = res.user;
-
+      // ✅ 3. Update profile & verification
       await sendEmailVerificationFunc();
       await updateProfileFunc(name, photoURL);
 
+      // ✅ 4. Save to DB
       const userInfo = {
         email: user.email,
         name,
@@ -103,43 +105,30 @@ const Signup = () => {
       await signOut(auth);
       navigate("/signin");
 
-    } catch (error) {
-      console.log("SIGNUP ERROR:", error);
+    }catch (error) {
+  console.log("SIGNUP ERROR:", error);
 
-      const message = error?.message || "";
+  setLoadingBtn(false);
 
-      const code =
-        error?.code ||
-        error?.error?.code ||
-        (message.includes("email-already-in-use")
-          ? "auth/email-already-in-use"
-          : message.includes("invalid-email")
-          ? "auth/invalid-email"
-          : message.includes("weak-password")
-          ? "auth/weak-password"
-          : null);
+  if (error.code === "auth/email-already-in-use") {
+    setEmailError("This email is already registered!");
+    toast.error("Email already exists!"); // ✅ ADD THIS
+    return;
+  }
 
-      if (code === "auth/email-already-in-use") {
-        setEmailError("This email is already registered!");
-        setLoadingBtn(false);
-        return;
-      }
-
-      if (code === "auth/invalid-email") {
-        toast.error("Invalid email format!");
-      } 
-      else if (code === "auth/weak-password") {
-        toast.error("Password is too weak!");
-      } 
-      else if (code === "auth/network-request-failed") {
-        toast.error("Network problem. Try again!");
-      } 
-      else {
-        toast.error(message || "Signup failed");
-      }
-
-      setLoadingBtn(false);
-    }
+  if (error.code === "auth/invalid-email") {
+    toast.error("Invalid email format!");
+  } 
+  else if (error.code === "auth/weak-password") {
+    toast.error("Password is too weak!");
+  } 
+  else if (error.code === "auth/network-request-failed") {
+    toast.error("Network problem. Try again!");
+  } 
+  else {
+    toast.error(error.message || "Signup failed");
+  }
+}
   };
 
   const handleGoogleSignup = async () => {
@@ -201,7 +190,9 @@ const Signup = () => {
                 required
                 placeholder="you@example.com"
                 onChange={() => setEmailError("")}
-                className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+                className={`w-full px-4 py-3 rounded-xl border ${
+                  emailError ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                } bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition`}
               />
 
               {emailError && (

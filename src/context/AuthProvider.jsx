@@ -26,10 +26,15 @@ const AuthProvider = ({ children }) => {
   // AUTH FUNCTIONS
   // =========================
 
-  const createUserWithEmailAndPasswordFunc = (email, password) => {
-    setLoading(true);
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
+  const createUserWithEmailAndPasswordFunc = async (email, password) => {
+  setLoading(true);
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    return result;
+  } finally {
+    setLoading(false); // ✅ ALWAYS run করবে
+  }
+};
 
   const updateProfileFunc = (displayName, photoURL) => {
     return updateProfile(auth.currentUser, { displayName, photoURL });
@@ -39,20 +44,35 @@ const AuthProvider = ({ children }) => {
     return sendEmailVerification(auth.currentUser);
   };
 
-  const signInWithEmailAndPasswordFunc = (email, password) => {
-    setLoading(true);
-    return signInWithEmailAndPassword(auth, email, password);
-  };
+  const signInWithEmailAndPasswordFunc = async (email, password) => {
+  setLoading(true);
+  try {
+    const result = await signInWithEmailAndPassword(auth, email, password);
+    return result;
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const signInWithGoogleFunc = () => {
-    setLoading(true);
-    return signInWithPopup(auth, googleProvider);
-  };
+  const signInWithGoogleFunc = async () => {
+  setLoading(true);
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    return result;
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const signInWithGithubFunc = () => {
-    setLoading(true);
-    return signInWithPopup(auth, githubProvider);
-  };
+  const signInWithGithubFunc = async () => {
+  setLoading(true);
+  try {
+    const result = await signInWithPopup(auth, githubProvider);
+    return result;
+  } finally {
+    setLoading(false);
+  }
+};
 
   const signoutUserFunc = async () => {
     setLoading(true);
