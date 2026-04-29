@@ -32,6 +32,7 @@ import ManageArtists from "../pages/Dashboard/ApproveArtists/ManageArtists";
 import Settings from "../pages/Dashboard/Settings/Settings"
 import Favorites from "../pages/Favorites/Favorites";
 import ForgotPassword from "../pages/ForgotPassword";
+import AuctionDetails from "../pages/AuctionDetails";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,14 @@ export const router = createBrowserRouter([
           <PrivateRoute><Artist></Artist></PrivateRoute> 
         )
       },
+      {
+  path: "/auction/:id",
+  element: (
+    <PrivateRoute>
+      <AuctionDetails />
+    </PrivateRoute>
+  )
+},
 
       {
         path: "/listing-details/:id",

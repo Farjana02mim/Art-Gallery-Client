@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const Artists = () => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
     // API থেকে latest approved artists fetch
-    fetch("http://localhost:3000/artists?status=approved") // approved artist
+    fetch(`${SERVER}/artists?status=approved`) // approved artist
       .then((res) => res.json())
       .then((data) => setArtists(data))
       .catch((err) => console.error("Failed to fetch artists:", err));

@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import ArtCard from "./ArtCard";
 import useAuth from "../hooks/useAuth";
 
-const SERVER = "http://localhost:3000";
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
 const TrendingArts = () => {
   const { user } = useAuth(); // logged-in user

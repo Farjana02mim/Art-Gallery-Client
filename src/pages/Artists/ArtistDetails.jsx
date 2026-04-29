@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const ArtistDetails = () => {
   const { id } = useParams();
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:3000/artists/${id}`) // backend এ single artist route
+    fetch(`${SERVER}/artists/${id}`) // backend এ single artist route
       .then((res) => res.json())
       .then((data) => {
         setArtist(data);

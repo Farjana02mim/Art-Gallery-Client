@@ -3,6 +3,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Card from "../components/Card";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const ArtworksGallery = () => {
   const [artworks, setArtworks] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -18,7 +20,7 @@ const ArtworksGallery = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch("http://localhost:3000/listing")
+    fetch(`${SERVER}/listing`)
       .then((res) => res.json())
       .then((data) => {
         setArtworks(data);
@@ -85,7 +87,7 @@ const ArtworksGallery = () => {
       </div>
 
       {/* 📱 Category Filter (scrollable on mobile) */}
-      <div className="flex gap-3 mb-8 overflow-x-auto pb-2 justify-center scrollbar-hide">
+      <div className="flex gap-3 mb-8 overflow-x-auto pb-2 md:justify-center scrollbar-hide">
         {categories.map((cat) => (
           <button
             key={cat}

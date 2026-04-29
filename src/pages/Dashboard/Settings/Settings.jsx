@@ -4,6 +4,8 @@ import axios from "axios";
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "../../../firebase/firebase.init";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const Settings = () => {
   const { user } = useContext(AuthContext);
   const [tab, setTab] = useState("profile");
@@ -28,7 +30,7 @@ const Settings = () => {
       setLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch(`http://localhost:3000/profile`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${SERVER}/profile`, { headers: { Authorization: `Bearer ${token}` } });
         if (res.status === 401) {
           setMessage("Unauthorized! Please login again.");
           return;
@@ -70,7 +72,7 @@ const Settings = () => {
       setUserLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch("http://localhost:3000/users", { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${SERVER}/users`, { headers: { Authorization: `Bearer ${token}` } });
         const data = await res.json();
         setUsers(data);
       } catch (err) {
@@ -88,7 +90,7 @@ const Settings = () => {
     setUpdating(true);
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:3000/users/update/${profile?._id}`, {
+      const res = await fetch(`${SERVER}/users/update/${profile?._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(profile),
@@ -121,7 +123,7 @@ const Settings = () => {
       }
       const updatedData = { ...artist, image: imageURL };
       delete updatedData.imageFile;
-      const res = await fetch(`http://localhost:3000/artists/update/${artist?._id}`, {
+      const res = await fetch(`${SERVER}/artists/update/${artist?._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(updatedData),
@@ -167,7 +169,7 @@ const Settings = () => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       const token = await getToken();
-      const res = await fetch(`http://localhost:3000/users/delete/${userId}`, {
+      const res = await fetch(`${SERVER}/users/delete/${userId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

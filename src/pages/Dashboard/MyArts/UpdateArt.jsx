@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const UpdateArt = () => {
   const { user } = useContext(AuthContext);
   const { id } = useParams();
@@ -28,7 +30,7 @@ const UpdateArt = () => {
   useEffect(() => {
     const fetchArt = async () => {
       try {
-        const res = await fetch(`http://localhost:3000/listing/${id}`);
+        const res = await fetch(`${SERVER}/listing/${id}`);
         if (!res.ok) throw new Error("Art not found");
 
         const data = await res.json();
@@ -99,7 +101,7 @@ const UpdateArt = () => {
         image: imageUrl,
       };
 
-      const res = await fetch(`http://localhost:3000/listing/${id}`, {
+      const res = await fetch(`${SERVER}/listing/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedArt),

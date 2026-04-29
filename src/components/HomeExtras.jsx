@@ -2,13 +2,18 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserFriends } from "react-icons/fa";
 
+// 🔥 backend URL (localhost + vercel support)
+const SERVER =
+  import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const HomeExtras = () => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/latest-artists")
+    fetch(`${SERVER}/latest-artists`)
       .then((res) => res.json())
-      .then((data) => setArtists(data));
+      .then((data) => setArtists(data))
+      .catch((err) => console.error("Failed to load artists", err));
   }, []);
 
   return (

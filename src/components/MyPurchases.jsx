@@ -17,9 +17,10 @@ const MyPurchases = () => {
 
     queryFn: async () => {
       const token = await user.getIdToken();
+      const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
       const res = await fetch(
-        `http://localhost:3000/myPurchases?email=${user.email}`,
+       `${SERVER}/myPurchases?email=${user.email}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

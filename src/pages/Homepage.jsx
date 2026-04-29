@@ -8,6 +8,8 @@ import ExtraSection from "./ExtraSection";
 import Reviews from "./Reviews/Reviews";
 import TrendingArts from "../components/TrendingArts";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const reviewsPromise = fetch('/reviews.json').then(res => res.json());
 
 const categories = [
@@ -34,7 +36,7 @@ const HomePage = () => {
   // Fetch latest artworks
 useEffect(() => {
   setLoading(true);
-  fetch("http://localhost:3000/latest-list")  
+  fetch(`${SERVER}/latest-list`)
     .then((res) => res.json())
     .then((data) => {
       setListings(Array.isArray(data) ? data : []);

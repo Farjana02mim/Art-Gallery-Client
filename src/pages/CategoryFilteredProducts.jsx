@@ -4,6 +4,8 @@ import Card from "../components/Card";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const CategoryFilteredProducts = () => {
   const { categoryName } = useParams();
   const [items, setItems] = useState([]);
@@ -16,9 +18,9 @@ const CategoryFilteredProducts = () => {
 
     // ✅ FIX: use /listing API
     const url =
-      decodedCategory === "All"
-        ? "http://localhost:3000/listing"
-        : `http://localhost:3000/listing?category=${decodedCategory}`;
+  decodedCategory === "All"
+    ? `${SERVER}/listing`
+    : `${SERVER}/listing?category=${decodedCategory}`;
 
     fetch(url)
       .then((res) => {

@@ -5,6 +5,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const AddListing = () => {
   const { user } = useContext(AuthContext);
   const location = useLocation();
@@ -94,7 +96,7 @@ const AddListing = () => {
         rating: Number(form.rating) || 0,
       };
 
-      const res = await fetch("http://localhost:3000/listing", {
+      const res = await fetch(`${SERVER}/listing`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(dataToSend),

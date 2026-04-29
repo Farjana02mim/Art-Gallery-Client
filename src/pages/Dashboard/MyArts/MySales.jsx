@@ -2,6 +2,8 @@ import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../../context/AuthContext";
 
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+
 const MySales = () => {
   const { user } = useContext(AuthContext);
 
@@ -12,7 +14,7 @@ const MySales = () => {
       const token = await user.getIdToken();
 
       const res = await fetch(
-        `http://localhost:3000/my-sales?email=${user.email}`,
+     `${SERVER}/my-sales?email=${user.email}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

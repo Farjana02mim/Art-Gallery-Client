@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth"; // your Firebase auth hook
-const SERVER = "http://localhost:3000";
+const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
 
 const ArtCard = ({ art }) => {
   const navigate = useNavigate();
