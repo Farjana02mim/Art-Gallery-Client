@@ -28,6 +28,12 @@ const AddListing = () => {
     rating: 0,
     views: 0,
     likes: 0,
+
+    // 🔥 AUCTION FIELD
+    isAuction: false,
+    startPrice: "",
+    startTime: "",
+    endTime: "",
   };
 
   const [form, setForm] = useState(initialForm);
@@ -58,6 +64,7 @@ const AddListing = () => {
     try {
       let imageUrl = "";
 
+      // 🖼️ Image upload
       if (form.imageFile) {
         try {
           const formData = new FormData();
@@ -75,6 +82,7 @@ const AddListing = () => {
         }
       }
 
+      // 🔥 FINAL DATA
       const dataToSend = {
         title: form.title,
         name: form.name,
@@ -82,7 +90,7 @@ const AddListing = () => {
         medium: form.medium,
         dimensions: form.dimensions,
         year: Number(form.year),
-        price: Number(form.price),
+        price: form.isAuction ? 0 : Number(form.price), // auction হলে price off
         description: form.description,
         location: form.location,
         country: form.country,
@@ -94,6 +102,12 @@ const AddListing = () => {
         likes: Number(form.likes) || 0,
         featured: form.featured,
         rating: Number(form.rating) || 0,
+
+        // 🔥 AUCTION SEND
+        isAuction: form.isAuction,
+        startPrice: Number(form.startPrice),
+        startTime: form.startTime,
+        endTime: form.endTime,
       };
 
       const res = await fetch(`${SERVER}/listing`, {
@@ -126,34 +140,15 @@ const AddListing = () => {
         </h2>
 
         <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <input
-            type="text"
-            name="title"
-            placeholder="Artwork Title"
-            value={form.title}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-            required
-          />
 
-          <input
-            type="text"
-            name="name"
-            placeholder="Artist Name"
-            value={form.name}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-            required
-          />
+          <input type="text" name="title" placeholder="Artwork Title"
+            value={form.title} onChange={handleChange} className="input input-bordered w-full" required />
 
-          {/* ✅ Updated Category */}
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          >
+          <input type="text" name="name" placeholder="Artist Name"
+            value={form.name} onChange={handleChange} className="input input-bordered w-full" required />
+
+          <select name="category" value={form.category} onChange={handleChange}
+            className="input input-bordered w-full">
             <option value="All">All</option>
             <option value="Folk">Folk</option>
             <option value="Liberation War">Liberation War</option>
@@ -166,83 +161,65 @@ const AddListing = () => {
             <option value="Illustration">Illustration</option>
           </select>
 
-          <input
-            type="text"
-            name="medium"
-            placeholder="Medium"
-            value={form.medium}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          />
+          <input type="text" name="medium" placeholder="Medium"
+            value={form.medium} onChange={handleChange} className="input input-bordered w-full" />
 
-          <input
-            type="text"
-            name="dimensions"
-            placeholder="Dimensions"
-            value={form.dimensions}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          />
+          <input type="text" name="dimensions" placeholder="Dimensions"
+            value={form.dimensions} onChange={handleChange} className="input input-bordered w-full" />
 
-          <input
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          />
+          <input type="number" name="year"
+            value={form.year} onChange={handleChange} className="input input-bordered w-full" />
 
+          {/* 🔥 PRICE */}
           <input
             type="number"
             name="price"
             placeholder="Price"
             value={form.price}
             onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
+            disabled={form.isAuction}
+            className="input input-bordered w-full"
           />
 
-          <input
-            type="text"
-            name="location"
-            placeholder="Location"
-            value={form.location}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          />
+          {/* 🔥 AUCTION TOGGLE */}
+          <div className="col-span-full flex items-center gap-3">
+            <input type="checkbox" name="isAuction"
+              checked={form.isAuction} onChange={handleChange} />
+            <label>Enable Auction</label>
+          </div>
 
-          <input
-            type="text"
-            name="country"
-            placeholder="Country"
-            value={form.country}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50"
-          />
+          {/* 🔥 AUCTION FIELDS */}
+          {form.isAuction && (
+            <>
+              <input type="number" name="startPrice" placeholder="Start Price"
+                value={form.startPrice} onChange={handleChange}
+                className="input input-bordered w-full" required />
 
-          <textarea
-            name="description"
-            placeholder="Description"
-            value={form.description}
-            onChange={handleChange}
-            className="input input-bordered w-full rounded bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-yellow-50 col-span-full"
-            rows="4"
-            required
-          />
+              <input type="datetime-local" name="startTime"
+                value={form.startTime} onChange={handleChange}
+                className="input input-bordered w-full" required />
 
-          <input
-            type="file"
-            name="imageFile"
-            accept="image/*"
-            onChange={handleChange}
-            className="col-span-full"
-            required
-          />
+              <input type="datetime-local" name="endTime"
+                value={form.endTime} onChange={handleChange}
+                className="input input-bordered w-full" required />
+            </>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="col-span-full btn btn-primary"
-          >
+          <input type="text" name="location" placeholder="Location"
+            value={form.location} onChange={handleChange} className="input input-bordered w-full" />
+
+          <input type="text" name="country" placeholder="Country"
+            value={form.country} onChange={handleChange} className="input input-bordered w-full" />
+
+          <textarea name="description" placeholder="Description"
+            value={form.description} onChange={handleChange}
+            className="input input-bordered col-span-full" required />
+
+          <input type="file" name="imageFile" accept="image/*"
+            onChange={handleChange} className="col-span-full" required />
+
+          <button type="submit" disabled={loading}
+            className="col-span-full btn btn-primary">
             {loading ? "Adding..." : "Add Artwork"}
           </button>
         </form>
