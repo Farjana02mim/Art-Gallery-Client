@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { AuthContext } from "../../../context/AuthContext";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const UpdateArt = () => {
   const { user } = useContext(AuthContext);

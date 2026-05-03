@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER ="https://art-gallery-server-ashen.vercel.app";
 
 const ArtistDetails = () => {
   const { id } = useParams();

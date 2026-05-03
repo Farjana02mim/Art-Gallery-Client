@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import ArtCard from "../../components/ArtCard";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER ="https://art-gallery-server-ashen.vercel.app";
 
 const Favorites = () => {
   const [favoriteArts, setFavoriteArts] = useState([]);

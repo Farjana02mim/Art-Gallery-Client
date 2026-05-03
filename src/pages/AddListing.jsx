@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER ="https://art-gallery-server-ashen.vercel.app";
 
 const AddListing = () => {
   const { user } = useContext(AuthContext);

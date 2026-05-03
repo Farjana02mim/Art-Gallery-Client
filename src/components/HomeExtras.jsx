@@ -2,24 +2,36 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserFriends } from "react-icons/fa";
 
-// 🔥 backend URL (localhost + vercel support)
-const SERVER =
-  import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER ="https://art-gallery-server-ashen.vercel.app";
 
 const HomeExtras = () => {
   const [artists, setArtists] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    setLoading(true);
+    setError(null);
+
     fetch(`${SERVER}/latest-artists`)
-      .then((res) => res.json())
-      .then((data) => setArtists(data))
-      .catch((err) => console.error("Failed to load artists", err));
+      .then((res) => {
+        if (!res.ok) throw new Error(`Server error: ${res.status}`);
+        return res.json();
+      })
+      .then((data) => {
+        setArtists(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.error("Failed to load artists:", err);
+        setError("Failed to load artists. Please try again later.");
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   return (
     <section className="w-11/12 mx-auto py-16 relative">
 
-      {/* 🔥 Header */}
+      {/* Header */}
       <div className="text-center max-w-2xl mx-auto mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
           Meet Our <span className="text-yellow-500">Artists</span>
@@ -29,7 +41,7 @@ const HomeExtras = () => {
         </p>
       </div>
 
-      {/* 🔥 View All Button */}
+      {/* View All Button */}
       <Link to="/artists">
         <button className="absolute top-6 right-0 md:right-2 bg-yellow-500 text-black px-4 py-2 rounded-full hover:bg-yellow-600 transition-all duration-300 flex items-center gap-2 shadow-lg">
           <FaUserFriends />
@@ -37,38 +49,87 @@ const HomeExtras = () => {
         </button>
       </Link>
 
-      {/* 🔥 Artist Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      {/* Loading State */}
+      {loading && (
+        <div className="flex items-center justify-center min-h-[200px]">
+          <div className="w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full animate-spin"></div>
+        </div>
+      )}
 
-        {artists.map((artist) => (
-          <div
-            key={artist._id}
-            className="group backdrop-blur-lg border rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 shadow-lg
-            bg-white border-gray-200 hover:bg-white
-            dark:bg-black dark:border-white/10 dark:hover:bg-white/8"
+      {/* Error State */}
+      {!loading && error && (
+        <div className="text-center py-12">
+          <p className="text-red-400 text-sm">{error}</p>
+          <button
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              fetch(`${SERVER}/latest-artists`)
+                .then((res) => {
+                  if (!res.ok) throw new Error(`Server error: ${res.status}`);
+                  return res.json();
+                })
+                .then((data) => setArtists(Array.isArray(data) ? data : []))
+                .catch((err) => setError("Failed to load artists. Please try again later."))
+                .finally(() => setLoading(false));
+            }}
+            className="mt-4 px-4 py-2 bg-yellow-500 text-black rounded-full text-sm hover:bg-yellow-600 transition"
           >
-            {/* Image */}
-            <div className="overflow-hidden rounded-full w-32 h-32 mx-auto mb-4">
-              <img
-                src={artist.image}
-                alt={artist.name}
-                className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-              />
-            </div>
+            Retry
+          </button>
+        </div>
+      )}
 
-            {/* Name */}
-            <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
-              {artist.name}
-            </h3>
+      {/* Empty State */}
+      {!loading && !error && artists.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-400 text-sm">No artists found yet.</p>
+        </div>
+      )}
 
-            {/* Title */}
-            <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm">
-              {artist.title}
-            </p>
-          </div>
-        ))}
+      {/* Artist Cards */}
+      {!loading && !error && artists.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+          {artists.map((artist) => (
+            <Link
+              to={`/artists/${artist._id}`}
+              key={artist._id}
+              className="group backdrop-blur-lg border rounded-2xl p-6 text-center transition-all duration-300 hover:scale-105 shadow-lg
+                bg-white border-gray-200 hover:bg-yellow-50
+                dark:bg-black dark:border-white/10 dark:hover:bg-white/5 block"
+            >
+              {/* Avatar */}
+              <div className="overflow-hidden rounded-full w-32 h-32 mx-auto mb-4 ring-2 ring-yellow-400/30 group-hover:ring-yellow-500 transition">
+                <img
+                  src={artist.image || "/placeholder-artist.png"}
+                  alt={artist.name}
+                  className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+                  onError={(e) => {
+                    e.target.src = "/placeholder-artist.png";
+                  }}
+                />
+              </div>
 
-      </div>
+              {/* Name */}
+              <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white">
+                {artist.name}
+              </h3>
+
+              {/* Title */}
+              <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm">
+                {artist.title}
+              </p>
+
+              {/* Experience badge */}
+              {artist.experience && (
+                <span className="inline-block mt-3 px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 text-xs rounded-full">
+                  {artist.experience}
+                </span>
+              )}
+            </Link>
+          ))}
+        </div>
+      )}
     </section>
   );
 };

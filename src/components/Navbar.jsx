@@ -7,6 +7,8 @@ import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { ClockLoader } from "react-spinners";
 
+//https://art-gallery-85d90.web.app/
+
 const Navbar = () => {
   const { user, signoutUserFunc, setUser, loading } = useContext(AuthContext);
 

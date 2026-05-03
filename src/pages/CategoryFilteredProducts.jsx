@@ -4,7 +4,7 @@ import Card from "../components/Card";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const CategoryFilteredProducts = () => {
   const { categoryName } = useParams();

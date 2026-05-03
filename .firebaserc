@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "art-gallery-85d90",
+    "prod": "art-gallery-85d90"
+  },
+  "targets": {},
+  "etags": {}
+}

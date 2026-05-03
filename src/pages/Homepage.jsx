@@ -8,7 +8,7 @@ import ExtraSection from "./ExtraSection";
 import Reviews from "./Reviews/Reviews";
 import TrendingArts from "../components/TrendingArts";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const reviewsPromise = fetch('/reviews.json').then(res => res.json());
 

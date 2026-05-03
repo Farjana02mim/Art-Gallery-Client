@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useAuth from "../hooks/useAuth";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const ArtCard = ({ art }) => {
   const navigate = useNavigate();

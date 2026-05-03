@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL?.trim() || "http://localhost:3000",
+  baseURL: import.meta.env.VITE_SERVER_URL?.trim() || "https://art-gallery-server-ashen.vercel.app",
 });
 
 const useAxiosSecure = () => {

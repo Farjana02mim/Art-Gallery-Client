@@ -4,7 +4,7 @@ import axios from "axios";
 import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
 import { auth } from "../../../firebase/firebase.init";
 
-const SERVER = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
