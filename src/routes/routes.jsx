@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
       { path: "/signin", element: <Signin /> },
       { path: "/artist", 
         element: (
-          <PrivateRoute><Artist></Artist></PrivateRoute> 
+          <Artist></Artist>
         )
       },
       {
@@ -61,17 +61,17 @@ export const router = createBrowserRouter([
       {
         path: "/listing-details/:id",
         element: (
-            <PrivateRoute><ListingDetails></ListingDetails></PrivateRoute> 
+            <ListingDetails></ListingDetails>
         ),
       },
        { path: "/artists", 
         element: (
-          <PrivateRoute><Artists></Artists></PrivateRoute> 
+          <Artists></Artists>
         )
       },
       {
   path: "/artists/:id",
-  element: <PrivateRoute><ArtistDetails></ArtistDetails></PrivateRoute> 
+  element: <ArtistDetails></ArtistDetails>
 },
 {
   path: "/forgot-password",

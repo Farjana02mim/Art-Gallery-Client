@@ -75,14 +75,11 @@ const Navbar = () => {
         <MyLink to="/gallery">Gallery</MyLink>
       </li>
       <li onClick={() => setMenuOpen(false)}>
-        <MyLink to="/coverage">Coverage</MyLink>
-      </li>
+            <MyLink to="/artists">Artists</MyLink>
+          </li>
 
       {user && (
         <>
-          <li onClick={() => setMenuOpen(false)}>
-            <MyLink to="/artists">Artists</MyLink>
-          </li>
           <li onClick={() => setMenuOpen(false)}>
             <MyLink to="/dashboard/my-purchases">
               My Purchases
