@@ -29,7 +29,7 @@ import MySales from "../pages/Dashboard/MyArts/MySales";
 import Statistics from "../pages/Dashboard/ApproveArtists/Statistics";
 import MyProfile from "../pages/Dashboard/MyProfile/MyProfile";
 import ManageArtists from "../pages/Dashboard/ApproveArtists/ManageArtists";
-import Settings from "../pages/Dashboard/Settings/Settings"
+import Settings from "../pages/Dashboard/Settings/Settings";
 import Favorites from "../pages/Favorites/Favorites";
 import ForgotPassword from "../pages/ForgotPassword";
 import AuctionDetails from "../pages/AuctionDetails";
@@ -41,107 +41,107 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "/gallery", element: <ArtworksGallery /> },
-      { path: "/category-filtered-product/:categoryName", element: <CategoryFilteredProducts /> },
+      {
+        path: "/category-filtered-product/:categoryName",
+        element: <CategoryFilteredProducts />,
+      },
       { path: "/signup", element: <Signup /> },
       { path: "/signin", element: <Signin /> },
-      { path: "/artist", 
-        element: (
-          <Artist></Artist>
-        )
-      },
+      { path: "/artist", element: <Artist></Artist> },
       {
-  path: "/auction/:id",
-  element: (
-    <PrivateRoute>
-      <AuctionDetails />
-    </PrivateRoute>
-  )
-},
+        path: "/auction/:id",
+        element: (
+          <PrivateRoute>
+            <AuctionDetails />
+          </PrivateRoute>
+        ),
+      },
 
       {
         path: "/listing-details/:id",
-        element: (
-            <ListingDetails></ListingDetails>
-        ),
+        element: <ListingDetails></ListingDetails>,
       },
-       { path: "/artists", 
-        element: (
-          <Artists></Artists>
-        )
+      { path: "/artists", element: <Artists></Artists> },
+      {
+        path: "/artists/:id",
+        element: <ArtistDetails></ArtistDetails>,
       },
       {
-  path: "/artists/:id",
-  element: <ArtistDetails></ArtistDetails>
-},
-{
-  path: "/forgot-password",
-  element: <ForgotPassword />
-},
+        path: "/forgot-password",
+        element: <ForgotPassword />,
+      },
       {
-        path: 'coverage',
+        path: "coverage",
         Component: Coverage,
-        loader: () => fetch('/serviceCenters.json').then(res=>res.json())
+        loader: () => fetch("/serviceCenters.json").then((res) => res.json()),
       },
-      
     ],
   },
 
-{
-  path: "dashboard",
-  element: (
-    <PrivateRoute>
-      <DashboardLayout />
-    </PrivateRoute>
-  ),
-  children: [
+  {
+    path: "dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        path: "profile",
+        Component: MyProfile,
+      },
+      {
+        path: "settings",
+        Component: Settings,
+      },
 
-    {
-      path: "profile",     // fixed
-      Component: MyProfile
-    },
-    {
-      path: "settings",     // fixed
-      Component: Settings
-    },
+      //user route
+      {
+        path: "my-purchases",
+        Component: MyPurchases,
+      },
+      {
+        path: "favorites",
+        Component: Favorites,
+      },
+      {
+        path: "payment/:artId",
+        Component: Payment,
+      },
+      {
+        path: "payment-success",
+        Component: PaymentSuccess,
+      },
+      {
+        path: "payment-cancelled",
+        Component: PaymentCancelled,
+      },
 
-
-    //user route
-    {
-      path: "my-purchases",     // fixed
-      Component: MyPurchases
-    },
-    {
-      path: "favorites",     // fixed
-      Component: Favorites
-    },
-    {
-      path: "payment/:artId",
-      Component: Payment
-    },
-    {
-      path: "payment-success",
-      Component: PaymentSuccess
-    },
-    {
-      path: "payment-cancelled",
-      Component: PaymentCancelled
-    },
-    //artist route
-
-
-    {
-      path: "my-arts",
-      element: <ArtistRoute><MyArts></MyArts></ArtistRoute>
-    },
-    {
-      path: "update-art/:id",   // fixed
-      element: <ArtistRoute><UpdateArt /></ArtistRoute>
-    },
-    {
-      path: "my-sales",   // fixed
-      element: <ArtistRoute><MySales /></ArtistRoute>
-    },
-    {
+      {
+        path: "my-arts",
+        element: (
+          <ArtistRoute>
+            <MyArts></MyArts>
+          </ArtistRoute>
+        ),
+      },
+      {
+        path: "update-art/:id",
+        element: (
+          <ArtistRoute>
+            <UpdateArt />
+          </ArtistRoute>
+        ),
+      },
+      {
+        path: "my-sales",
+        element: (
+          <ArtistRoute>
+            <MySales />
+          </ArtistRoute>
+        ),
+      },
+      {
         path: "add-listing",
         element: (
           <ArtistRoute>
@@ -150,26 +150,41 @@ export const router = createBrowserRouter([
         ),
       },
 
-
       //admin route
-    {
-      path: "approve-artists",
-      element: <AdminRoute><ApproveArtists></ApproveArtists></AdminRoute>
-    },
-    {
-      path: "users-management",
-      element: <AdminRoute><UsersManagement></UsersManagement></AdminRoute>
-    },
-    {
-      path: "manage-artists",
-      element: <AdminRoute><ManageArtists></ManageArtists></AdminRoute>
-    },
-    {
-      path: "statistics",
-      element: <AdminRoute><Statistics></Statistics></AdminRoute>
-    }
-  ]
-},
+      {
+        path: "approve-artists",
+        element: (
+          <AdminRoute>
+            <ApproveArtists></ApproveArtists>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "users-management",
+        element: (
+          <AdminRoute>
+            <UsersManagement></UsersManagement>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "manage-artists",
+        element: (
+          <AdminRoute>
+            <ManageArtists></ManageArtists>
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "statistics",
+        element: (
+          <AdminRoute>
+            <Statistics></Statistics>
+          </AdminRoute>
+        ),
+      },
+    ],
+  },
 
   // 404 Page route outside MainLayout
   { path: "*", element: <NotFound /> },

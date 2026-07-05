@@ -29,22 +29,118 @@ import slide15 from "../assets/Banner/slide11.jpg";
 import slide16 from "../assets/Banner/slide12.jfif";
 
 const slides = [
-  { id: 1, image: slide1, title: "Discover Stunning Artworks", subtitle: "Explore masterpieces from talented artists around the world.", path: "/gallery" },
-  { id: 2, image: slide2, title: "Bring Art Home", subtitle: "Find the perfect piece to enhance your living space.", path: "/gallery" },
-  { id: 3, image: slide3, title: "Support Creative Minds", subtitle: "Connect directly with artists and their unique creations.", path: "/gallery" },
-  { id: 4, image: slide4, title: "Art for Every Taste", subtitle: "From classic to contemporary, discover artworks that inspire.", path: "/gallery" },
-  { id: 5, image: slide5, title: "Unique Collections", subtitle: "Browse curated collections from emerging artists.", path: "/gallery" },
-  { id: 6, image: slide6, title: "Modern Aesthetics", subtitle: "Add a modern touch to your interior.", path: "/gallery" },
-  { id: 7, image: slide7, title: "Classic Beauty", subtitle: "Timeless art that never fades.", path: "/gallery" },
-  { id: 8, image: slide8, title: "Creative Expression", subtitle: "Every piece tells a unique story.", path: "/gallery" },
-  { id: 9, image: slide9, title: "Bold & Vibrant", subtitle: "Colorful artworks to energize your space.", path: "/gallery" },
-  { id: 10, image: slide10, title: "Minimal & Elegant", subtitle: "Less is more with minimalist art.", path: "/gallery" },
-  { id: 11, image: slide11, title: "Digital Masterpieces", subtitle: "Explore the future of digital art.", path: "/gallery" },
-  { id: 12, image: slide12, title: "Handcrafted Art", subtitle: "Authentic handmade creations.", path: "/gallery" },
-  { id: 13, image: slide13, title: "Wall Perfection", subtitle: "Turn your walls into a gallery.", path: "/gallery" },
-  { id: 14, image: slide14, title: "Art That Inspires", subtitle: "Feel inspired every day.", path: "/gallery" },
-  { id: 15, image: slide15, title: "Exclusive Pieces", subtitle: "Own limited edition artworks.", path: "/gallery" },
-  { id: 16, image: slide16, title: "Gallery Experience", subtitle: "Experience art like never before.", path: "/gallery" },
+  {
+    id: 1,
+    image: slide1,
+    title: "Discover Stunning Artworks",
+    subtitle: "Explore masterpieces from talented artists around the world.",
+    path: "/gallery",
+  },
+  {
+    id: 2,
+    image: slide2,
+    title: "Bring Art Home",
+    subtitle: "Find the perfect piece to enhance your living space.",
+    path: "/gallery",
+  },
+  {
+    id: 3,
+    image: slide3,
+    title: "Support Creative Minds",
+    subtitle: "Connect directly with artists and their unique creations.",
+    path: "/gallery",
+  },
+  {
+    id: 4,
+    image: slide4,
+    title: "Art for Every Taste",
+    subtitle: "From classic to contemporary, discover artworks that inspire.",
+    path: "/gallery",
+  },
+  {
+    id: 5,
+    image: slide5,
+    title: "Unique Collections",
+    subtitle: "Browse curated collections from emerging artists.",
+    path: "/gallery",
+  },
+  {
+    id: 6,
+    image: slide6,
+    title: "Modern Aesthetics",
+    subtitle: "Add a modern touch to your interior.",
+    path: "/gallery",
+  },
+  {
+    id: 7,
+    image: slide7,
+    title: "Classic Beauty",
+    subtitle: "Timeless art that never fades.",
+    path: "/gallery",
+  },
+  {
+    id: 8,
+    image: slide8,
+    title: "Creative Expression",
+    subtitle: "Every piece tells a unique story.",
+    path: "/gallery",
+  },
+  {
+    id: 9,
+    image: slide9,
+    title: "Bold & Vibrant",
+    subtitle: "Colorful artworks to energize your space.",
+    path: "/gallery",
+  },
+  {
+    id: 10,
+    image: slide10,
+    title: "Minimal & Elegant",
+    subtitle: "Less is more with minimalist art.",
+    path: "/gallery",
+  },
+  {
+    id: 11,
+    image: slide11,
+    title: "Digital Masterpieces",
+    subtitle: "Explore the future of digital art.",
+    path: "/gallery",
+  },
+  {
+    id: 12,
+    image: slide12,
+    title: "Handcrafted Art",
+    subtitle: "Authentic handmade creations.",
+    path: "/gallery",
+  },
+  {
+    id: 13,
+    image: slide13,
+    title: "Wall Perfection",
+    subtitle: "Turn your walls into a gallery.",
+    path: "/gallery",
+  },
+  {
+    id: 14,
+    image: slide14,
+    title: "Art That Inspires",
+    subtitle: "Feel inspired every day.",
+    path: "/gallery",
+  },
+  {
+    id: 15,
+    image: slide15,
+    title: "Exclusive Pieces",
+    subtitle: "Own limited edition artworks.",
+    path: "/gallery",
+  },
+  {
+    id: 16,
+    image: slide16,
+    title: "Gallery Experience",
+    subtitle: "Experience art like never before.",
+    path: "/gallery",
+  },
 ];
 
 const Banner = () => {
@@ -52,7 +148,6 @@ const Banner = () => {
 
   return (
     <div className="w-full h-[500px] md:h-[600px] relative group">
-
       <Swiper
         modules={[Autoplay, Pagination, Navigation, EffectFade]}
         slidesPerView={1}
@@ -79,7 +174,6 @@ const Banner = () => {
         {slides.map((slide) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full overflow-hidden">
-
               <motion.img
                 src={slide.image}
                 alt={slide.title}
@@ -92,7 +186,6 @@ const Banner = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 to-black/20"></div>
 
               <div className="absolute inset-0 flex flex-col justify-center px-6 md:px-20 text-white max-w-3xl">
-
                 <motion.h2
                   className="text-2xl md:text-5xl font-bold mb-4"
                   initial={{ opacity: 0, y: -30 }}
@@ -126,19 +219,18 @@ const Banner = () => {
                 >
                   Explore Now →
                 </motion.button>
-
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* 🔥 Progress Bar */}
+      {/* Progress Bar */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20">
         <div className="progress-bar h-full bg-white transition-all duration-200"></div>
       </div>
 
-      {/* 🔥 Desktop Arrows */}
+      {/*  Desktop Arrows */}
       <div className="hidden md:block custom-prev absolute left-5 top-1/2 -translate-y-1/2 z-10 cursor-pointer">
         <div className="bg-white/20 backdrop-blur-md p-3 rounded-full hover:bg-white/40 hover:scale-110 transition-all duration-300 shadow-lg">
           <FiChevronLeft size={26} className="text-white" />
@@ -150,7 +242,6 @@ const Banner = () => {
           <FiChevronRight size={26} className="text-white" />
         </div>
       </div>
-
     </div>
   );
 };

@@ -21,7 +21,7 @@ const Payment = () => {
 
       const res = await axiosSecure.post(
         "/create-checkout-session",
-        paymentInfo
+        paymentInfo,
       );
 
       if (res.data?.url) {

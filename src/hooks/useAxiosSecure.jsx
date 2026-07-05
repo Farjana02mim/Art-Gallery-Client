@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const axiosSecure = axios.create({
-  baseURL: import.meta.env.VITE_SERVER_URL?.trim() || "https://art-gallery-server-ashen.vercel.app",
+  baseURL:
+    import.meta.env.VITE_SERVER_URL?.trim() ||
+    "https://art-gallery-server-ashen.vercel.app",
 });
 
 const useAxiosSecure = () => {
@@ -12,7 +14,6 @@ const useAxiosSecure = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-
     // ===== Request Interceptor =====
     const requestInterceptor = axiosSecure.interceptors.request.use(
       (config) => {
@@ -22,7 +23,7 @@ const useAxiosSecure = () => {
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     // ===== Response Interceptor =====
@@ -38,7 +39,7 @@ const useAxiosSecure = () => {
           navigate("/login");
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     // ===== Cleanup on unmount =====
@@ -46,7 +47,6 @@ const useAxiosSecure = () => {
       axiosSecure.interceptors.request.eject(requestInterceptor);
       axiosSecure.interceptors.response.eject(responseInterceptor);
     };
-
   }, [signOut, navigate]);
 
   return axiosSecure;

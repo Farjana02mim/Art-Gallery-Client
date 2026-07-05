@@ -1,11 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import {
-  FaUsers,
-  FaUserTie,
-  FaPalette,
-  FaDollarSign,
-} from "react-icons/fa";
+import { FaUsers, FaUserTie, FaPalette, FaDollarSign } from "react-icons/fa";
 
 const Statistics = () => {
   const axiosSecure = useAxiosSecure();
@@ -68,7 +63,6 @@ const Statistics = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-
       {/* Header */}
       <div className="mb-10 text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">
@@ -102,7 +96,6 @@ const Statistics = () => {
 
       {/* Extra Section (Optional future charts) */}
       <div className="mt-12 grid md:grid-cols-2 gap-6">
-
         <div className="p-6 bg-white dark:bg-gray-800 rounded-2xl shadow-md">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">
             Growth Overview
@@ -120,9 +113,7 @@ const Statistics = () => {
             (Recent sales, users, etc.)
           </p>
         </div>
-
       </div>
-
     </div>
   );
 };

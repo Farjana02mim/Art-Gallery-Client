@@ -61,7 +61,7 @@ const MyProfile = () => {
         const res = await axiosSecure.post(
           `/upload/profile-image`,
           formDataImg,
-          { headers: { "Content-Type": "multipart/form-data" } }
+          { headers: { "Content-Type": "multipart/form-data" } },
         );
         updatedPhotoURL = res.data.url;
       }
@@ -81,10 +81,7 @@ const MyProfile = () => {
         if (formData.portfolio) artistUpdate.portfolio = formData.portfolio;
         if (formData.experience) artistUpdate.experience = formData.experience;
 
-        await axiosSecure.patch(
-          `/artists/update/${profile._id}`,
-          artistUpdate
-        );
+        await axiosSecure.patch(`/artists/update/${profile._id}`, artistUpdate);
       }
 
       Swal.fire({
@@ -111,20 +108,21 @@ const MyProfile = () => {
     );
 
   return (
-    <div className="min-h-screen py-10 px-4 
+    <div
+      className="min-h-screen py-10 px-4 
       bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 
-      dark:from-gray-900 dark:via-gray-950 dark:to-black">
-
-      <div className="max-w-4xl mx-auto p-8 
+      dark:from-gray-900 dark:via-gray-950 dark:to-black"
+    >
+      <div
+        className="max-w-4xl mx-auto p-8 
         bg-white dark:bg-gray-900 
-        rounded-2xl shadow-xl">
-
+        rounded-2xl shadow-xl"
+      >
         <h2 className="text-3xl font-bold mb-8 text-gray-800 dark:text-white text-center">
           👤 My Profile
         </h2>
 
         <div className="flex flex-col md:flex-row gap-10">
-
           {/* Avatar */}
           <div className="flex flex-col items-center">
             <img
@@ -142,16 +140,17 @@ const MyProfile = () => {
               />
             )}
 
-            <span className="mt-4 px-3 py-1 text-xs rounded-full 
+            <span
+              className="mt-4 px-3 py-1 text-xs rounded-full 
               bg-indigo-100 text-indigo-600 
-              dark:bg-indigo-900 dark:text-indigo-300 font-semibold">
+              dark:bg-indigo-900 dark:text-indigo-300 font-semibold"
+            >
               {profile.role?.toUpperCase()}
             </span>
           </div>
 
           {/* Info */}
           <div className="flex-1 space-y-5">
-
             {/* Name */}
             <div>
               <label className="font-semibold text-gray-700 dark:text-gray-300">
@@ -301,7 +300,6 @@ const MyProfile = () => {
                 </button>
               )}
             </div>
-
           </div>
         </div>
       </div>

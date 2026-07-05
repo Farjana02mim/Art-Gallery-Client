@@ -27,14 +27,18 @@ const AuthProvider = ({ children }) => {
   // =========================
 
   const createUserWithEmailAndPasswordFunc = async (email, password) => {
-  setLoading(true);
-  try {
-    const result = await createUserWithEmailAndPassword(auth, email, password);
-    return result;
-  } finally {
-    setLoading(false); // ✅ ALWAYS run করবে
-  }
-};
+    setLoading(true);
+    try {
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const updateProfileFunc = (displayName, photoURL) => {
     return updateProfile(auth.currentUser, { displayName, photoURL });
@@ -45,34 +49,34 @@ const AuthProvider = ({ children }) => {
   };
 
   const signInWithEmailAndPasswordFunc = async (email, password) => {
-  setLoading(true);
-  try {
-    const result = await signInWithEmailAndPassword(auth, email, password);
-    return result;
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const signInWithGoogleFunc = async () => {
-  setLoading(true);
-  try {
-    const result = await signInWithPopup(auth, googleProvider);
-    return result;
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const signInWithGithubFunc = async () => {
-  setLoading(true);
-  try {
-    const result = await signInWithPopup(auth, githubProvider);
-    return result;
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    try {
+      const result = await signInWithPopup(auth, githubProvider);
+      return result;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const signoutUserFunc = async () => {
     setLoading(true);
@@ -152,9 +156,7 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={authInfo}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={authInfo}>{children}</AuthContext.Provider>
   );
 };
 

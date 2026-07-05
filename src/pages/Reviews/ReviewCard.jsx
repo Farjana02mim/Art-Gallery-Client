@@ -1,13 +1,18 @@
-import React from 'react'
-import { FaQuoteLeft, FaStar } from 'react-icons/fa'
+import React from "react";
+import { FaQuoteLeft, FaStar } from "react-icons/fa";
 
 const ReviewCard = ({ review }) => {
-  const { userName, review: testimonial, user_photoURL, ratings, date } = review
+  const {
+    userName,
+    review: testimonial,
+    user_photoURL,
+    ratings,
+    date,
+  } = review;
 
   return (
     <div className="card max-w-md bg-base-100 shadow-xl p-6">
       <div className="card-body gap-4">
-
         {/* Quote Icon */}
         <FaQuoteLeft className="text-primary text-3xl" />
 
@@ -19,10 +24,12 @@ const ReviewCard = ({ review }) => {
           {Array.from({ length: 5 }, (_, i) => (
             <FaStar
               key={i}
-              className={`text-yellow-400 ${i < Math.round(ratings) ? '' : 'opacity-40'}`}
+              className={`text-yellow-400 ${i < Math.round(ratings) ? "" : "opacity-40"}`}
             />
           ))}
-          <span className="text-sm text-base-content/50 ml-2">{ratings.toFixed(1)}</span>
+          <span className="text-sm text-base-content/50 ml-2">
+            {ratings.toFixed(1)}
+          </span>
         </div>
 
         {/* User Info */}
@@ -35,13 +42,14 @@ const ReviewCard = ({ review }) => {
 
           <div>
             <h4 className="font-semibold">{userName}</h4>
-            <p className="text-sm text-base-content/60">{new Date(date).toLocaleDateString()}</p>
+            <p className="text-sm text-base-content/60">
+              {new Date(date).toLocaleDateString()}
+            </p>
           </div>
         </div>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ReviewCard
+export default ReviewCard;

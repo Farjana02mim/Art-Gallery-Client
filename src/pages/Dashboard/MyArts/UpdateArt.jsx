@@ -87,7 +87,7 @@ const UpdateArt = () => {
 
         const imgRes = await axios.post(
           `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
-          formData
+          formData,
         );
         imageUrl = imgRes.data.data.url;
       }

@@ -35,7 +35,6 @@ const ListingDetails = () => {
         await fetch(`${SERVER_URL}/listing/views/${id}`, {
           method: "PATCH",
         });
-
       } catch (err) {
         toast.error(err.message);
       } finally {
@@ -64,7 +63,6 @@ const ListingDetails = () => {
 
         const data = await res.json();
         setPurchased(data.purchased);
-
       } catch (err) {
         console.log(err);
       } finally {
@@ -84,7 +82,7 @@ const ListingDetails = () => {
         method: "PATCH",
       });
 
-      setListing(prev => ({
+      setListing((prev) => ({
         ...prev,
         likes: (prev.likes || 0) + 1,
       }));
@@ -101,7 +99,6 @@ const ListingDetails = () => {
       if (favData.success) {
         toast.success("Added to favorites 💖");
       }
-
     } catch (err) {
       toast.error("Action failed");
     }
@@ -142,25 +139,20 @@ const ListingDetails = () => {
       }
 
       window.open(data.downloadUrl, "_blank");
-
     } catch (err) {
       toast.error(err.message);
     }
   };
 
   if (loading || !listing) {
-    return (
-      <p className="text-center mt-10 text-gray-600">Loading...</p>
-    );
+    return <p className="text-center mt-10 text-gray-600">Loading...</p>;
   }
 
   return (
     <div className="max-w-5xl mx-auto py-10 px-4 space-y-6">
-
       <ToastContainer />
 
       <div className="flex flex-col md:flex-row gap-6 bg-white dark:bg-gray-800 rounded-xl shadow-md p-6">
-
         {/* IMAGE */}
         <img
           src={listing.image}
@@ -170,21 +162,24 @@ const ListingDetails = () => {
 
         {/* DETAILS */}
         <div className="flex-1 flex flex-col justify-between">
-
           <div>
             <h1 className="text-3xl font-bold mb-2">{listing.title}</h1>
 
-            <p><b>Artist:</b> {listing.name}</p>
-            <p><b>Category:</b> {listing.category}</p>
-            <p><b>Year:</b> {listing.year}</p>
+            <p>
+              <b>Artist:</b> {listing.name}
+            </p>
+            <p>
+              <b>Category:</b> {listing.category}
+            </p>
+            <p>
+              <b>Year:</b> {listing.year}
+            </p>
 
             <p className="text-green-600 text-lg font-semibold">
               ${listing.price}
             </p>
 
-            <p className="text-gray-600 mb-4">
-              {listing.description}
-            </p>
+            <p className="text-gray-600 mb-4">{listing.description}</p>
 
             <div className="flex gap-6 text-sm text-gray-600">
               <span>👁 {listing.views || 0}</span>
@@ -195,7 +190,6 @@ const ListingDetails = () => {
 
           {/* BUTTONS */}
           <div className="flex flex-wrap gap-3 mt-6">
-
             <button
               onClick={handleLike}
               className="px-4 py-2 bg-pink-500 text-white rounded-lg"
@@ -205,13 +199,13 @@ const ListingDetails = () => {
 
             {/* 🔥 AUCTION BUTTON */}
             {listing?.isAuction && (
-  <button
-    onClick={handleAuction}
-    className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
-  >
-    🔥 Join Auction
-  </button>
-)}
+              <button
+                onClick={handleAuction}
+                className="px-4 py-2 bg-yellow-500 text-white rounded-lg"
+              >
+                🔥 Join Auction
+              </button>
+            )}
 
             {checkingPurchase ? (
               <button className="px-4 py-2 bg-gray-300 rounded-lg">
@@ -232,9 +226,7 @@ const ListingDetails = () => {
                 Buy Now
               </button>
             )}
-
           </div>
-
         </div>
       </div>
     </div>

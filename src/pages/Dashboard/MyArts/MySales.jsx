@@ -2,25 +2,26 @@ import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { AuthContext } from "../../../context/AuthContext";
 
-const SERVER ="https://art-gallery-server-ashen.vercel.app";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const MySales = () => {
   const { user } = useContext(AuthContext);
 
-  const { data: sales = [], isLoading, error } = useQuery({
+  const {
+    data: sales = [],
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["my-sales", user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
       const token = await user.getIdToken();
 
-      const res = await fetch(
-     `${SERVER}/my-sales?email=${user.email}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${SERVER}/my-sales?email=${user.email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!res.ok) throw new Error("Failed to fetch sales");
       return res.json();
@@ -38,9 +39,7 @@ const MySales = () => {
   // Error
   if (error)
     return (
-      <p className="text-center mt-10 text-lg text-red-500">
-        {error.message}
-      </p>
+      <p className="text-center mt-10 text-lg text-red-500">{error.message}</p>
     );
 
   // Empty
@@ -52,24 +51,26 @@ const MySales = () => {
     );
 
   return (
-    <div className="min-h-screen py-10 px-4 
+    <div
+      className="min-h-screen py-10 px-4 
       bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 
-      dark:from-gray-900 dark:via-gray-950 dark:to-black">
-
+      dark:from-gray-900 dark:via-gray-950 dark:to-black"
+    >
       <div className="w-11/12 mx-auto">
-
         {/* Title */}
-        <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center 
-          text-gray-800 dark:text-white">
+        <h2
+          className="text-3xl md:text-4xl font-bold mb-8 text-center 
+          text-gray-800 dark:text-white"
+        >
           💰 My Sales
         </h2>
 
         {/* Table Card */}
-        <div className="overflow-x-auto rounded-2xl shadow-lg 
-          bg-white dark:bg-gray-900">
-
+        <div
+          className="overflow-x-auto rounded-2xl shadow-lg 
+          bg-white dark:bg-gray-900"
+        >
           <table className="table w-full">
-
             {/* Head */}
             <thead className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
               <tr>
@@ -123,8 +124,8 @@ const MySales = () => {
                           sale.status === "completed"
                             ? "bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300"
                             : sale.status === "pending"
-                            ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300"
-                            : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
+                              ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-900 dark:text-yellow-300"
+                              : "bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-300"
                         }`}
                     >
                       {sale.status}
@@ -133,7 +134,6 @@ const MySales = () => {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>

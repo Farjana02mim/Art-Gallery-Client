@@ -1,7 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../../../context/AuthContext";
 import axios from "axios";
-import { updatePassword, EmailAuthProvider, reauthenticateWithCredential } from "firebase/auth";
+import {
+  updatePassword,
+  EmailAuthProvider,
+  reauthenticateWithCredential,
+} from "firebase/auth";
 import { auth } from "../../../firebase/firebase.init";
 
 const SERVER = "https://art-gallery-server-ashen.vercel.app";
@@ -11,7 +15,12 @@ const Settings = () => {
   const [tab, setTab] = useState("profile");
   const [role, setRole] = useState("");
   const [profile, setProfile] = useState({ name: "", email: "", bio: "" });
-  const [artist, setArtist] = useState({ title: "", experience: "", image: "", imageFile: null });
+  const [artist, setArtist] = useState({
+    title: "",
+    experience: "",
+    image: "",
+    imageFile: null,
+  });
   const [preview, setPreview] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
@@ -21,7 +30,7 @@ const Settings = () => {
   const [users, setUsers] = useState([]);
   const [userLoading, setUserLoading] = useState(false);
 
-  const getToken = async () => user ? await user.getIdToken() : null;
+  const getToken = async () => (user ? await user.getIdToken() : null);
 
   // Fetch Profile
   useEffect(() => {
@@ -30,7 +39,9 @@ const Settings = () => {
       setLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch(`${SERVER}/profile`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${SERVER}/profile`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (res.status === 401) {
           setMessage("Unauthorized! Please login again.");
           return;
@@ -72,7 +83,9 @@ const Settings = () => {
       setUserLoading(true);
       try {
         const token = await getToken();
-        const res = await fetch(`${SERVER}/users`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${SERVER}/users`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const data = await res.json();
         setUsers(data);
       } catch (err) {
@@ -92,7 +105,10 @@ const Settings = () => {
       const token = await getToken();
       const res = await fetch(`${SERVER}/users/update/${profile?._id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(profile),
       });
       if (!res.ok) {
@@ -118,14 +134,20 @@ const Settings = () => {
       if (artist.imageFile) {
         const formData = new FormData();
         formData.append("image", artist.imageFile);
-        const res = await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`, formData);
+        const res = await axios.post(
+          `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
+          formData,
+        );
         imageURL = res.data.data.url;
       }
       const updatedData = { ...artist, image: imageURL };
       delete updatedData.imageFile;
       const res = await fetch(`${SERVER}/artists/update/${artist?._id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(updatedData),
       });
       if (!res.ok) {
@@ -150,7 +172,10 @@ const Settings = () => {
     }
     setUpdating(true);
     try {
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        currentPassword,
+      );
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPassword);
       setMessage("Password updated successfully!");
@@ -182,7 +207,12 @@ const Settings = () => {
     }
   };
 
-  if (loading) return <p className="text-center mt-20 text-xl text-gray-500 dark:text-gray-300">Loading...</p>;
+  if (loading)
+    return (
+      <p className="text-center mt-20 text-xl text-gray-500 dark:text-gray-300">
+        Loading...
+      </p>
+    );
 
   return (
     <div className="flex w-full min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
@@ -193,7 +223,9 @@ const Settings = () => {
           <button
             onClick={() => setTab("profile")}
             className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-              tab === "profile" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+              tab === "profile"
+                ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                : ""
             }`}
           >
             Profile
@@ -201,7 +233,9 @@ const Settings = () => {
           <button
             onClick={() => setTab("security")}
             className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-              tab === "security" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+              tab === "security"
+                ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                : ""
             }`}
           >
             Security
@@ -210,7 +244,9 @@ const Settings = () => {
             <button
               onClick={() => setTab("billing")}
               className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-                tab === "billing" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+                tab === "billing"
+                  ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                  : ""
               }`}
             >
               Billing
@@ -220,7 +256,9 @@ const Settings = () => {
             <button
               onClick={() => setTab("artist")}
               className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-                tab === "artist" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+                tab === "artist"
+                  ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                  : ""
               }`}
             >
               Artist
@@ -230,7 +268,9 @@ const Settings = () => {
             <button
               onClick={() => setTab("admin")}
               className={`px-4 py-2 rounded-lg text-left hover:bg-gray-100 dark:hover:bg-gray-700 transition ${
-                tab === "admin" ? "bg-gray-200 dark:bg-gray-700 font-semibold" : ""
+                tab === "admin"
+                  ? "bg-gray-200 dark:bg-gray-700 font-semibold"
+                  : ""
               }`}
             >
               Admin
@@ -241,7 +281,11 @@ const Settings = () => {
 
       {/* Content */}
       <main className="flex-1 p-10 space-y-6">
-        {message && <p className="text-green-600 dark:text-green-400 font-medium">{message}</p>}
+        {message && (
+          <p className="text-green-600 dark:text-green-400 font-medium">
+            {message}
+          </p>
+        )}
 
         {/* PROFILE */}
         {tab === "profile" && (
@@ -268,7 +312,9 @@ const Settings = () => {
               onClick={updateProfile}
               disabled={updating}
               className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
-                updating ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500"
+                updating
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-500"
               }`}
             >
               {updating ? "Updating..." : "Update Profile"}
@@ -298,7 +344,9 @@ const Settings = () => {
               onClick={updatePasswordHandler}
               disabled={updating}
               className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
-                updating ? "bg-gray-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-500"
+                updating
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-500"
               }`}
             >
               {updating ? "Updating..." : "Update Password"}
@@ -310,11 +358,27 @@ const Settings = () => {
         {tab === "billing" && (role === "admin" || role === "artist") && (
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
             <h3 className="text-2xl font-semibold">Billing Information</h3>
-            <p className="text-gray-600 dark:text-gray-300">Manage your payment methods and subscriptions here.</p>
-            <input type="text" placeholder="Card Number" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
-            <input type="text" placeholder="Expiry Date" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
-            <input type="text" placeholder="CVV" className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100" />
-            <button className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition">Update Billing</button>
+            <p className="text-gray-600 dark:text-gray-300">
+              Manage your payment methods and subscriptions here.
+            </p>
+            <input
+              type="text"
+              placeholder="Card Number"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+            />
+            <input
+              type="text"
+              placeholder="Expiry Date"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+            />
+            <input
+              type="text"
+              placeholder="CVV"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
+            />
+            <button className="px-6 py-3 bg-green-600 hover:bg-green-500 text-white rounded-lg font-semibold transition">
+              Update Billing
+            </button>
           </div>
         )}
 
@@ -332,23 +396,37 @@ const Settings = () => {
               placeholder="Experience"
               className="border border-gray-300 dark:border-gray-600 rounded-lg p-3 w-full bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
               value={artist.experience || ""}
-              onChange={(e) => setArtist({ ...artist, experience: e.target.value })}
+              onChange={(e) =>
+                setArtist({ ...artist, experience: e.target.value })
+              }
             />
             <input
               type="file"
-              onChange={(e) => setArtist({ ...artist, imageFile: e.target.files[0] })}
+              onChange={(e) =>
+                setArtist({ ...artist, imageFile: e.target.files[0] })
+              }
               className="mb-3"
             />
             {preview ? (
-              <img src={preview} className="w-32 h-32 object-cover rounded-lg mb-3" />
+              <img
+                src={preview}
+                className="w-32 h-32 object-cover rounded-lg mb-3"
+              />
             ) : (
-              artist.image && <img src={artist.image} className="w-32 h-32 object-cover rounded-lg mb-3" />
+              artist.image && (
+                <img
+                  src={artist.image}
+                  className="w-32 h-32 object-cover rounded-lg mb-3"
+                />
+              )
             )}
             <button
               onClick={updateArtist}
               disabled={updating}
               className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
-                updating ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-500"
+                updating
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-green-600 hover:bg-green-500"
               }`}
             >
               {updating ? "Updating..." : "Update Artist"}
@@ -361,7 +439,9 @@ const Settings = () => {
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 space-y-4 transition-colors duration-300">
             <h3 className="text-2xl font-semibold">Users Management</h3>
             {userLoading ? (
-              <p className="text-gray-500 dark:text-gray-300">Loading users...</p>
+              <p className="text-gray-500 dark:text-gray-300">
+                Loading users...
+              </p>
             ) : users.length === 0 ? (
               <p className="text-gray-500 dark:text-gray-300">No users found</p>
             ) : (
@@ -377,13 +457,28 @@ const Settings = () => {
                   </thead>
                   <tbody>
                     {users.map((u) => (
-                      <tr key={u._id} className="hover:bg-gray-100 dark:hover:bg-gray-700 transition">
+                      <tr
+                        key={u._id}
+                        className="hover:bg-gray-100 dark:hover:bg-gray-700 transition"
+                      >
                         <td className="border px-3 py-2">{u.name}</td>
                         <td className="border px-3 py-2">{u.email}</td>
                         <td className="border px-3 py-2">{u.role}</td>
                         <td className="border px-3 py-2 space-x-2">
-                          <button className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition" onClick={() => alert("Edit functionality can be added")}>Edit</button>
-                          <button className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg transition" onClick={() => deleteUser(u._id)}>Delete</button>
+                          <button
+                            className="px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition"
+                            onClick={() =>
+                              alert("Edit functionality can be added")
+                            }
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="px-3 py-1 bg-red-600 hover:bg-red-500 text-white rounded-lg transition"
+                            onClick={() => deleteUser(u._id)}
+                          >
+                            Delete
+                          </button>
                         </td>
                       </tr>
                     ))}

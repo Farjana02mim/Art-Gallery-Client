@@ -17,7 +17,7 @@ const ArtCard = ({ art }) => {
     }
   }, [user, art]);
 
-  // 🔥 VIEW DETAILS (AUCTION + NORMAL ROUTE)
+  // VIEW DETAILS (AUCTION + NORMAL ROUTE)
   const handleViewDetails = () => {
     if (art?.auction?.isAuction) {
       navigate(`/auction/${art._id}`);
@@ -26,7 +26,7 @@ const ArtCard = ({ art }) => {
     }
   };
 
-  // 🔥 FAVORITE TOGGLE
+  //  FAVORITE TOGGLE
   const toggleFavorite = async (e) => {
     e.stopPropagation();
 
@@ -54,8 +54,7 @@ const ArtCard = ({ art }) => {
 
   return (
     <div className="relative bg-white dark:bg-gray-800 shadow-md dark:shadow-gray-700 rounded-xl overflow-hidden transition-colors duration-300 hover:scale-[1.02] duration-200">
-
-      {/* 🔥 AUCTION BADGE */}
+      {/*  AUCTION BADGE */}
       {art?.auction?.isAuction && (
         <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
           🔴 AUCTION
@@ -71,7 +70,6 @@ const ArtCard = ({ art }) => {
       />
 
       <div className="p-4">
-
         {/* TITLE */}
         <h3
           onClick={handleViewDetails}
@@ -84,7 +82,7 @@ const ArtCard = ({ art }) => {
           {art.category}
         </p>
 
-        {/* 🔥 PRICE / BID */}
+        {/*  PRICE / BID */}
         <p className="text-green-600 dark:text-green-400 font-bold mt-2">
           {art?.auction?.isAuction
             ? `Bid: ${art.auction.currentBid || 0} Tk`
@@ -93,7 +91,6 @@ const ArtCard = ({ art }) => {
 
         {/* STATS */}
         <div className="flex justify-between text-sm mt-2 text-gray-500 dark:text-gray-300">
-
           <span>👁 {art.views || 0}</span>
 
           {/* FAVORITE */}
@@ -116,7 +113,6 @@ const ArtCard = ({ art }) => {
         >
           {art?.auction?.isAuction ? "Join Auction" : "See Details"}
         </button>
-
       </div>
     </div>
   );

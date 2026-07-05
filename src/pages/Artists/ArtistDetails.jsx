@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 
-const SERVER ="https://art-gallery-server-ashen.vercel.app";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const ArtistDetails = () => {
   const { id } = useParams();
@@ -9,7 +9,7 @@ const ArtistDetails = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${SERVER}/artists/${id}`) // backend এ single artist route
+    fetch(`${SERVER}/artists/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setArtist(data);
@@ -51,18 +51,18 @@ const ArtistDetails = () => {
             <p className="mb-2">Experience: {artist.experience} years</p>
           )}
           {artist.portfolio && (
-  <p className="mb-2">
-    Portfolio:{" "}
-    <a
-      href={artist.portfolio}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-yellow-400 underline break-all"
-    >
-      {artist.portfolio}
-    </a>
-  </p>
-)}
+            <p className="mb-2">
+              Portfolio:{" "}
+              <a
+                href={artist.portfolio}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-400 underline break-all"
+              >
+                {artist.portfolio}
+              </a>
+            </p>
+          )}
           {artist.bio && <p className="mt-4">{artist.bio}</p>}
         </div>
       </div>

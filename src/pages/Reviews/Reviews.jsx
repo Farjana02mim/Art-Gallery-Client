@@ -13,7 +13,7 @@ const Reviews = ({ reviewsPromise }) => {
   return (
     <section className="w-11/12 mx-auto py-16">
 
-      {/* 🔥 Header */}
+      {/*  Header */}
       <div className="text-center max-w-2xl mx-auto mb-12">
         <h2 className="text-3xl md:text-4xl font-bold">
           What Our <span className="text-yellow-400">Customers Say</span>
@@ -23,7 +23,7 @@ const Reviews = ({ reviewsPromise }) => {
         </p>
       </div>
 
-      {/* 🔥 Slider */}
+      {/*  Slider */}
       <Swiper
         effect={"coverflow"}
         grabCursor={true}

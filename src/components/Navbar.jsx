@@ -75,15 +75,13 @@ const Navbar = () => {
         <MyLink to="/gallery">Gallery</MyLink>
       </li>
       <li onClick={() => setMenuOpen(false)}>
-            <MyLink to="/artists">Artists</MyLink>
-          </li>
+        <MyLink to="/artists">Artists</MyLink>
+      </li>
 
       {user && (
         <>
           <li onClick={() => setMenuOpen(false)}>
-            <MyLink to="/dashboard/my-purchases">
-              My Purchases
-            </MyLink>
+            <MyLink to="/dashboard/my-purchases">My Purchases</MyLink>
           </li>
         </>
       )}
@@ -91,9 +89,8 @@ const Navbar = () => {
   );
 
   return (
-    <div className="sticky top-0 z-50 bg-gradient-to-r from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg pr-7">
+    <div className="sticky top-0 z-50 bg-gradient-to-r from-white via-white to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 shadow-lg pr-7">
       <MyContainer className="flex items-center justify-between py-3 relative">
-
         {/* Logo */}
         <div className="flex items-center gap-2">
           <img src={logo} alt="Logo" className="w-[40px] md:w-[45px]" />
@@ -109,7 +106,6 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="flex items-center gap-3">
-
           {/* Loader */}
           {loading ? (
             <ClockLoader color="#FBBF24" size={25} />
@@ -142,8 +138,12 @@ const Navbar = () => {
             </div>
           ) : (
             <div className="hidden lg:flex gap-2">
-              <Link to="/signin" className="btn-yellow">Login</Link>
-              <Link to="/signup" className="btn-yellow">Register</Link>
+              <Link to="/signin" className="btn-yellow">
+                Login
+              </Link>
+              <Link to="/signup" className="btn-yellow">
+                Register
+              </Link>
             </div>
           )}
 
@@ -158,10 +158,8 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* 🔥 Overlay */}
-        {menuOpen && (
-          <div className="fixed inset-0 bg-black/40 z-10"></div>
-        )}
+        {/*  Overlay */}
+        {menuOpen && <div className="fixed inset-0 bg-black/40 z-10"></div>}
 
         {/* Mobile Menu */}
         {menuOpen && (
@@ -173,10 +171,18 @@ const Navbar = () => {
 
             {!user && (
               <div className="flex flex-col gap-2 mt-2">
-                <Link to="/signin" onClick={() => setMenuOpen(false)} className="btn-yellow">
+                <Link
+                  to="/signin"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-yellow"
+                >
                   Login
                 </Link>
-                <Link to="/signup" onClick={() => setMenuOpen(false)} className="btn-yellow">
+                <Link
+                  to="/signup"
+                  onClick={() => setMenuOpen(false)}
+                  className="btn-yellow"
+                >
                   Register
                 </Link>
               </div>

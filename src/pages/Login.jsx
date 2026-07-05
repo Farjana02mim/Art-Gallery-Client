@@ -66,7 +66,6 @@ const Login = () => {
       setUser(res.user);
       toast.success("Login successful!");
       navigate(from, { replace: true });
-
     } catch (err) {
       toast.error(getAuthError(err.code));
     } finally {
@@ -84,7 +83,6 @@ const Login = () => {
       setUser(res.user);
       toast.success("Logged in with Google!");
       navigate(from, { replace: true });
-
     } catch (err) {
       toast.error(getAuthError(err.code));
     } finally {
@@ -109,7 +107,6 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700 transition-colors duration-300 relative overflow-hidden">
-
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Decorative Blurs */}
@@ -120,23 +117,20 @@ const Login = () => {
 
       <MyContainer>
         <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-12 p-6 lg:p-10">
-
           {/* LEFT TEXT */}
           <div className="max-w-lg text-center lg:text-left">
             <h1 className="text-5xl font-extrabold text-gray-800 dark:text-gray-100">
               Art Gallery
             </h1>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-              Discover beautiful artworks from talented artists around the world.
-              Login to explore the gallery 🎨
+              Discover beautiful artworks from talented artists around the
+              world. Login to explore the gallery 🎨
             </p>
           </div>
 
           {/* LOGIN BOX */}
           <div className="w-full max-w-md backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 border border-white/30 dark:border-gray-600/30 shadow-2xl rounded-3xl p-8">
-
             <form onSubmit={handleEmailLogin} className="space-y-5">
-
               <h2 className="text-2xl font-semibold text-center text-gray-800 dark:text-gray-100">
                 Login
               </h2>
@@ -150,7 +144,7 @@ const Login = () => {
                   type="email"
                   name="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}  // ✅ FIX
+                  onChange={(e) => setEmail(e.target.value)} // ✅ FIX
                   placeholder="you@example.com"
                   className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100"
                   required
@@ -203,10 +197,10 @@ const Login = () => {
                 className="w-full py-3 rounded-xl border border-gray-300 dark:border-gray-600 flex items-center justify-center gap-3 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 transition"
               >
                 <img
-                src="https://www.svgrepo.com/show/475656/google-color.svg"
-                className="w-5"
-                alt="Google"
-              />
+                  src="https://www.svgrepo.com/show/475656/google-color.svg"
+                  className="w-5"
+                  alt="Google"
+                />
                 Continue with Google
               </button>
 
@@ -217,10 +211,8 @@ const Login = () => {
                   Register
                 </Link>
               </p>
-
             </form>
           </div>
-
         </div>
       </MyContainer>
     </div>

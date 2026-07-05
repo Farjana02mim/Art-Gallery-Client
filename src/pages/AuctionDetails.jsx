@@ -29,10 +29,9 @@ const AuctionDetails = () => {
     fetchArt();
   }, [id]);
 
-  // 🔥 FIX: always use auction object safely
   const auction = art?.auction;
 
-  // 🔹 Live Timer (FIXED)
+  //  Live Timer (FIXED)
   useEffect(() => {
     if (!auction?.endTime) return;
 
@@ -55,7 +54,7 @@ const AuctionDetails = () => {
     return () => clearInterval(interval);
   }, [auction]);
 
-  // 🔹 Place Bid
+  //  Place Bid
   const handleBid = async () => {
     if (!user) {
       return toast.warning("Login first ⚠️");
@@ -66,9 +65,7 @@ const AuctionDetails = () => {
     }
 
     if (!bidAmount || Number(bidAmount) <= auction.currentBid) {
-      return toast.error(
-        `Bid must be higher than ${auction.currentBid} Tk`
-      );
+      return toast.error(`Bid must be higher than ${auction.currentBid} Tk`);
     }
 
     try {
@@ -81,7 +78,7 @@ const AuctionDetails = () => {
           headers: {
             authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       toast.success("Bid placed successfully 🔥");
@@ -96,7 +93,7 @@ const AuctionDetails = () => {
 
   if (!art) return <p className="text-center mt-10">Loading...</p>;
 
-  // 🔥 FIXED LIVE CHECK
+  //  FIXED LIVE CHECK
   const isLive =
     auction?.isAuction === true &&
     auction?.endTime &&
@@ -104,42 +101,37 @@ const AuctionDetails = () => {
 
   return (
     <div className="max-w-3xl mx-auto p-5">
-
-      {/* 🔥 IMAGE */}
+      {/*  IMAGE */}
       <img
         src={art.image}
         alt={art.title}
         className="w-full rounded-xl shadow-md"
       />
 
-      {/* 🔥 TITLE */}
+      {/*  TITLE */}
       <h2 className="text-2xl font-bold mt-4">{art.title}</h2>
 
-      {/* 🔥 STATUS */}
+      {/*  STATUS */}
       <div className="flex justify-between mt-2 text-sm">
         <span>
-          💰 Starting Price:{" "}
-          <b>{auction?.startPrice ?? art.startPrice} Tk</b>
+          💰 Starting Price: <b>{auction?.startPrice ?? art.startPrice} Tk</b>
         </span>
         <span>⏱️ {timeLeft}</span>
       </div>
 
-      {/* 🔥 LIVE BADGE */}
+      {/*  LIVE BADGE */}
       {isLive && (
-        <p className="text-green-600 font-semibold mt-2">
-          🟢 Live Auction
-        </p>
+        <p className="text-green-600 font-semibold mt-2">🟢 Live Auction</p>
       )}
 
-      {/* 🔥 CURRENT BID */}
+      {/*  CURRENT BID */}
       {auction && (
         <p className="mt-2 text-sm">
-          💰 Current Bid:{" "}
-          <b>{auction.currentBid} Tk</b>
+          💰 Current Bid: <b>{auction.currentBid} Tk</b>
         </p>
       )}
 
-      {/* 🔥 BID INPUT */}
+      {/*  BID INPUT */}
       {isLive && (
         <div className="mt-4 flex gap-2">
           <input
@@ -160,7 +152,7 @@ const AuctionDetails = () => {
         </div>
       )}
 
-      {/* 🔥 Auction End */}
+      {/*  Auction End */}
       {!isLive && (
         <div className="mt-4 p-3 bg-gray-100 rounded">
           ⛔ Auction has ended or not started

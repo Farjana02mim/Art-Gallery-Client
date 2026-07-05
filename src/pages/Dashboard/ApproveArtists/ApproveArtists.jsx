@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
-import { FaCheckCircle, FaTimesCircle, FaTrash, FaSearch } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaTimesCircle,
+  FaTrash,
+  FaSearch,
+} from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 
 const ApproveArtists = () => {
@@ -20,20 +25,30 @@ const ApproveArtists = () => {
   }, []);
 
   const handleApproval = (artist) => {
-    axiosSecure.patch(`/artists/approve/${artist._id}`, { email: artist.email })
+    axiosSecure
+      .patch(`/artists/approve/${artist._id}`, { email: artist.email })
       .then(() => {
-        Swal.fire({ icon: "success", title: "Approved", timer: 1500, showConfirmButton: false });
+        Swal.fire({
+          icon: "success",
+          title: "Approved",
+          timer: 1500,
+          showConfirmButton: false,
+        });
         fetchArtists();
       })
       .catch(() => Swal.fire("Error", "Approval failed", "error"));
   };
 
   const handleRejection = (artist) => {
-    axiosSecure.patch(`/artists/reject/${artist._id}`)
-      .then(() => {
-        Swal.fire({ icon: "warning", title: "Rejected", timer: 1500, showConfirmButton: false });
-        fetchArtists();
+    axiosSecure.patch(`/artists/reject/${artist._id}`).then(() => {
+      Swal.fire({
+        icon: "warning",
+        title: "Rejected",
+        timer: 1500,
+        showConfirmButton: false,
       });
+      fetchArtists();
+    });
   };
 
   const handleDeletion = (artist) => {
@@ -46,11 +61,10 @@ const ApproveArtists = () => {
       confirmButtonText: "Delete",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosSecure.delete(`/artists/${artist._id}`)
-          .then(() => {
-            Swal.fire("Deleted!", "", "success");
-            fetchArtists();
-          });
+        axiosSecure.delete(`/artists/${artist._id}`).then(() => {
+          Swal.fire("Deleted!", "", "success");
+          fetchArtists();
+        });
       }
     });
   };
@@ -78,8 +92,10 @@ const ApproveArtists = () => {
 
           <tbody className="text-gray-700 dark:text-gray-300">
             {artists.map((artist, index) => (
-              <tr key={artist._id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                
+              <tr
+                key={artist._id}
+                className="hover:bg-gray-50 dark:hover:bg-gray-700 transition"
+              >
                 {/* Index */}
                 <td>{index + 1}</td>
 
@@ -97,7 +113,6 @@ const ApproveArtists = () => {
 
                 {/* Actions */}
                 <td className="flex justify-center gap-2">
-                  
                   {/* View */}
                   <button
                     onClick={() => {
@@ -132,7 +147,6 @@ const ApproveArtists = () => {
                   >
                     <FaTrash />
                   </button>
-
                 </td>
               </tr>
             ))}
@@ -149,14 +163,12 @@ const ApproveArtists = () => {
       {/* MODAL */}
       <dialog id="artist_modal" className="modal">
         <div className="modal-box max-w-4xl bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-          
           <h3 className="text-2xl font-bold text-center mb-6">
             Artist Profile
           </h3>
 
           {selectedArtist && (
             <div className="grid md:grid-cols-2 gap-8">
-
               {/* Image */}
               <div className="flex justify-center">
                 <img
@@ -168,11 +180,22 @@ const ApproveArtists = () => {
 
               {/* Info */}
               <div className="space-y-3 text-sm">
-
-                <p><span className="font-semibold">Name:</span> {selectedArtist.name}</p>
-                <p><span className="font-semibold">Email:</span> {selectedArtist.email}</p>
-                <p><span className="font-semibold">Title:</span> {selectedArtist.title}</p>
-                <p><span className="font-semibold">Experience:</span> {selectedArtist.experience} years</p>
+                <p>
+                  <span className="font-semibold">Name:</span>{" "}
+                  {selectedArtist.name}
+                </p>
+                <p>
+                  <span className="font-semibold">Email:</span>{" "}
+                  {selectedArtist.email}
+                </p>
+                <p>
+                  <span className="font-semibold">Title:</span>{" "}
+                  {selectedArtist.title}
+                </p>
+                <p>
+                  <span className="font-semibold">Experience:</span>{" "}
+                  {selectedArtist.experience} years
+                </p>
 
                 <p>
                   <span className="font-semibold">Portfolio:</span>{" "}
@@ -204,7 +227,6 @@ const ApproveArtists = () => {
                   <span className="font-semibold">Joined:</span>{" "}
                   {new Date(selectedArtist.created_at).toLocaleDateString()}
                 </p>
-
               </div>
             </div>
           )}
@@ -216,7 +238,6 @@ const ApproveArtists = () => {
               </button>
             </form>
           </div>
-
         </div>
       </dialog>
     </div>

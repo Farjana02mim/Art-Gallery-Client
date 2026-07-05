@@ -7,7 +7,6 @@ const Artists = () => {
   const [artists, setArtists] = useState([]);
 
   useEffect(() => {
-    // API থেকে latest approved artists fetch
     fetch(`${SERVER}/artists?status=approved`) // approved artist
       .then((res) => res.json())
       .then((data) => setArtists(data))
@@ -16,7 +15,6 @@ const Artists = () => {
 
   return (
     <section className="max-w-6xl mx-auto my-16 px-4">
-      
       {/* Header with Be An Artist button */}
       <div className="flex flex-col md:flex-row justify-between items-center mb-8">
         <h2 className="text-3xl font-bold text-yellow-500 mb-4 md:mb-0">
@@ -49,10 +47,10 @@ const Artists = () => {
 
               {/* View Details Button */}
               <Link to={`/artists/${artist._id}`}>
-  <button className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition w-full">
-    View Details
-  </button>
-</Link>
+                <button className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-600 transition w-full">
+                  View Details
+                </button>
+              </Link>
             </div>
           ))
         ) : (

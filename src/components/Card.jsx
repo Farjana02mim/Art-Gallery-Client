@@ -15,7 +15,7 @@ const Card = ({ listing }) => {
     auction,
   } = listing;
 
-  // 🔥 SMART ROUTING (auction + normal)
+  //  SMART ROUTING (auction + normal)
   const handleViewDetails = () => {
     if (auction?.isAuction) {
       navigate(`/auction/${_id}`);
@@ -27,7 +27,7 @@ const Card = ({ listing }) => {
   return (
     <div className="relative card bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl hover:scale-[1.03] transition-transform duration-300 overflow-hidden">
 
-      {/* 🔥 FEATURED BADGE */}
+      {/*  FEATURED BADGE */}
       {featured && (
         <span className="absolute top-3 right-3 bg-yellow-400 text-gray-900 font-semibold px-3 py-1 rounded-full text-sm shadow-md z-10">
           Featured
@@ -68,7 +68,7 @@ const Card = ({ listing }) => {
             Category: {category}
           </p>
 
-          {/* 🔥 PRICE / BID */}
+          {/*  PRICE / BID */}
           <p className="text-gray-700 dark:text-gray-300 font-semibold">
             {auction?.isAuction
               ? `Current Bid: ${auction.currentBid || 0} Tk`
@@ -81,7 +81,7 @@ const Card = ({ listing }) => {
             Location: {location}
           </p>
 
-          {/* 🔥 STATUS */}
+          {/*  STATUS */}
           {auction?.isAuction && (
             <p className="text-sm text-red-500 font-semibold">
               Live Auction Item

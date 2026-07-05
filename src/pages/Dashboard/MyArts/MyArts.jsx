@@ -48,14 +48,24 @@ const MyArts = () => {
   };
 
   if (isLoading)
-    return <p className="text-center text-xl mt-10 text-gray-700 dark:text-gray-300">Loading...</p>;
+    return (
+      <p className="text-center text-xl mt-10 text-gray-700 dark:text-gray-300">
+        Loading...
+      </p>
+    );
 
   if (arts.length === 0)
-    return <p className="text-center text-xl mt-10 text-gray-700 dark:text-gray-300">No Art Found</p>;
+    return (
+      <p className="text-center text-xl mt-10 text-gray-700 dark:text-gray-300">
+        No Art Found
+      </p>
+    );
 
   return (
     <div className="w-11/12 mx-auto py-10">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">My Arts</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-gray-900 dark:text-gray-100">
+        My Arts
+      </h2>
 
       <div className="overflow-x-auto bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl shadow-lg">
         <table className="table w-full border-collapse">
@@ -82,10 +92,18 @@ const MyArts = () => {
                     className="w-16 h-16 object-cover rounded"
                   />
                 </td>
-                <td className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">{art.title || art.name}</td>
-                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{art.category}</td>
-                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{art.location}</td>
-                <td className="px-4 py-3 text-green-600 dark:text-green-400 font-bold">${art.price}</td>
+                <td className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
+                  {art.title || art.name}
+                </td>
+                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                  {art.category}
+                </td>
+                <td className="px-4 py-3 text-gray-700 dark:text-gray-300">
+                  {art.location}
+                </td>
+                <td className="px-4 py-3 text-green-600 dark:text-green-400 font-bold">
+                  ${art.price}
+                </td>
                 <td className="px-4 py-3 text-center">
                   <div className="flex justify-center items-center gap-4">
                     <Link

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaUserFriends } from "react-icons/fa";
 
-const SERVER ="https://art-gallery-server-ashen.vercel.app";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const HomeExtras = () => {
   const [artists, setArtists] = useState([]);
@@ -30,14 +30,14 @@ const HomeExtras = () => {
 
   return (
     <section className="w-11/12 mx-auto py-16 relative">
-
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto mb-12">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">
           Meet Our <span className="text-yellow-500">Artists</span>
         </h2>
         <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm md:text-base">
-          Discover talented artists behind the artworks and explore their creative journeys.
+          Discover talented artists behind the artworks and explore their
+          creative journeys.
         </p>
       </div>
 
@@ -70,7 +70,9 @@ const HomeExtras = () => {
                   return res.json();
                 })
                 .then((data) => setArtists(Array.isArray(data) ? data : []))
-                .catch((err) => setError("Failed to load artists. Please try again later."))
+                .catch((err) =>
+                  setError("Failed to load artists. Please try again later."),
+                )
                 .finally(() => setLoading(false));
             }}
             className="mt-4 px-4 py-2 bg-yellow-500 text-black rounded-full text-sm hover:bg-yellow-600 transition"

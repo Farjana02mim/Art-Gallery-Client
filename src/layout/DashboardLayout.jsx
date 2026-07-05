@@ -24,25 +24,57 @@ const DashboardLayout = () => {
 
     ...(role === "user"
       ? [
-          { to: "/dashboard/my-purchases", label: "My Purchases", icon: <FaShoppingCart /> },
-          { to: "/dashboard/favorites", label: "My Favorites", icon: <FaHeart /> },
+          {
+            to: "/dashboard/my-purchases",
+            label: "My Purchases",
+            icon: <FaShoppingCart />,
+          },
+          {
+            to: "/dashboard/favorites",
+            label: "My Favorites",
+            icon: <FaHeart />,
+          },
         ]
       : []),
 
     ...(role === "artist"
       ? [
           { to: "/dashboard/add-listing", label: "Add Art", icon: <FaPlus /> },
-          { to: "/dashboard/my-arts", label: "My Arts", icon: <FaPaintBrush /> },
-          { to: "/dashboard/my-sales", label: "My Sales", icon: <FaChartBar /> },
+          {
+            to: "/dashboard/my-arts",
+            label: "My Arts",
+            icon: <FaPaintBrush />,
+          },
+          {
+            to: "/dashboard/my-sales",
+            label: "My Sales",
+            icon: <FaChartBar />,
+          },
         ]
       : []),
 
     ...(role === "admin"
       ? [
-          { to: "/dashboard/approve-artists", label: "Approve Artists", icon: <FaUserCheck /> },
-          { to: "/dashboard/users-management", label: "Users Management", icon: <FaUsers /> },
-          { to: "/dashboard/manage-artists", label: "Manage Artists", icon: <FaPaintBrush /> },
-          { to: "/dashboard/statistics", label: "Statistics", icon: <FaChartBar /> },
+          {
+            to: "/dashboard/approve-artists",
+            label: "Approve Artists",
+            icon: <FaUserCheck />,
+          },
+          {
+            to: "/dashboard/users-management",
+            label: "Users Management",
+            icon: <FaUsers />,
+          },
+          {
+            to: "/dashboard/manage-artists",
+            label: "Manage Artists",
+            icon: <FaPaintBrush />,
+          },
+          {
+            to: "/dashboard/statistics",
+            label: "Statistics",
+            icon: <FaChartBar />,
+          },
         ]
       : []),
 
@@ -60,12 +92,12 @@ const DashboardLayout = () => {
 
       {/* MAIN CONTENT */}
       <div className="drawer-content flex flex-col">
-
         {/* TOP NAVBAR */}
-        <nav className="sticky top-0 z-40 flex items-center justify-between px-4 py-3 
+        <nav
+          className="sticky top-0 z-40 flex items-center justify-between px-4 py-3 
           bg-white/70 dark:bg-gray-800/70 backdrop-blur-md 
-          border-b border-gray-200 dark:border-gray-700 shadow-sm">
-
+          border-b border-gray-200 dark:border-gray-700 shadow-sm"
+        >
           <div className="flex items-center gap-3">
             <label htmlFor="my-drawer-4" className="btn btn-ghost lg:hidden">
               <svg
@@ -76,7 +108,11 @@ const DashboardLayout = () => {
                 stroke="currentColor"
                 className="w-6 h-6"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
               </svg>
             </label>
 
@@ -101,11 +137,12 @@ const DashboardLayout = () => {
       <div className="drawer-side z-50">
         <label htmlFor="my-drawer-4" className="drawer-overlay"></label>
 
-        <div className="w-64 min-h-full p-4 
+        <div
+          className="w-64 min-h-full p-4 
           bg-white dark:bg-gray-900 
           border-r border-gray-200 dark:border-gray-700 
-          shadow-lg">
-
+          shadow-lg"
+        >
           {/* Logo / Title */}
           <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100">
             ArtSphere

@@ -10,7 +10,7 @@ import TrendingArts from "../components/TrendingArts";
 
 const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
-const reviewsPromise = fetch('/reviews.json').then(res => res.json());
+const reviewsPromise = fetch("/reviews.json").then((res) => res.json());
 
 const categories = [
   { name: "All", emoji: "🎨", value: "All" },
@@ -34,16 +34,16 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   // Fetch latest artworks
-useEffect(() => {
-  setLoading(true);
-  fetch(`${SERVER}/latest-list`)
-    .then((res) => res.json())
-    .then((data) => {
-      setListings(Array.isArray(data) ? data : []);
-    })
-    .catch((err) => console.error("Failed to load latest listings:", err))
-    .finally(() => setLoading(false));
-}, []);
+  useEffect(() => {
+    setLoading(true);
+    fetch(`${SERVER}/latest-list`)
+      .then((res) => res.json())
+      .then((data) => {
+        setListings(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => console.error("Failed to load latest listings:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   const handleCategoryClick = (category) => {
     setCategoryFilter(category.value);
@@ -56,12 +56,16 @@ useEffect(() => {
     return title.toLowerCase().includes(searchTerm.toLowerCase());
   });
 
-  const displayedCategories = showAllCategories ? categories : categories.slice(0, 4);
+  const displayedCategories = showAllCategories
+    ? categories
+    : categories.slice(0, 4);
 
   return (
     <div className="space-y-20 min-h-screen">
       {/* Banner */}
-      <section><Banner /></section>
+      <section>
+        <Banner />
+      </section>
 
       {/* Categories */}
       <section className="w-11/12 mx-auto my-12">
@@ -74,9 +78,11 @@ useEffect(() => {
               key={cat.name}
               onClick={() => handleCategoryClick(cat)}
               className={`cursor-pointer rounded-xl shadow-md p-6 flex flex-col items-center justify-center transition-transform hover:scale-105 backdrop-blur-sm
-                ${categoryFilter === cat.value
-                  ? "bg-yellow-400 text-gray-900 shadow-xl"
-                  : "bg-gray-800/80 text-yellow-200 hover:shadow-xl"}`}
+                ${
+                  categoryFilter === cat.value
+                    ? "bg-yellow-400 text-gray-900 shadow-xl"
+                    : "bg-gray-800/80 text-yellow-200 hover:shadow-xl"
+                }`}
             >
               <span className="text-5xl mb-4">{cat.emoji}</span>
               <h3 className="text-xl font-semibold text-center">{cat.name}</h3>

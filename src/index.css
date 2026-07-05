@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark;
+  themes:
+    light --default,
+    dark --prefersdark;
 }
 
 /* Custom dark variant (for advanced use if needed) */
@@ -13,23 +15,23 @@ body {
   font-style: normal;
 
   /* Light mode background */
-  background-color: #f3f4f6; /* light gray */
+  background-color: white; /* light gray */
   color: #111827; /* dark text */
 }
 
 /* Dark mode for body using DaisyUI's data-theme attribute */
-body:where([data-theme=dark], [data-theme=dark] *) {
-  background-color: #919eb1; 
+body:where([data-theme="dark"], [data-theme="dark"] *) {
+  background-color: #5b636edf;
   color: #f9fafb; /* light text */
 }
 
 /* Example navbar styling */
 .navbar {
-  background-color: #ffffff; /* light navbar */
+  background-color: white; /* light navbar */
 }
 
 /* Dark mode navbar (DaisyUI usually handles this automatically, but in case you customize) */
-body:where([data-theme=dark], [data-theme=dark] *) .navbar {
+body:where([data-theme="dark"], [data-theme="dark"] *) .navbar {
   background-color: #111827; /* dark navbar */
   color: #f9fafb;
 }

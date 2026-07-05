@@ -20,20 +20,18 @@ const Artist = () => {
     try {
       let imageURL = "";
 
-      // ফাইল আপলোড
       if (data.image && data.image[0]) {
         const formData = new FormData();
         formData.append("image", data.image[0]);
 
         const imgRes = await axios.post(
           `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
-          formData
+          formData,
         );
 
         imageURL = imgRes.data.data.url;
       }
 
-      // Artist object তৈরি
       const artistInfo = {
         name: data.name || user?.displayName || "",
         email: data.email || user?.email || "",
@@ -46,7 +44,6 @@ const Artist = () => {
         created_at: new Date(),
       };
 
-      // Backend POST
       const res = await axiosSecure.post("/artists", artistInfo);
 
       if (res.data.insertedId) {
@@ -56,7 +53,7 @@ const Artist = () => {
           text: "Your artist request is pending approval",
         });
 
-        reset(); // ফর্ম ক্লিয়ার করা
+        reset();
         navigate("/");
       }
     } catch (error) {
@@ -76,8 +73,6 @@ const Artist = () => {
       <h2 className="text-5xl font-bold mb-8 text-center">Be An Artist</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
-        {/* Name */}
         <input
           {...register("name")}
           defaultValue={user?.displayName || ""}
@@ -85,7 +80,6 @@ const Artist = () => {
           placeholder="Artist Name"
         />
 
-        {/* Email */}
         <input
           {...register("email")}
           defaultValue={user?.email || ""}
@@ -93,35 +87,30 @@ const Artist = () => {
           placeholder="Email"
         />
 
-        {/* Title */}
         <input
           {...register("title")}
           className="input input-bordered w-full"
           placeholder="Artist Title (Painter, Digital Artist...)"
         />
 
-        {/* Experience */}
         <input
           {...register("experience")}
           className="input input-bordered w-full"
           placeholder="Years of Experience"
         />
 
-        {/* Portfolio */}
         <input
           {...register("portfolio")}
           className="input input-bordered w-full"
           placeholder="Portfolio Website Link"
         />
 
-        {/* Image File */}
         <input
           {...register("image")}
           type="file"
           className="input input-bordered w-full"
         />
 
-        {/* Bio */}
         <textarea
           {...register("bio")}
           className="textarea textarea-bordered w-full"

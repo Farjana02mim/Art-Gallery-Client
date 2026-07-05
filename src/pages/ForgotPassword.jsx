@@ -37,17 +37,16 @@ const ForgotPassword = () => {
 
       <MyContainer>
         <div className="max-w-md mx-auto bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl">
-          
           <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
             Forgot Password
           </h2>
 
           <p className="text-sm text-gray-600 dark:text-gray-300 text-center mb-6">
-            Enter your email address and we’ll send you a link to reset your password.
+            Enter your email address and we’ll send you a link to reset your
+            password.
           </p>
 
           <form onSubmit={handleReset} className="space-y-5">
-
             {/* Email */}
             <div>
               <label className="block text-sm mb-1 text-gray-700 dark:text-gray-300">
@@ -74,9 +73,7 @@ const ForgotPassword = () => {
             >
               {loading ? "Sending..." : "Send Reset Link"}
             </button>
-
           </form>
-
         </div>
       </MyContainer>
     </div>

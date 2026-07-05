@@ -53,7 +53,6 @@ const ManageArtists = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-
       {/* Header */}
       <div className="flex items-center justify-between mb-10">
         <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">
@@ -118,8 +117,14 @@ const ManageArtists = () => {
                   </p>
 
                   <div className="space-y-1 text-sm text-gray-700 dark:text-gray-300">
-                    <p><span className="font-semibold">Title:</span> {artist.title}</p>
-                    <p><span className="font-semibold">Experience:</span> {artist.experience || "-"} years</p>
+                    <p>
+                      <span className="font-semibold">Title:</span>{" "}
+                      {artist.title}
+                    </p>
+                    <p>
+                      <span className="font-semibold">Experience:</span>{" "}
+                      {artist.experience || "-"} years
+                    </p>
                   </div>
 
                   {artist.bio && (
@@ -153,14 +158,12 @@ const ManageArtists = () => {
       {/* MODAL */}
       <dialog id="artist_modal" className="modal">
         <div className="modal-box max-w-4xl bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-
           <h3 className="text-2xl font-bold text-center mb-6">
             Artist Details
           </h3>
 
           {selectedArtist && (
             <div className="grid md:grid-cols-2 gap-8">
-
               <img
                 src={selectedArtist.image}
                 alt={selectedArtist.name}
@@ -168,10 +171,18 @@ const ManageArtists = () => {
               />
 
               <div className="space-y-3 text-sm">
-                <p><strong>Name:</strong> {selectedArtist.name}</p>
-                <p><strong>Email:</strong> {selectedArtist.email}</p>
-                <p><strong>Title:</strong> {selectedArtist.title}</p>
-                <p><strong>Experience:</strong> {selectedArtist.experience} years</p>
+                <p>
+                  <strong>Name:</strong> {selectedArtist.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {selectedArtist.email}
+                </p>
+                <p>
+                  <strong>Title:</strong> {selectedArtist.title}
+                </p>
+                <p>
+                  <strong>Experience:</strong> {selectedArtist.experience} years
+                </p>
 
                 <p>
                   <strong>Portfolio:</strong>{" "}
@@ -200,7 +211,6 @@ const ManageArtists = () => {
           </div>
         </div>
       </dialog>
-
     </div>
   );
 };

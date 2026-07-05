@@ -3,7 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Card from "../components/Card";
 
-const SERVER ="https://art-gallery-server-ashen.vercel.app";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const ArtworksGallery = () => {
   const [artworks, setArtworks] = useState([]);
@@ -13,9 +13,16 @@ const ArtworksGallery = () => {
   const [loading, setLoading] = useState(true);
 
   const categories = [
-    "All", "Folk", "Sculptures", "Liberation War",
-    "Photography", "Illustration", "River",
-    "Flowers", "Russian Art", "African Art"
+    "All",
+    "Folk",
+    "Sculptures",
+    "Liberation War",
+    "Photography",
+    "Illustration",
+    "River",
+    "Flowers",
+    "Russian Art",
+    "African Art",
   ];
 
   useEffect(() => {
@@ -37,8 +44,7 @@ const ArtworksGallery = () => {
       if (categoryFilter !== "All") {
         temp = temp.filter(
           (a) =>
-            (a.category || "").toLowerCase() ===
-            categoryFilter.toLowerCase()
+            (a.category || "").toLowerCase() === categoryFilter.toLowerCase(),
         );
       }
 
@@ -56,15 +62,18 @@ const ArtworksGallery = () => {
   }, [searchTerm, categoryFilter, artworks]);
 
   return (
-    <div className="min-h-screen py-10 px-3 sm:px-6 md:px-10 
+    <div
+      className="min-h-screen py-10 px-3 sm:px-6 md:px-10 
       bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200 
-      dark:from-gray-800 dark:via-gray-900 dark:to-gray-950">
-
+      dark:from-gray-800 dark:via-gray-900 dark:to-gray-950"
+    >
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Title */}
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold 
-        text-gray-800 dark:text-white mb-6 text-center">
+      <h2
+        className="text-2xl sm:text-3xl md:text-4xl font-bold 
+        text-gray-800 dark:text-white mb-6 text-center"
+      >
         🎨 Artworks Gallery
       </h2>
 
@@ -104,28 +113,29 @@ const ArtworksGallery = () => {
         ))}
       </div>
 
-      {/* 🎯 Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-
-        {/* 🔄 Loading Skeleton */}
         {loading ? (
           [...Array(6)].map((_, i) => (
-            <div key={i} className="animate-pulse bg-white dark:bg-gray-800 p-4 rounded-xl shadow">
+            <div
+              key={i}
+              className="animate-pulse bg-white dark:bg-gray-800 p-4 rounded-xl shadow"
+            >
               <div className="h-40 bg-gray-300 dark:bg-gray-700 rounded mb-4"></div>
               <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded mb-2"></div>
               <div className="h-4 bg-gray-300 dark:bg-gray-700 rounded w-1/2"></div>
             </div>
           ))
         ) : filtered.length === 0 ? (
-
           /* ❌ Empty State */
           <div className="col-span-full text-center text-gray-500 dark:text-gray-400 text-lg">
             No artworks found 😔
           </div>
-
         ) : (
           filtered.map((item) => (
-            <div key={item._id} className="transform hover:scale-[1.03] transition duration-300">
+            <div
+              key={item._id}
+              className="transform hover:scale-[1.03] transition duration-300"
+            >
               <Card listing={item} />
             </div>
           ))

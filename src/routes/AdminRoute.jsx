@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
-import { useLocation, Navigate } from 'react-router';
-import { AuthContext } from '../context/AuthContext';
-import Forbidden from '../components/Forbidden';
-import { ClimbingBoxLoader } from 'react-spinners';
-import useRole from '../hooks/useRole';
+import React, { useContext } from "react";
+import { useLocation, Navigate } from "react-router";
+import { AuthContext } from "../context/AuthContext";
+import Forbidden from "../components/Forbidden";
+import { ClimbingBoxLoader } from "react-spinners";
+import useRole from "../hooks/useRole";
 
 const AdminRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
@@ -19,12 +19,10 @@ const AdminRoute = ({ children }) => {
   }
 
   if (!user) {
-    // যদি user login না থাকে, redirect to login
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (role !== 'admin') {
-    // যদি user admin না হয়
+  if (role !== "admin") {
     return <Forbidden />;
   }
 

@@ -5,7 +5,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
-const SERVER ="https://art-gallery-server-ashen.vercel.app";
+const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
 const AddListing = () => {
   const { user } = useContext(AuthContext);
@@ -29,7 +29,7 @@ const AddListing = () => {
     views: 0,
     likes: 0,
 
-    // 🔥 AUCTION FIELD
+    //  AUCTION FIELD
     isAuction: false,
     startPrice: "",
     startTime: "",
@@ -40,7 +40,8 @@ const AddListing = () => {
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
-  if (!user) return <Navigate to="/signin" state={{ from: location }} replace />;
+  if (!user)
+    return <Navigate to="/signin" state={{ from: location }} replace />;
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
@@ -64,7 +65,7 @@ const AddListing = () => {
     try {
       let imageUrl = "";
 
-      // 🖼️ Image upload
+      //  Image upload
       if (form.imageFile) {
         try {
           const formData = new FormData();
@@ -72,7 +73,7 @@ const AddListing = () => {
 
           const imgRes = await axios.post(
             `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_host}`,
-            formData
+            formData,
           );
           imageUrl = imgRes.data.data.url;
         } catch (err) {
@@ -82,7 +83,7 @@ const AddListing = () => {
         }
       }
 
-      // 🔥 FINAL DATA
+      //  FINAL DATA
       const dataToSend = {
         title: form.title,
         name: form.name,
@@ -103,7 +104,7 @@ const AddListing = () => {
         featured: form.featured,
         rating: Number(form.rating) || 0,
 
-        // 🔥 AUCTION SEND
+        //  AUCTION SEND
         isAuction: form.isAuction,
         startPrice: Number(form.startPrice),
         startTime: form.startTime,
@@ -139,16 +140,36 @@ const AddListing = () => {
           Add New Artwork
         </h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
+          <input
+            type="text"
+            name="title"
+            placeholder="Artwork Title"
+            value={form.title}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+            required
+          />
 
-          <input type="text" name="title" placeholder="Artwork Title"
-            value={form.title} onChange={handleChange} className="input input-bordered w-full" required />
+          <input
+            type="text"
+            name="name"
+            placeholder="Artist Name"
+            value={form.name}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+            required
+          />
 
-          <input type="text" name="name" placeholder="Artist Name"
-            value={form.name} onChange={handleChange} className="input input-bordered w-full" required />
-
-          <select name="category" value={form.category} onChange={handleChange}
-            className="input input-bordered w-full">
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          >
             <option value="All">All</option>
             <option value="Folk">Folk</option>
             <option value="Liberation War">Liberation War</option>
@@ -161,16 +182,33 @@ const AddListing = () => {
             <option value="Illustration">Illustration</option>
           </select>
 
-          <input type="text" name="medium" placeholder="Medium"
-            value={form.medium} onChange={handleChange} className="input input-bordered w-full" />
+          <input
+            type="text"
+            name="medium"
+            placeholder="Medium"
+            value={form.medium}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
 
-          <input type="text" name="dimensions" placeholder="Dimensions"
-            value={form.dimensions} onChange={handleChange} className="input input-bordered w-full" />
+          <input
+            type="text"
+            name="dimensions"
+            placeholder="Dimensions"
+            value={form.dimensions}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
 
-          <input type="number" name="year"
-            value={form.year} onChange={handleChange} className="input input-bordered w-full" />
+          <input
+            type="number"
+            name="year"
+            value={form.year}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
 
-          {/* 🔥 PRICE */}
+          {/*  PRICE */}
           <input
             type="number"
             name="price"
@@ -181,45 +219,91 @@ const AddListing = () => {
             className="input input-bordered w-full"
           />
 
-          {/* 🔥 AUCTION TOGGLE */}
+          {/*  AUCTION TOGGLE */}
           <div className="col-span-full flex items-center gap-3">
-            <input type="checkbox" name="isAuction"
-              checked={form.isAuction} onChange={handleChange} />
+            <input
+              type="checkbox"
+              name="isAuction"
+              checked={form.isAuction}
+              onChange={handleChange}
+            />
             <label>Enable Auction</label>
           </div>
 
-          {/* 🔥 AUCTION FIELDS */}
+          {/*  AUCTION FIELDS */}
           {form.isAuction && (
             <>
-              <input type="number" name="startPrice" placeholder="Start Price"
-                value={form.startPrice} onChange={handleChange}
-                className="input input-bordered w-full" required />
+              <input
+                type="number"
+                name="startPrice"
+                placeholder="Start Price"
+                value={form.startPrice}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+                required
+              />
 
-              <input type="datetime-local" name="startTime"
-                value={form.startTime} onChange={handleChange}
-                className="input input-bordered w-full" required />
+              <input
+                type="datetime-local"
+                name="startTime"
+                value={form.startTime}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+                required
+              />
 
-              <input type="datetime-local" name="endTime"
-                value={form.endTime} onChange={handleChange}
-                className="input input-bordered w-full" required />
+              <input
+                type="datetime-local"
+                name="endTime"
+                value={form.endTime}
+                onChange={handleChange}
+                className="input input-bordered w-full"
+                required
+              />
             </>
           )}
 
-          <input type="text" name="location" placeholder="Location"
-            value={form.location} onChange={handleChange} className="input input-bordered w-full" />
+          <input
+            type="text"
+            name="location"
+            placeholder="Location"
+            value={form.location}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
 
-          <input type="text" name="country" placeholder="Country"
-            value={form.country} onChange={handleChange} className="input input-bordered w-full" />
+          <input
+            type="text"
+            name="country"
+            placeholder="Country"
+            value={form.country}
+            onChange={handleChange}
+            className="input input-bordered w-full"
+          />
 
-          <textarea name="description" placeholder="Description"
-            value={form.description} onChange={handleChange}
-            className="input input-bordered col-span-full" required />
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={form.description}
+            onChange={handleChange}
+            className="input input-bordered col-span-full"
+            required
+          />
 
-          <input type="file" name="imageFile" accept="image/*"
-            onChange={handleChange} className="col-span-full" required />
+          <input
+            type="file"
+            name="imageFile"
+            accept="image/*"
+            onChange={handleChange}
+            className="col-span-full"
+            required
+          />
 
-          <button type="submit" disabled={loading}
-            className="col-span-full btn btn-primary">
+          <button
+            type="submit"
+            disabled={loading}
+            className="col-span-full btn btn-primary"
+          >
             {loading ? "Adding..." : "Add Artwork"}
           </button>
         </form>

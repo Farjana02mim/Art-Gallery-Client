@@ -16,11 +16,10 @@ const CategoryFilteredProducts = () => {
   useEffect(() => {
     setLoading(true);
 
-    // ✅ FIX: use /listing API
     const url =
-  decodedCategory === "All"
-    ? `${SERVER}/listing`
-    : `${SERVER}/listing?category=${decodedCategory}`;
+      decodedCategory === "All"
+        ? `${SERVER}/listing`
+        : `${SERVER}/listing?category=${decodedCategory}`;
 
     fetch(url)
       .then((res) => {
@@ -44,9 +43,7 @@ const CategoryFilteredProducts = () => {
 
       <h1 className="text-3xl font-bold text-center mb-10 text-yellow-400">
         Showing Results for:{" "}
-        <span className="text-yellow-200 capitalize">
-          {decodedCategory}
-        </span>
+        <span className="text-yellow-200 capitalize">{decodedCategory}</span>
       </h1>
 
       {loading ? (
@@ -54,9 +51,7 @@ const CategoryFilteredProducts = () => {
           <div className="w-16 h-16 border-4 border-yellow-400 border-dashed rounded-full animate-spin"></div>
         </div>
       ) : items.length === 0 ? (
-        <p className="text-center text-gray-400">
-          No products found.
-        </p>
+        <p className="text-center text-gray-400">No products found.</p>
       ) : (
         <div className="grid md:grid-cols-3 gap-8">
           {items.map((item) =>
@@ -65,7 +60,7 @@ const CategoryFilteredProducts = () => {
                 key={item._id?.toString() || item.id || Math.random()}
                 listing={item}
               />
-            ) : null
+            ) : null,
           )}
         </div>
       )}

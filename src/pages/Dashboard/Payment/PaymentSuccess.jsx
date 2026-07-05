@@ -13,7 +13,7 @@ const PaymentSuccess = () => {
   const [message, setMessage] = useState("Verifying payment...");
   const [paymentInfo, setPaymentInfo] = useState(null);
 
-  const hasRun = useRef(false); // ✅ prevent double call
+  const hasRun = useRef(false); // prevent double call
 
   useEffect(() => {
     if (!sessionId || hasRun.current) return;
@@ -46,9 +46,8 @@ const PaymentSuccess = () => {
       try {
         setLoading(true);
 
-        // ✅ FIXED: GET instead of PATCH
         const res = await axiosSecure.get(
-          `/payment-success?session_id=${sessionId}`
+          `/payment-success?session_id=${sessionId}`,
         );
 
         if (res.data?.success) {
@@ -64,7 +63,11 @@ const PaymentSuccess = () => {
         }
 
         // clean URL
-        window.history.replaceState({}, document.title, "/dashboard/payment-success");
+        window.history.replaceState(
+          {},
+          document.title,
+          "/dashboard/payment-success",
+        );
       } catch (error) {
         console.error(error);
         setMessage("Server error while verifying payment ❌");
@@ -78,9 +81,7 @@ const PaymentSuccess = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-gray-100 dark:from-gray-900 dark:to-black px-4">
-
       <div className="bg-white dark:bg-gray-900 shadow-xl rounded-2xl p-8 max-w-md w-full text-center space-y-6">
-
         {/* Status Icon */}
         <div className="text-6xl">
           {loading ? "⏳" : paymentInfo ? "🎉" : "❌"}
@@ -105,7 +106,6 @@ const PaymentSuccess = () => {
 
         {/* Buttons */}
         <div className="flex flex-col gap-3">
-
           <Link to="/dashboard/my-purchases">
             <button className="w-full py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
               🛒 View My Purchases
@@ -117,9 +117,7 @@ const PaymentSuccess = () => {
               🎨 Continue Shopping
             </button>
           </Link>
-
         </div>
-
       </div>
     </div>
   );

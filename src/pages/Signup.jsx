@@ -71,11 +71,11 @@ const Signup = () => {
     }
 
     try {
-      // ✅ 1. Firebase signup FIRST
+      //  1. Firebase signup FIRST
       const res = await createUserWithEmailAndPasswordFunc(email, password);
       const user = res.user;
 
-      // ✅ 2. Upload image AFTER success
+      //  2. Upload image AFTER success
       const formData = new FormData();
       formData.append("image", image);
 
@@ -83,11 +83,11 @@ const Signup = () => {
       const imgRes = await axios.post(image_API_URL, formData);
       const photoURL = imgRes.data.data.url;
 
-      // ✅ 3. Update profile & verification
+      //  3. Update profile & verification
       await sendEmailVerificationFunc();
       await updateProfileFunc(name, photoURL);
 
-      // ✅ 4. Save to DB
+      //  4. Save to DB
       const userInfo = {
         email: user.email,
         name,
@@ -104,31 +104,27 @@ const Signup = () => {
 
       await signOut(auth);
       navigate("/signin");
+    } catch (error) {
+      console.log("SIGNUP ERROR:", error);
 
-    }catch (error) {
-  console.log("SIGNUP ERROR:", error);
+      setLoadingBtn(false);
 
-  setLoadingBtn(false);
+      if (error.code === "auth/email-already-in-use") {
+        setEmailError("This email is already registered!");
+        toast.error("Email already exists!"); 
+        return;
+      }
 
-  if (error.code === "auth/email-already-in-use") {
-    setEmailError("This email is already registered!");
-    toast.error("Email already exists!"); // ✅ ADD THIS
-    return;
-  }
-
-  if (error.code === "auth/invalid-email") {
-    toast.error("Invalid email format!");
-  } 
-  else if (error.code === "auth/weak-password") {
-    toast.error("Password is too weak!");
-  } 
-  else if (error.code === "auth/network-request-failed") {
-    toast.error("Network problem. Try again!");
-  } 
-  else {
-    toast.error(error.message || "Signup failed");
-  }
-}
+      if (error.code === "auth/invalid-email") {
+        toast.error("Invalid email format!");
+      } else if (error.code === "auth/weak-password") {
+        toast.error("Password is too weak!");
+      } else if (error.code === "auth/network-request-failed") {
+        toast.error("Network problem. Try again!");
+      } else {
+        toast.error(error.message || "Signup failed");
+      }
+    }
   };
 
   const handleGoogleSignup = async () => {
@@ -159,7 +155,6 @@ const Signup = () => {
 
   return (
     <div className="min-h-screen p-5 flex items-center justify-center bg-gray-50 dark:bg-gray-900 transition-colors">
-
       <MyContainer>
         <div className="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-2xl rounded-3xl p-10 transition-colors">
           <h2 className="text-3xl font-extrabold text-center text-gray-800 dark:text-gray-100 mb-8">
@@ -167,13 +162,16 @@ const Signup = () => {
           </h2>
 
           <form onSubmit={handleSignup} className="space-y-6">
-
             {/* Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
                 Name
               </label>
-              <input type="text" name="name" required placeholder="Artist Name"
+              <input
+                type="text"
+                name="name"
+                required
+                placeholder="Artist Name"
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
               />
             </div>
@@ -191,7 +189,9 @@ const Signup = () => {
                 placeholder="you@example.com"
                 onChange={() => setEmailError("")}
                 className={`w-full px-4 py-3 rounded-xl border ${
-                  emailError ? "border-red-500" : "border-gray-300 dark:border-gray-600"
+                  emailError
+                    ? "border-red-500"
+                    : "border-gray-300 dark:border-gray-600"
                 } bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition`}
               />
 
@@ -269,11 +269,13 @@ const Signup = () => {
             {/* Login */}
             <p className="text-center text-sm text-gray-600 dark:text-gray-300">
               Already have an account?
-              <Link to="/signin" className="text-blue-600 dark:text-blue-400 underline ml-1">
+              <Link
+                to="/signin"
+                className="text-blue-600 dark:text-blue-400 underline ml-1"
+              >
                 Login
               </Link>
             </p>
-
           </form>
         </div>
       </MyContainer>

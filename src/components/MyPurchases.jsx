@@ -19,23 +19,19 @@ const MyPurchases = () => {
       const token = await user.getIdToken();
       const SERVER = "https://art-gallery-server-ashen.vercel.app";
 
-      const res = await fetch(
-       `${SERVER}/myPurchases?email=${user.email}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const res = await fetch(`${SERVER}/myPurchases?email=${user.email}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       const data = await res.json();
 
-      // ✅ FIX: backend may send {success, data}
       return Array.isArray(data)
         ? data
         : Array.isArray(data.data)
-        ? data.data
-        : [];
+          ? data.data
+          : [];
     },
   });
 
@@ -43,10 +39,7 @@ const MyPurchases = () => {
   // TOTAL SPENT
   // ======================
   const totalSpent = useMemo(() => {
-    return purchases.reduce(
-      (sum, p) => sum + (Number(p.amount) || 0),
-      0
-    );
+    return purchases.reduce((sum, p) => sum + (Number(p.amount) || 0), 0);
   }, [purchases]);
 
   // ======================
@@ -69,9 +62,7 @@ const MyPurchases = () => {
       `$${p.amount || 0}`,
       p.transactionId || "-",
       p.paymentStatus || "Paid",
-      p.created_at
-        ? new Date(p.created_at).toLocaleString()
-        : "N/A",
+      p.created_at ? new Date(p.created_at).toLocaleString() : "N/A",
     ]);
 
     autoTable(doc, {
@@ -99,20 +90,15 @@ const MyPurchases = () => {
   // ======================
   if (error) {
     return (
-      <p className="text-center mt-10 text-red-500">
-        Failed to load purchases
-      </p>
+      <p className="text-center mt-10 text-red-500">Failed to load purchases</p>
     );
   }
 
   return (
     <div className="min-h-screen py-10 px-4 bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-900 dark:via-gray-950 dark:to-black">
-
       <div className="w-11/12 mx-auto">
-
         {/* HEADER */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white">
             🛒 My Purchases
           </h2>
@@ -124,12 +110,10 @@ const MyPurchases = () => {
           >
             ⬇️ Download Report
           </button>
-
         </div>
 
         {/* SUMMARY */}
         <div className="mb-6 p-5 rounded-xl bg-white dark:bg-gray-900 shadow flex justify-between">
-
           <p className="text-gray-700 dark:text-gray-300">
             Total Purchases: <b>{purchases.length}</b>
           </p>
@@ -137,7 +121,6 @@ const MyPurchases = () => {
           <p className="text-green-600 font-bold text-lg">
             Total Spent: ${totalSpent}
           </p>
-
         </div>
 
         {/* EMPTY STATE */}
@@ -148,9 +131,7 @@ const MyPurchases = () => {
           </div>
         ) : (
           <div className="overflow-x-auto rounded-2xl shadow-lg bg-white dark:bg-gray-900">
-
             <table className="table w-full">
-
               <thead className="bg-gray-200 dark:bg-gray-800 text-gray-800 dark:text-gray-200">
                 <tr>
                   <th>Art</th>
@@ -167,7 +148,6 @@ const MyPurchases = () => {
                     key={p._id || p.transactionId}
                     className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
                   >
-
                     {/* ART */}
                     <td className="flex items-center gap-3 p-2">
                       <img
@@ -201,16 +181,12 @@ const MyPurchases = () => {
                         ? new Date(p.created_at).toLocaleString()
                         : "N/A"}
                     </td>
-
                   </tr>
                 ))}
               </tbody>
-
             </table>
-
           </div>
         )}
-
       </div>
     </div>
   );

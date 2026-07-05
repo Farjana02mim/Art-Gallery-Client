@@ -11,11 +11,13 @@ const Coverage = () => {
   const handleSearch = (e) => {
     e.preventDefault();
     const location = e.target.location.value;
-    const district = serviceCenters.find( c => c.district.toLowerCase().includes(location.toLowerCase()));
-    if(district){
-      const coord = [district.latitude,district.longitude];
-      console.log(district,coord);
-      mapRef.current.flyTo(coord,14);
+    const district = serviceCenters.find((c) =>
+      c.district.toLowerCase().includes(location.toLowerCase()),
+    );
+    if (district) {
+      const coord = [district.latitude, district.longitude];
+      console.log(district, coord);
+      mapRef.current.flyTo(coord, 14);
     }
   };
   return (
@@ -42,7 +44,12 @@ const Coverage = () => {
                 <path d="m21 21-4.3-4.3"></path>
               </g>
             </svg>
-            <input type="search" className="grow" name="location" placeholder="Search" />
+            <input
+              type="search"
+              className="grow"
+              name="location"
+              placeholder="Search"
+            />
           </label>
         </form>
       </div>
