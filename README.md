@@ -261,17 +261,6 @@ The application is optimized for
 - Wishlist Sharing
 - Artist Portfolio Page
 
----
-
-## 📷 Screenshots
-
-Add screenshots of:
-
-- Home Page
-- Gallery
-- Dashboard
-- Login
-- Purchase Page
 
 ---
 
